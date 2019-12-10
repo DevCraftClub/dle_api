@@ -1,0 +1,10 @@
+{
+	"require-dev": {
+	},
+	"require": {
+		"ext-json": "*",
+		"slim/slim": "^3.12",
+		"monolog/monolog": "*",
+		"ext-pdo": "*"
+	}
+}

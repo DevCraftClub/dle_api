@@ -1,0 +1,43 @@
+Time : 18:24:40
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api2' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dle_api2', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png', '1')
+
+Time : 18:16:18
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:15:14
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:14:02
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:13:42
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:13:41
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:13:40
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:13:37
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:13:14
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:13:12
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
+
+Time : 18:11:30
+SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'dle_api' for key 'name'
+Raw SQL : INSERT INTO dle_admin_sections (name, title, descr, icon) VALUES ('dle_api', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png')
