@@ -115,7 +115,7 @@ function getTables() {
 }
 
 /**
- * @param string $algorithm
+ * @param int 	 $algorithm
  * @param        $user_id
  * @param        $salt
  * @param        $key_length
@@ -132,11 +132,18 @@ function pbkdf2($algorithm = 2, $user_id, $salt, $key_length, $separator, $block
 	foreach (hash_algos() as $id => $algo) {
 		$algos[$id] = $algo;
 	}
+	if(empty($algorithm)) $algorithm = 2;
+	if(empty($salt)) $salt = 'localhost';
+	if(empty($key_length)) $key_length = 20;
+	if(empty($separator)) $separator = '-';
+	if(empty($block_length)) $separator = 4;
 	$algorithm = strtolower($algos[$algorithm]);
 	if(!in_array($algorithm, hash_algos(), true))
 		die('PBKDF2 ERROR: Invalid hash algorithm.');
 	if($count <= 0 || $key_length <= 0)
 		die('PBKDF2 ERROR: Invalid parameters.');
+	if(empty($user_id))
+		die('You have to be logged in to generate a key!');
 
 	$hash_length = strlen(hash($algorithm, "", true));
 	$block_count = ceil($key_length / $hash_length);
