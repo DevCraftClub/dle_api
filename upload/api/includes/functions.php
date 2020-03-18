@@ -58,7 +58,7 @@
 				$keyCheck = $connect->query( "SELECT * FROM {$DLEprefix}_api_scope as scope
     											INNER JOIN {$DLEprefix}_api_keys as api on api.id = scope.key_id
    												WHERE api.api = :key
-    											AND scope.name = :name", array( 'key' => $key, 'name' => $name ) )[0];
+    											AND scope.table = :name", array( 'key' => $key, 'name' => $name ) )[0];
 
 				if ( count( $keyCheck ) > 0 ) {
 					if ( $keyCheck['active'] === 1 ) {
