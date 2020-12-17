@@ -54,20 +54,33 @@
 		);
 
 		try {
-			if (isset($key) && isset($name)) {
-				$keyCheck = $connect->query( "SELECT * FROM {$DLEprefix}_api_scope as scope
-    											INNER JOIN {$DLEprefix}_api_keys as api on api.id = scope.key_id
-   												WHERE api.api = :key
-    											AND scope.table = :name", array( 'key' => $key, 'name' => $name ) )[0];
+			if (!empty($key) && !empty($name)) {
+				$keyCheck = $connect->query( "SELECT * FROM {$DLEprefix}_api_keys WHERE api = :key", array( 'key' => $key) );
+				
+				if(!empty($keyCheck)) {
+					if($keyCheck[0]['is_admin'] && $keyCheck[0]['active'] === 1) {
+						$antwort = array(
+							'admin' => true,
+							'read' => true,
+							'view' => true,
+							'delete' => true,
+						);
+					} else {
+						
+						$tablesCheck = $connect->query( "SELECT * FROM {$DLEprefix}_api_scope 
+														WHERE table = :name and key_id = :api", array(  'name' => $name, 'api' => $keyCheck[0]['api']) );
 
-				if ( count( $keyCheck ) > 0 ) {
-					if ( $keyCheck['active'] === 1 ) {
-						if ( $keyCheck['is_admin'] === 1 ) $antwort['admin'] = true;
-						if ( $keyCheck['read'] === 1 ) $antwort['read'] = true;
-						if ( $keyCheck['view'] === 1 ) $antwort['view'] = true;
-						if ( $keyCheck['delete'] === 1 ) $antwort['delete'] = true;
+						if ( count( $tablesCheck ) > 0 ) {
+							if ( $keyCheck[0]['active'] === 1 ) {
+								if ( $keyCheck[0]['is_admin'] === 1 ) $antwort['admin'] = true;
+								if ( $tablesCheck[0]['read'] === 1 ) $antwort['read'] = true;
+								if ( $tablesCheck[0]['view'] === 1 ) $antwort['view'] = true;
+								if ( $tablesCheck[0]['delete'] === 1 ) $antwort['delete'] = true;
+							}
+							else $antwort['error'] = 'API-ключ не активен!';
+						}
+						else $antwort['error'] = 'API-ключ не действителен!';
 					}
-					else $antwort['error'] = 'API-ключ не активен!';
 				}
 				else $antwort['error'] = 'API-ключ не действителен!';
 			} else {
