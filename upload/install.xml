@@ -3,7 +3,7 @@
 	<name>DLE-API</name>
 	<description>Неофициальное API для CMS DLE</description>
 	<icon></icon>
-	<version>1</version>
+	<version>0.0.2</version>
 	<dleversion>13.0</dleversion>
 	<versioncompare>greater</versioncompare>
 	<upgradeurl></upgradeurl>
@@ -34,9 +34,7 @@ create table {prefix}_api_scope (
 	constraint {prefix}_api_scope_{prefix}_api_keys_id_fk
 		foreign key (key_id) references {prefix}_api_keys (id)
 			on update cascade on delete cascade
-);
-
-INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png', 1);]]></mysqlinstall>
+);]]></mysqlinstall>
 	<mysqlupgrade><![CDATA[]]></mysqlupgrade>
 	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png', 1);]]></mysqlenable>
 	<mysqldisable><![CDATA[DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi']]></mysqldisable>
