@@ -15,120 +15,140 @@ $possibleData = array(
 		'type' => 'integer',
 		'required' => false,
 		'post' => false,
+		'length' => 0
 	),
 	array(
 		'name' => 'news_id',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'news_read',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_rate',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'rating',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'vote_num',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'votes',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'view_edit',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_index',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'related_ids',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 255
 	),
 	array(
 		'name' => 'access',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'editdate',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'editor',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 40
 	),
 	array(
 		'name' => 'reason',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 255
 	),
 	array(
 		'name' => 'user_id',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_search',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'need_pass',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_rss',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_rss_turbo',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_rss_turbo_dzen',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 );
 
@@ -138,6 +158,7 @@ $possibleData = array(
 //                  'type' => "Type of value",  // integer, string, boolean, double
 //                  'required' => true/false,   // Обязательное поле?
 //                  'post' => true/false,       // Разрешить использовать при добавлении или редактуре?
+//                  'length' => 0,				// Указывается ограничение для типа string. Содержимое будет обрезаться при нарушении макс. значения
 // );
 // possibleData Add
 
@@ -237,7 +258,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 						return $response->withStatus(400)->getBody()->write(json_encode(array('error' => "Требуемая информация отсутствует: {$name}!")));
 
 					$names[] = $name;
-					$values[] = defType($value, $keyData['type']);
+					$values[] = defType(checkLength($value, $keyData['length']), $keyData['type']);
 
 				}
 			}
@@ -297,7 +318,14 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $body as $name => $value ) {
 				if ( defType($value) !== null && in_array($name, $possibleData)) {
-					$values[] = "{$name} = " . defType($value);
+					$keyNum = array_search($name, array_column($possibleData, 'name'));
+
+					if ($keyNum !== false) {
+						$keyData = $possibleData[$keyNum];
+
+						$values[] ="{$name} = " . defType(checkLength($value, $keyData['length']), $keyData['type']);
+
+					}
 				}
 			}
 			$values = implode(', ', $values);

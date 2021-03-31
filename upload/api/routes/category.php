@@ -15,120 +15,168 @@ $possibleData = array(
 		'type' => 'integer',
 		'required' => false,
 		'post' => false,
+		'length' => 0
 	),
 	array(
 		'name' => 'parentid',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'posi',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'name',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 50
 	),
 	array(
 		'name' => 'alt_name',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 50
 	),
 	array(
 		'name' => 'icon',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 200
 	),
 	array(
 		'name' => 'descr',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 300
 	),
 	array(
 		'name' => 'keywords',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'news_sort',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 10
 	),
 	array(
 		'name' => 'news_msort',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 4
 	),
 	array(
 		'name' => 'short_tpl',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 400
 	),
 	array(
 		'name' => 'full_tpl',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 40
 	),
 	array(
 		'name' => 'metatitle',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 255
 	),
 	array(
 		'name' => 'show_sub',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_rss',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'fulldescr',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_search',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_main',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_rating',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_comments',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
+	),
+	array(
+		'name' => 'enable_dzen',
+		'type' => 'boolean',
+		'required' => false,
+		'post' => true,
+		'length' => 0
+	),
+	array(
+		'name' => 'enable_turbo',
+		'type' => 'boolean',
+		'required' => false,
+		'post' => true,
+		'length' => 0
+	),
+	array(
+		'name' => 'active',
+		'type' => 'boolean',
+		'required' => false,
+		'post' => true,
+		'length' => 0
+	),
+	array(
+		'name' => 'rating_type',
+		'type' => 'boolean',
+		'required' => false,
+		'post' => true,
+		'length' => 0
 	),
 );
 
@@ -138,6 +186,7 @@ $possibleData = array(
 //                  'type' => "Type of value",  // integer, string, boolean, double
 //                  'required' => true/false,   // Обязательное поле?
 //                  'post' => true/false,       // Разрешить использовать при добавлении или редактуре?
+//                  'length' => 0,				// Указывается ограничение для типа string. Содержимое будет обрезаться при нарушении макс. значения
 // );
 // possibleData Add
 
@@ -237,7 +286,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 						return $response->withStatus(400)->getBody()->write(json_encode(array('error' => "Требуемая информация отсутствует: {$name}!")));
 
 					$names[] = $name;
-					$values[] = defType($value, $keyData['type']);
+					$values[] = defType(checkLength($value, $keyData['length']), $keyData['type']);
 
 				}
 			}
@@ -297,7 +346,14 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $body as $name => $value ) {
 				if ( defType($value) !== null && in_array($name, $possibleData)) {
-					$values[] = "{$name} = " . defType($value);
+					$keyNum = array_search($name, array_column($possibleData, 'name'));
+
+					if ($keyNum !== false) {
+						$keyData = $possibleData[$keyNum];
+
+						$values[] ="{$name} = " . defType(checkLength($value, $keyData['length']), $keyData['type']);
+
+					}
 				}
 			}
 			$values = implode(', ', $values);

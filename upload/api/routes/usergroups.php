@@ -15,702 +15,819 @@ $possibleData = array(
 		'type' => 'integer',
 		'required' => false,
 		'post' => false,
+		'length' => 0
 	),
 	array(
 		'name' => 'group_name',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 50
 	),
 	array(
 		'name' => 'allow_cats',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_adds',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'cat_add',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_admin',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_addc',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_editc',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_delc',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'edit_allc',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'del_allc',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'moderation',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_all_edit',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_edit',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_pm',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_pm',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_foto',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 10
 	),
 	array(
 		'name' => 'allow_files',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_hide',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_short',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'time_limit',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'rid',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_fixed',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_feed',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_search',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_poll',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_main',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'captcha',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'icon',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 200
 	),
 	array(
 		'name' => 'allow_modc',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_rating',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_offline',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_image_upload',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_file_upload',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_signature',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_url',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'news_sec_code',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_image',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_signature',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_info',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_addnews',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_editnews',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_comments',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_categories',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_editusers',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_wordfilter',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_xfields',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_userfields',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_static',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_editvote',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_newsletter',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_blockip',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_banners',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_rss',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_iptools',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_rssinform',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_googlemap',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_html',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'group_prefix',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'group_sufix',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_subscribe',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_image_size',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'cat_allow_addnews',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'flood_news',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_day_news',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_leech',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'edit_limit',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'captcha_pm',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_pm_day',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_mail_day',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_tagscloud',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_vote',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'admin_complaint',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'news_question',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'comments_question',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_comment_day',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_images',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_files',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_news_captcha',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'disable_comments_captcha',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'pm_question',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'captcha_feedback',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'feedback_question',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'files_type',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 255
 	),
 	array(
 		'name' => 'max_file_size',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'file_max_speed',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'spamfilter',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_comments_rating',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_edit_days',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'spampmfilter',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_reg',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_reg_days',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_reg_group',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_news',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_news_count',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_news_group',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_comments',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_comments_count',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_comments_group',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_rating',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_rating_count',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'force_rating_group',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'not_allow_cats',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_up_image',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_up_watermark',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_up_thumb',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'up_count_image',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'up_image_side',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 20
 	),
 	array(
 		'name' => 'up_image_size',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'up_thumb_size',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 20
 	),
 	array(
 		'name' => 'allow_mail_files',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_mail_files',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_mail_allfiles',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'mail_file_type',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 100
 	),
 	array(
 		'name' => 'video_comments',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'media_comments',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'min_image_side',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 20
 	),
 );
 
@@ -720,6 +837,7 @@ $possibleData = array(
 //                  'type' => "Type of value",  // integer, string, boolean, double
 //                  'required' => true/false,   // Обязательное поле?
 //                  'post' => true/false,       // Разрешить использовать при добавлении или редактуре?
+//                  'length' => 0,				// Указывается ограничение для типа string. Содержимое будет обрезаться при нарушении макс. значения
 // );
 // possibleData Add
 
@@ -819,7 +937,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 						return $response->withStatus(400)->getBody()->write(json_encode(array('error' => "Требуемая информация отсутствует: {$name}!")));
 
 					$names[] = $name;
-					$values[] = defType($value, $keyData['type']);
+					$values[] = defType(checkLength($value, $keyData['length']), $keyData['type']);
 
 				}
 			}
@@ -879,7 +997,14 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $body as $name => $value ) {
 				if ( defType($value) !== null && in_array($name, $possibleData)) {
-					$values[] = "{$name} = " . defType($value);
+					$keyNum = array_search($name, array_column($possibleData, 'name'));
+
+					if ($keyNum !== false) {
+						$keyData = $possibleData[$keyNum];
+
+						$values[] ="{$name} = " . defType(checkLength($value, $keyData['length']), $keyData['type']);
+
+					}
 				}
 			}
 			$values = implode(', ', $values);

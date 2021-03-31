@@ -15,30 +15,35 @@ $possibleData = array(
 		'type' => 'integer',
 		'required' => false,
 		'post' => false,
+		'length' => 0
 	),
 	array(
 		'name' => 'user_id',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'pin',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 10
 	),
 	array(
 		'name' => 'attempt',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'date',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 );
 
@@ -48,6 +53,7 @@ $possibleData = array(
 //                  'type' => "Type of value",  // integer, string, boolean, double
 //                  'required' => true/false,   // Обязательное поле?
 //                  'post' => true/false,       // Разрешить использовать при добавлении или редактуре?
+//                  'length' => 0,				// Указывается ограничение для типа string. Содержимое будет обрезаться при нарушении макс. значения
 // );
 // possibleData Add
 
@@ -147,7 +153,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 						return $response->withStatus(400)->getBody()->write(json_encode(array('error' => "Требуемая информация отсутствует: {$name}!")));
 
 					$names[] = $name;
-					$values[] = defType($value, $keyData['type']);
+					$values[] = defType(checkLength($value, $keyData['length']), $keyData['type']);
 
 				}
 			}
@@ -207,7 +213,14 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $body as $name => $value ) {
 				if ( defType($value) !== null && in_array($name, $possibleData)) {
-					$values[] = "{$name} = " . defType($value);
+					$keyNum = array_search($name, array_column($possibleData, 'name'));
+
+					if ($keyNum !== false) {
+						$keyData = $possibleData[$keyNum];
+
+						$values[] ="{$name} = " . defType(checkLength($value, $keyData['length']), $keyData['type']);
+
+					}
 				}
 			}
 			$values = implode(', ', $values);
