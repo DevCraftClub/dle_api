@@ -15,132 +15,154 @@ $possibleData = array(
 		'type' => 'integer',
 		'required' => false,
 		'post' => false,
+		'length' => 0
 	),
 	array(
 		'name' => 'banner_tag',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 40
 	),
 	array(
 		'name' => 'descr',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 200
 	),
 	array(
 		'name' => 'code',
 		'type' => 'string',
 		'required' => true,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'approve',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'short_place',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'bstick',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'main',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'category',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 255
 	),
 	array(
 		'name' => 'grouplevel',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 100
 	),
 	array(
 		'name' => 'start',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 15
 	),
 	array(
 		'name' => 'end',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 15
 	),
 	array(
 		'name' => 'fpage',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'innews',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'devicelevel',
 		'type' => 'string',
 		'required' => false,
 		'post' => true,
+		'length' => 10
 	),
 	array(
 		'name' => 'allow_views',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_views',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'allow_counts',
 		'type' => 'boolean',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'max_counts',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'views',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'clicks',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 	array(
 		'name' => 'rubric',
 		'type' => 'integer',
 		'required' => false,
 		'post' => true,
+		'length' => 0
 	),
 );
 
@@ -150,6 +172,7 @@ $possibleData = array(
 //                  'type' => "Type of value",
 //                  'required' => true/false,   // Обязательное поле?
 //                  'post' => true/false,       // Разрешить использовать при добавлении или редактуре?
+//                  'length' => 0,				// Указывается ограничение для типа string. Содержимое будет обрезаться при нарушении макс. значения
 // );
 // possibleData Add
 
@@ -249,7 +272,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 						return $response->withStatus(400)->getBody()->write(json_encode(array('error' => "Требуемая информация отсутствует: {$name}!")));
 
 					$names[] = $name;
-					$values[] = defType($value, $keyData['type']);
+					$values[] = defType(checkLength($value, $keyData['length']), $keyData['type']);
 
 				}
 			}
@@ -309,7 +332,14 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $body as $name => $value ) {
 				if ( defType($value) !== null && in_array($name, $possibleData)) {
-					$values[] = "{$name} = " . defType($value);
+					$keyNum = array_search($name, array_column($possibleData, 'name'));
+
+					if ($keyNum !== false) {
+						$keyData = $possibleData[$keyNum];
+
+						$values[] ="{$name} = " . defType(checkLength($value, $keyData['length']), $keyData['type']);
+
+					}
 				}
 			}
 			$values = implode(', ', $values);
