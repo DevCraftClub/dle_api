@@ -20,9 +20,9 @@ if( !defined( 'DATALIFEENGINE' ) OR !defined( 'LOGGED_IN' ) ) {
 $version = [
 	'name' => 'DLE-API',
 	'descr' => 'Неофициальное API',
-	'version' => '1.0',
+	'version' => '0.1.3',
 	'changelog' => [
-		'1.0' => [
+		'0.1.3' => [
 			'ервая стандартная версия'
 		]
 	],
@@ -367,11 +367,11 @@ HTML;
 					</table>
 				</div>
 				<div class="panel-footer">
-				
-					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left" 
+
+					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left"
 					role="button">Главная</a>
 					<div class="pull-right">
-						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save" 
+						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save"
 					role="button">Сохранить</a>
 					</div>
 				</div>
@@ -385,14 +385,14 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
 										autoOpen: true,
 										width: 600,
 										resizable: false,
-										
+
 									});
 					 			}
 					 		})
@@ -434,11 +434,11 @@ HTML;
 						<thead>
 							<tr>
 								<th>Название</th>
-				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll" 
+				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll"
 				        		title="Включить все"></th>
-				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll" 
+				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll"
 				        		title="Включить все"></th>
-				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll" 
+				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll"
 				        		title="Включить все"></th>
 							</tr>
 						</thead>
@@ -451,18 +451,18 @@ HTML;
         									<h6 class="media-heading text-semibold">Таблица: {$table}</h6>
         								</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="read" 
-											name="tables[{$table}][read]" 
+											<input class="icheck" type="checkbox" data-type="read"
+											name="tables[{$table}][read]"
 											value="1">
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="write" 
-											name="tables[{$table}][write]" 
+											<input class="icheck" type="checkbox" data-type="write"
+											name="tables[{$table}][write]"
 											value="1">
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="delete" 
-											name="tables[{$table}][delete]" 
+											<input class="icheck" type="checkbox" data-type="delete"
+											name="tables[{$table}][delete]"
 											value="1">
 										</td>
 									</tr>
@@ -473,11 +473,11 @@ HTML;
 					</table>
 				</div>
 				<div class="panel-footer">
-				
-					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left" 
+
+					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left"
 					role="button">Главная</a>
 					<div class="pull-right">
-						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save" 
+						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save"
 					role="button">Сохранить</a>
 					</div>
 				</div>
@@ -490,7 +490,7 @@ HTML;
 								if (status)  $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-														
+
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="writeAll"]').on('click', function() {
@@ -499,7 +499,7 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-							
+
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="deleteAll"]').on('click', function() {
@@ -508,10 +508,10 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-							
+
 							$.uniform.update();
 					 	});
-					 	
+
 					 	$('.btn-save').on('click', function() {
 					 		$.ajax({
 					 			url: '{$config['http_home_url']}{$config['admin_path']}?mod={$version['id']}&action=create',
@@ -519,19 +519,19 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
 										autoOpen: true,
 										width: 600,
 										resizable: false,
-										
+
 									});
 					 			}
 					 		})
 					 	});
-					 	
+
 					 	$('#genKey').on('click', function() {
 					 	    $('[name="save_con[api]"]').val('').html('');
 					 		$.ajax({
@@ -540,7 +540,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -552,7 +552,7 @@ HTML;
 					 			}
 					 		})
 					 	});
-					 	
+
 					 	//
 					 	// $(document).find('[data-type="read"]').each(function(check) {
 						// 		let status = $(this).prop('checked');
@@ -560,7 +560,7 @@ HTML;
 						// 		else $(this).prop('checked', true);
 						// 	});
 					});
-				
+
 </script>
 HTML;
 
@@ -574,7 +574,7 @@ HTML;
 		$api_key = $db->super_query('SELECT * FROM '. PREFIX . "_api_keys WHERE id = {$this_id}");
 
 		echo <<<HTML
-			<form action="?mod={$version['id']}&action=edit&id={$this_id}" method="post" name="optionsbar" 
+			<form action="?mod={$version['id']}&action=edit&id={$this_id}" method="post" name="optionsbar"
 			id="optionsbar">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -604,11 +604,11 @@ HTML;
 						<thead>
 							<tr>
 								<th>Название</th>
-				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll" 
+				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll"
 				        		title="Включить все"></th>
-				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll" 
+				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll"
 				        		title="Включить все"></th>
-				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll" 
+				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll"
 				        		title="Включить все"></th>
 							</tr>
 						</thead>
@@ -629,18 +629,18 @@ HTML;
         									<h6 class="media-heading text-semibold">Таблица: {$tables}</h6>
         								</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="read" 
-											name="tables[{$tables}][read]" 
+											<input class="icheck" type="checkbox" data-type="read"
+											name="tables[{$tables}][read]"
 											value="1"{$read}>
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="write" 
-											name="tables[{$tables}][write]" 
+											<input class="icheck" type="checkbox" data-type="write"
+											name="tables[{$tables}][write]"
 											value="1"{$write}>
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="delete" 
-											name="tables[{$tables}][delete]" 
+											<input class="icheck" type="checkbox" data-type="delete"
+											name="tables[{$tables}][delete]"
 											value="1"{$delete}>
 										</td>
 									</tr>
@@ -651,11 +651,11 @@ HTML;
 					</table>
 				</div>
 				<div class="panel-footer">
-				
-					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left" 
+
+					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left"
 					role="button">Главная</a>
 					<div class="pull-right">
-						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save" 
+						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save"
 					role="button">Сохранить</a>
 					</div>
 				</div>
@@ -668,7 +668,7 @@ HTML;
 								if (status)  $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-														
+
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="writeAll"]').on('click', function() {
@@ -677,7 +677,7 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-							
+
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="deleteAll"]').on('click', function() {
@@ -686,10 +686,10 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-							
+
 							$.uniform.update();
 					 	});
-					 	
+
 					 	$('.btn-save').on('click', function() {
 					 		$.ajax({
 					 			url: '{$config['http_home_url']}{$config['admin_path']}?mod={$version['id']}&action=save&id={$_GET['id']}',
@@ -697,7 +697,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -708,7 +708,7 @@ HTML;
 					 			}
 					 		})
 					 	});
-					 	
+
 					 	$('#genKey').on('click', function() {
 					 	    $('[name="save_con[api]"]').val('').html('');
 					 		$.ajax({
@@ -717,7 +717,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -729,7 +729,7 @@ HTML;
 					 			}
 					 		})
 					 	});
-					 	
+
 					 	//
 					 	// $(document).find('[data-type="read"]').each(function(check) {
 						// 		let status = $(this).prop('checked');
@@ -737,7 +737,7 @@ HTML;
 						// 		else $(this).prop('checked', true);
 						// 	});
 					});
-				
+
 </script>
 HTML;
 
@@ -884,10 +884,10 @@ HTML;
         <div class="btn-group">
           <a href="#" class="dropdown-toggle nocolor" data-toggle="dropdown" aria-expanded="true"><i class="fa fa-bars"></i><span class="caret"></span></a>
           <ul class="dropdown-menu text-left dropdown-menu-right">
-            <li><a uid="{$row['id']}" href="?mod={$version['id']}&action=edit&id={$row['id']}" class="editlink"><i class="fa 
+            <li><a uid="{$row['id']}" href="?mod={$version['id']}&action=edit&id={$row['id']}" class="editlink"><i class="fa
             fa-pencil-square-o position-left"></i>{$lang['word_ledit']}</a></li>
 			<li class="divider"></li>
-            <li><a data-id="{$row['id']}" class="btn-delete" href="#"><i class="fa fa-trash-o 
+            <li><a data-id="{$row['id']}" class="btn-delete" href="#"><i class="fa fa-trash-o
             position-left text-danger"></i>{$lang['word_ldel']}</a></li>
           </ul>
         </div>
@@ -931,7 +931,7 @@ HTML;
 <div class="panel-footer">
 	<div class="pull-right">
 	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
-	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" 
+	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left"
 	role="button">Настройки</a>
 	<select class="uniform position-left" name="action" data-dropdown-align-right="auto">
 		<option value="">{$lang['edit_selact']}</option>
@@ -958,7 +958,7 @@ HTML;
 </div>
 <div class="panel-footer">
 	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
-	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" 
+	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left"
 	role="button">Настройки</a>
 	</div>
 HTML;
@@ -970,7 +970,7 @@ HTML;
 <div class="mb-20">{$npp_nav}</div>
 </form>
 
-<script>  
+<script>
 <!--
 
 	$(function() {
@@ -983,7 +983,7 @@ HTML;
 			}
 		});
 	});
-	
+
 	function ckeck_uncheck_all() {
 	    const frm = document.optionsbar;
 	    for (let i=0;i<frm.elements.length;i++) {
@@ -994,21 +994,21 @@ HTML;
 	        }
 	    }
 	    frm.master_box.checked=frm.master_box.checked!==true;
-		
+
 		$(frm.master_box).parents('tr').removeClass('warning');
-		
+
 		$.uniform.update();
-	
+
 	}
-	
+
 	function search_submit(prm){
       document.navi.start_from.value=prm;
       document.navi.submit();
       return false;
     }
-    
-    
-					 	
+
+
+
 					 	$('.btn-delete').on('click', function() {
 					 		$.ajax({
 					 			url: '{$config['http_home_url']}{$config['admin_path']}?mod={$version['id']}&action=delete&id=' + $(this).data('id'),
@@ -1016,7 +1016,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -1028,8 +1028,8 @@ HTML;
 					 			}
 					 		})
 					 	});
-	
-	
+
+
 //-->
 </script>
 HTML;
