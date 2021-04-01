@@ -321,6 +321,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			$sql = 'DELETE FROM '. PREFIX . "_{$api_name} WHERE id = {$id}";
 			$connect->query( $sql );
+			deletecomments($id);
 
 			$cache = new CacheSystem($api_name, $sql);
 			$cache->clear($api_name);

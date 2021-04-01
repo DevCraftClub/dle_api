@@ -9,6 +9,7 @@
 	use Psr\Http\Message\ServerRequestInterface as Request;
 
 	$api_name = "admin_logs";
+
 	$possibleData = array(
 	    array(
 	        'name' => 'id',
@@ -64,6 +65,7 @@
 // );
 // possibleData Add );
 
+
 $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleData ) {
 	$header = array();
 	$access = array(
@@ -73,6 +75,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		'can_delete' => false,
 	);
 
+
 	$this->get('[/]', function (Request $request, Response $response, Array $args) use ($possibleData, $api_name, $connect, $header, $access ) {
 		foreach ( $request->getHeaders() as $name => $value ) {
 			$name = strtolower(str_replace('HTTP_', '', $name));
@@ -80,7 +83,9 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		}
 
 		$checkAccess = checkAPI($header['x_api_key'], $api_name);
-		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+		if (isset($checkAccess['error'])) {
+			return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+		}
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
@@ -111,6 +116,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 				$getData->create();
 			} else
 				$data = json_decode($getData->get(), true);
+
 
 			$response->withStatus( 200 )->getBody()->write( json_encode( $data ) );
 

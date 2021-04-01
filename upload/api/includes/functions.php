@@ -134,7 +134,7 @@
 		/**
 		 * @param string $cachePath
 		 */
-		public function setCachePath (string $cachePath) {
+		public function setCachePath ($cachePath) {
 			$this->cachePath = $cachePath;
 		}
 
