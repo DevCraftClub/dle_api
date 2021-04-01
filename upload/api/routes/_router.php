@@ -16,6 +16,7 @@
 		return $logger;
 	};
 
+
 	$app->group('/v1', function (App $app) use ($connect) {
 		include_once (DLEPlugins::Check(API_DIR . '/routes/admin_logs.php'));
 		include_once (DLEPlugins::Check(API_DIR . '/routes/admin_sections.php'));

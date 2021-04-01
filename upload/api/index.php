@@ -2,7 +2,7 @@
 
     /**
      * @author Maxim Harder <dev@devcraft.club>
-     * @copyright 2019 DevCraft.club
+     * @copyright 2019-2021 DevCraft.club
      *
      * Приложение должно заменить стандартный API самого DLE и предоставить альтернативный вариант.
      * Использовать на свой страх и риск!
@@ -26,6 +26,7 @@
     require_once ENGINE_DIR.'/classes/plugins.class.php';
 
     include_once DLEPlugins::Check(API_DIR.'/includes/functions.php');
+    include_once DLEPlugins::Check(ENGINE_DIR.'/inc/includes/functions.inc.php');
 
     $config = [
         'settings' => [
@@ -41,6 +42,5 @@
 
     // Подключаем файл-роутер и запускаем главную функцию
 	include_once DLEPlugins::Check(API_DIR.'/routes/_router.php');
-	
 
 ?>
