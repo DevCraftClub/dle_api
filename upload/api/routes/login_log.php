@@ -70,6 +70,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
+		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
 			$orderBy = $header['orderby'] ?: 'id';
@@ -80,6 +81,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $header as $data => $value) {
 				$keyData = array_search($data, array_column($possibleData, 'name'));
+				if (!$access['full'])
 
 				if ($keyData !== false) {
 					$postData = $possibleData[$keyData];
@@ -94,7 +96,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
 				$getData->setData(json_encode($data));
-				$getData->create();
+				$data = $getData->create();
 			} else {
 				$data = json_decode($getData->get(), true);
 			}

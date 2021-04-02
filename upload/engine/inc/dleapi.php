@@ -20,11 +20,33 @@ if( !defined( 'DATALIFEENGINE' ) OR !defined( 'LOGGED_IN' ) ) {
 $version = [
 	'name' => 'DLE-API',
 	'descr' => 'Неофициальное API',
-	'version' => '0.1.3',
+	'version' => '0.1.4',
 	'changelog' => [
+		'0.1.4' => [
+			'Безопасный вывод данных (IP, пароли и хэшсуммы)',
+			'Для удаления комментариев была использована функция движка',
+			'Изменил нумерование версий',
+			'composer настроил под версию PHP 5.6'
+		],
 		'0.1.3' => [
-			'ервая стандартная версия'
-		]
+			'Для удаления новостей была использована функция движка',
+			'Для удаления комментариев была использована функция движка',
+			'Изменил нумерование версий',
+			'composer настроил под версию PHP 5.6'
+		],
+		'0.0.2' => [
+			'Были исправлены несколько багов, спасибо @jyarali',
+			'Исправлена проверка ключей в базе данных',
+			'Добавлена проверка по длине значения для типа "string"',
+			'Массивы с ячейками таблиц были обновлены до значений DLE 14.1 (на ранние версии DLE это никак не влияет)',
+			'Для пользователей был использован штатный API класс самой DLE, чтобы авторизовать и регистрировать пользователей',
+			'Для авторизации пользователей нужно при помощи метода POST указать следующий путь URL: api/v1/users/auth. В заголовке обязательно должны быть значения имя пользователя и его пароль в незакодированном виде.',
+			'Для регистрации пользователя нужно при помощи метода POST указать следующий путь URL: api/v1/users/register. В заголовке нужно указать имя пользователя, пароль, электронную почту и ID группы пользователей.',
+			'При регистрации и авторизации возвращается массив данных об этом пользователе'
+		],
+		'0.0.1' => [
+			'Первая стандартная версия'
+		],
 	],
 	'id' => 'dleapi',
 ];
@@ -182,7 +204,9 @@ foreach ($dleapi as $name => $value) {
 	$dleapi[$name] = htmlspecialchars( strip_tags( stripslashes( trim( urldecode ($value)))));
 }
 
-switch ($_GET['action']) {
+$action = (empty($action)) ? $_GET['action'] : $action;
+
+switch ($action) {
 
 	case 'keygenerate':
 		if ($_GET) {
@@ -207,13 +231,14 @@ switch ($_GET['action']) {
 
 			$key['is_admin'] = $key['is_admin'] ? (bool)$key['is_admin'] : 0;
 			$key['active']   = $key['active'] ? (bool)$key['active'] : 0;
+			$key['own_only']   = $key['own_only'] ? (bool)$key['own_only'] : 0;
 			$key['user']     = (int)$key['user'];
 
 			try {
 				$key_api = $db->super_query('SELECT api FROM ' . PREFIX . "_api_keys WHERE api = '{$key['api']}' or user_id = {$key['user']}");
 				if (count($key_api) === 0) {
 
-					$db->query('INSERT INTO '.PREFIX."_api_keys (api, is_admin, creator, active, user_id) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']})");
+					$db->query('INSERT INTO '.PREFIX."_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
 					$apiKey = $db->insert_id();
 
 					foreach ($tables as $table => $data) {
@@ -228,7 +253,7 @@ switch ($_GET['action']) {
 					echo 'Этому пользователю уже был присвоен ключ доступа!';
 				}
 			} catch (Exception $e) {
-				echo  $e->getMessage();
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -246,11 +271,12 @@ switch ($_GET['action']) {
 
 			$key['is_admin'] = $key['is_admin'] ? (bool)$key['is_admin'] : 0;
 			$key['active']   = $key['active'] ? (bool)$key['active'] : 0;
+			$key['own_only']   = $key['own_only'] ? (bool)$key['own_only'] : 0;
 			$key['user']     = (int)$key['user'];
 
 			try {
 
-				$db->query('UPDATE '.PREFIX."_api_keys SET api = '{$key['api']}', is_admin = {$key['is_admin']}, active = {$key['active']}, user_id = {$key['user']} WHERE id = {$this_id}");
+				$db->query('UPDATE '.PREFIX."_api_keys SET api = '{$key['api']}', is_admin = {$key['is_admin']}, active = {$key['active']}, user_id = {$key['user']}, own_only = {$key['own_only']} WHERE id = {$this_id}");
 
 				foreach ($tables as $table => $data) {
 					$data['read']   = $data['read'] ? (bool)$data['read'] : 0;
@@ -268,7 +294,7 @@ switch ($_GET['action']) {
 
 					echo 'Ключ сохранён!';
 			} catch (Exception $e) {
-				echo  $e->getMessage();
+				echo $e->getMessage();
 			}
 		}
 		return false;
@@ -296,19 +322,127 @@ switch ($_GET['action']) {
 		break;
 
 	case 'mass_delete':
-		var_dump($_POST);
-		var_dump($_GET);
+
 		if ($_POST) {
 			ob_end_clean();
 
-			var_dump($_POST);
+			try {
 
+				foreach ($_POST['selected_keys'] as $key) $db->query('DELETE FROM '.PREFIX."_api_keys WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Ключи были удалены!', ['?mod=dleapi' => 'К списку']);
+
+			} catch (Exception $e) {
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+			}
+		}
+		return false;
+
+		break;
+
+	case 'mass_deactivate':
+
+		if ($_POST) {
+			ob_end_clean();
 
 			try {
 
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET active = 0 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Ключи были деактивированы', ['?mod=dleapi' => 'К списку']);
 
 			} catch (Exception $e) {
-				echo  $e->getMessage();
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+			}
+		}
+		return false;
+
+		break;
+
+	case 'mass_activate':
+
+		if ($_POST) {
+			ob_end_clean();
+
+			try {
+
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET active = 1 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Ключи были активированы', ['?mod=dleapi' => 'К списку']);
+
+			} catch (Exception $e) {
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+			}
+		}
+		return false;
+
+		break;
+
+	case 'mass_set_admin':
+
+		if ($_POST) {
+			ob_end_clean();
+
+			try {
+
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET is_admin = 1 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Доступ был выдан', ['?mod=dleapi' => 'К списку']);
+
+			} catch (Exception $e) {
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+			}
+		}
+		return false;
+
+		break;
+
+	case 'mass_remove_admin':
+
+		if ($_POST) {
+			ob_end_clean();
+
+			try {
+
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET is_admin = 0 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Доступ был снят', ['?mod=dleapi' => 'К списку']);
+
+			} catch (Exception $e) {
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+			}
+		}
+		return false;
+
+		break;
+
+	case 'mass_set_own':
+
+		if ($_POST) {
+			ob_end_clean();
+
+			try {
+
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET own_only = 1 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Ограничение на свои записи было установлено', ['?mod=dleapi' =>
+																										 'К списку']);
+
+			} catch (Exception $e) {
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+			}
+		}
+		return false;
+
+		break;
+
+	case 'mass_remove_own':
+
+		if ($_POST) {
+			ob_end_clean();
+
+			try {
+
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET own_only = 0 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Ограничение на свои записи было снято', ['?mod=dleapi' =>
+																										 'К списку']);
+
+			} catch (Exception $e) {
+				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -353,6 +487,7 @@ HTML;
 							$dleapi['secret'] = $dleapi['secret'] ?: $config['http_home_url'];
 							showRow('Алгоритм шифрования', 'Выбираем алгоритм шифрования. По умолчанию: md5',
 								makeDropDown(hash_algos(), 'save[algo]', $dleapi['algo']));
+							showRow('Безопасный вывод информации', 'Вместо паролей, IP-адресов и хэшсум будет выводить заглушилки', makeCheckBox('save[secure]', $dleapi['secure']));
 							showRow('Длина блока', 'Задаём длину блока, по которой будет генерироваться автоматический API ключ.', '<input type="number" class="form-control" name="save[block]" value="' . $dleapi['block'] . '">');
 							showRow('Длина ключа', 'Задаём длину ключа, по которой будет генерироваться автоматический API ключ. Разделитель не учитывается. Если будет не хватка символов, то будут генерироваться случайные символы, пока не заполнят длину ключа. Или же набор символов будет урезан. <br><b>Важно:</b> Деление общей длины и длины блока должно быть без остатка. Скрипт будет сам подставлять нужное значение.', '<input type="number" class="form-control" name="save[length]" value="' . $dleapi['length'] . '">');
 							showRow('Разделитель блока', 'Задаём разделитель блока, который будет делить блоки. Пример: <b>-</b>',	'<input type="text" max="1" class="form-control" name="save[trennen]" value="' . $dleapi['trennen'] . '">');
@@ -367,11 +502,11 @@ HTML;
 					</table>
 				</div>
 				<div class="panel-footer">
-
-					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left"
+				
+					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left" 
 					role="button">Главная</a>
 					<div class="pull-right">
-						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save"
+						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save" 
 					role="button">Сохранить</a>
 					</div>
 				</div>
@@ -385,14 +520,14 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
 										autoOpen: true,
 										width: 600,
 										resizable: false,
-
+										
 									});
 					 			}
 					 		})
@@ -424,6 +559,7 @@ HTML;
 							showRow( 'Ключ', 'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',	'<input type="text" class="form-control" name="save_con[api]" value=""><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">', 'white-line');
 							showRow( 'Пользователь', 'Выбор пользователя для ключа', makeDropDown(getUsers(), 'save_con[user]', ''));
 							showRow( 'Полный доступ', 'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам', makeCheckBox('save_con[is_admin]', ''));
+							showRow( 'Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.', makeCheckBox('save_con[own_only]', '' ));
 							showRow( 'Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]','1'));
 		echo <<<HTML
 					 	</tbody>
@@ -434,11 +570,11 @@ HTML;
 						<thead>
 							<tr>
 								<th>Название</th>
-				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll"
+				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll" 
 				        		title="Включить все"></th>
-				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll"
+				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll" 
 				        		title="Включить все"></th>
-				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll"
+				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll" 
 				        		title="Включить все"></th>
 							</tr>
 						</thead>
@@ -451,18 +587,18 @@ HTML;
         									<h6 class="media-heading text-semibold">Таблица: {$table}</h6>
         								</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="read"
-											name="tables[{$table}][read]"
+											<input class="icheck" type="checkbox" data-type="read" 
+											name="tables[{$table}][read]" 
 											value="1">
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="write"
-											name="tables[{$table}][write]"
+											<input class="icheck" type="checkbox" data-type="write" 
+											name="tables[{$table}][write]" 
 											value="1">
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="delete"
-											name="tables[{$table}][delete]"
+											<input class="icheck" type="checkbox" data-type="delete" 
+											name="tables[{$table}][delete]" 
 											value="1">
 										</td>
 									</tr>
@@ -473,11 +609,11 @@ HTML;
 					</table>
 				</div>
 				<div class="panel-footer">
-
-					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left"
+				
+					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left" 
 					role="button">Главная</a>
 					<div class="pull-right">
-						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save"
+						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save" 
 					role="button">Сохранить</a>
 					</div>
 				</div>
@@ -490,7 +626,7 @@ HTML;
 								if (status)  $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-
+														
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="writeAll"]').on('click', function() {
@@ -499,7 +635,7 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-
+							
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="deleteAll"]').on('click', function() {
@@ -508,10 +644,10 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-
+							
 							$.uniform.update();
 					 	});
-
+					 	
 					 	$('.btn-save').on('click', function() {
 					 		$.ajax({
 					 			url: '{$config['http_home_url']}{$config['admin_path']}?mod={$version['id']}&action=create',
@@ -519,19 +655,19 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
 										autoOpen: true,
 										width: 600,
 										resizable: false,
-
+										
 									});
 					 			}
 					 		})
 					 	});
-
+					 	
 					 	$('#genKey').on('click', function() {
 					 	    $('[name="save_con[api]"]').val('').html('');
 					 		$.ajax({
@@ -540,7 +676,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -552,7 +688,7 @@ HTML;
 					 			}
 					 		})
 					 	});
-
+					 	
 					 	//
 					 	// $(document).find('[data-type="read"]').each(function(check) {
 						// 		let status = $(this).prop('checked');
@@ -560,7 +696,7 @@ HTML;
 						// 		else $(this).prop('checked', true);
 						// 	});
 					});
-
+				
 </script>
 HTML;
 
@@ -574,7 +710,7 @@ HTML;
 		$api_key = $db->super_query('SELECT * FROM '. PREFIX . "_api_keys WHERE id = {$this_id}");
 
 		echo <<<HTML
-			<form action="?mod={$version['id']}&action=edit&id={$this_id}" method="post" name="optionsbar"
+			<form action="?mod={$version['id']}&action=edit&id={$this_id}" method="post" name="optionsbar" 
 			id="optionsbar">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -593,6 +729,7 @@ HTML;
 							showRow( 'Ключ', 'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',	'<input type="text" class="form-control" name="save_con[api]" value="'. $api_key['api'] .'"><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">', 'white-line');
 							showRow( 'Пользователь', 'Выбор пользователя для ключа', makeDropDown(getUsers(), 'save_con[user]', $api_key['user_id']));
 							showRow( 'Полный доступ', 'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам', makeCheckBox('save_con[is_admin]', $api_key['is_admin'] ));
+							showRow( 'Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.', makeCheckBox('save_con[own_only]', $api_key['own_only'] ));
 							showRow( 'Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]',
 								$api_key['active']));
 		echo <<<HTML
@@ -604,11 +741,11 @@ HTML;
 						<thead>
 							<tr>
 								<th>Название</th>
-				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll"
+				        		<th>Чтение <input class="icheck" type="checkbox" data-type="readAll" 
 				        		title="Включить все"></th>
-				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll"
+				        		<th>Запись <input class="icheck" type="checkbox" data-type="writeAll" 
 				        		title="Включить все"></th>
-				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll"
+				        		<th>Удаление <input class="icheck" type="checkbox" data-type="deleteAll" 
 				        		title="Включить все"></th>
 							</tr>
 						</thead>
@@ -629,18 +766,18 @@ HTML;
         									<h6 class="media-heading text-semibold">Таблица: {$tables}</h6>
         								</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="read"
-											name="tables[{$tables}][read]"
+											<input class="icheck" type="checkbox" data-type="read" 
+											name="tables[{$tables}][read]" 
 											value="1"{$read}>
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="write"
-											name="tables[{$tables}][write]"
+											<input class="icheck" type="checkbox" data-type="write" 
+											name="tables[{$tables}][write]" 
 											value="1"{$write}>
 										</td>
 										<td class="col-xs-2 col-sm-2 col-md-2">
-											<input class="icheck" type="checkbox" data-type="delete"
-											name="tables[{$tables}][delete]"
+											<input class="icheck" type="checkbox" data-type="delete" 
+											name="tables[{$tables}][delete]" 
 											value="1"{$delete}>
 										</td>
 									</tr>
@@ -651,11 +788,11 @@ HTML;
 					</table>
 				</div>
 				<div class="panel-footer">
-
-					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left"
+				
+					<a href="?mod={$version['id']}" class="btn bg-blue btn-sm btn-raised position-left" 
 					role="button">Главная</a>
 					<div class="pull-right">
-						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save"
+						<a href="#" class="btn bg-teal btn-sm btn-raised position-left btn-save" 
 					role="button">Сохранить</a>
 					</div>
 				</div>
@@ -668,7 +805,7 @@ HTML;
 								if (status)  $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-
+														
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="writeAll"]').on('click', function() {
@@ -677,7 +814,7 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-
+							
 							$.uniform.update();
 					 	});
 					 	$('.icheck[data-type="deleteAll"]').on('click', function() {
@@ -686,10 +823,10 @@ HTML;
 								if (status) $(this).prop('checked', false);
 								else $(this).prop('checked', true);
 							});
-
+							
 							$.uniform.update();
 					 	});
-
+					 	
 					 	$('.btn-save').on('click', function() {
 					 		$.ajax({
 					 			url: '{$config['http_home_url']}{$config['admin_path']}?mod={$version['id']}&action=save&id={$_GET['id']}',
@@ -697,7 +834,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -708,7 +845,7 @@ HTML;
 					 			}
 					 		})
 					 	});
-
+					 	
 					 	$('#genKey').on('click', function() {
 					 	    $('[name="save_con[api]"]').val('').html('');
 					 		$.ajax({
@@ -717,7 +854,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -729,7 +866,7 @@ HTML;
 					 			}
 					 		})
 					 	});
-
+					 	
 					 	//
 					 	// $(document).find('[data-type="read"]').each(function(check) {
 						// 		let status = $(this).prop('checked');
@@ -737,7 +874,7 @@ HTML;
 						// 		else $(this).prop('checked', true);
 						// 	});
 					});
-
+				
 </script>
 HTML;
 
@@ -884,16 +1021,18 @@ HTML;
         <div class="btn-group">
           <a href="#" class="dropdown-toggle nocolor" data-toggle="dropdown" aria-expanded="true"><i class="fa fa-bars"></i><span class="caret"></span></a>
           <ul class="dropdown-menu text-left dropdown-menu-right">
-            <li><a uid="{$row['id']}" href="?mod={$version['id']}&action=edit&id={$row['id']}" class="editlink"><i class="fa
+            <li><a uid="{$row['id']}" href="?mod={$version['id']}&action=edit&id={$row['id']}" class="editlink"><i class="fa 
             fa-pencil-square-o position-left"></i>{$lang['word_ledit']}</a></li>
 			<li class="divider"></li>
-            <li><a data-id="{$row['id']}" class="btn-delete" href="#"><i class="fa fa-trash-o
+            <li><a data-id="{$row['id']}" class="btn-delete" href="#"><i class="fa fa-trash-o 
             position-left text-danger"></i>{$lang['word_ldel']}</a></li>
           </ul>
         </div>
 HTML;
 
 				$status = $row['active'] ? 'активен' : 'неактивен';
+				$own = $row['own_only'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-times-circle"></i>';
+				$admin = $row['is_admin'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-times-circle"></i>';
 
 				$entries .= "<tr id='api_{$row['id']}'>
         <td style=\"word-break: break-all;\"><div id=\"content_{$row['id']}\">{$row['id']}</div></td>
@@ -901,8 +1040,10 @@ HTML;
         <td style=\"word-break: break-all;\"><div id=\"date_{$row['id']}\">{$row['created']}</div></td>
         <td style=\"word-break: break-all;\"><div id=\"user_{$row['id']}\">{$row['name']}</div></td>
         <td style=\"word-break: break-all;\"><div id=\"status_{$row['id']}\">{$status}</div></td>
+        <td style=\"word-break: break-all;\"><div id=\"own_{$row['id']}\" style='text-align:center'>{$own}</div></td>
+        <td style=\"word-break: break-all;\"><div id=\"admin{$row['id']}\" style='text-align:center'>{$admin}</div></td>
         <td align=\"center\">{$menu_link}</td>
-        <td><input name=\"selected_tags[]\" value=\"{$row['id']}\" type=\"checkbox\" class=\"icheck\"></td>
+        <td><input name=\"selected_keys[]\" value=\"{$row['id']}\" type=\"checkbox\" class=\"icheck\"></td>
         </tr>";
 
 			}
@@ -919,6 +1060,8 @@ HTML;
         <th>Дата</th>
         <th>Пользователь</th>
         <th>Статус</th>
+        <th>Только своё</th>
+        <th>Полный доступ</th>
         <th style="width: 70px">&nbsp;</th>
         <th style="width: 40px"><input class="icheck" type="checkbox" name="master_box" title="{$lang['edit_selall']}" onclick="javascript:ckeck_uncheck_all()"></th>
       </tr>
@@ -931,13 +1074,16 @@ HTML;
 <div class="panel-footer">
 	<div class="pull-right">
 	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
-	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left"
+	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" 
 	role="button">Настройки</a>
 	<select class="uniform position-left" name="action" data-dropdown-align-right="auto">
 		<option value="">{$lang['edit_selact']}</option>
 		<option value="mass_deactivate">Деактивировать</option>
+		<option value="mass_activate">Активировать</option>
 		<option value="mass_set_admin">Дать полный доступ</option>
 		<option value="mass_remove_admin">Снять полный доступ</option>
+		<option value="mass_set_own">Ограничить только своими данными</option>
+		<option value="mass_remove_own">Снять ограничение на 'только свои данные'</option>
 		<option value="mass_delete">{$lang['edit_seldel']}</option>
 	</select>
 	<input class="btn bg-brown-600 btn-sm btn-raised" type="submit" value="{$lang['b_start']}">
@@ -952,13 +1098,13 @@ HTML;
 <div class="panel-body">
 <table width="100%">
     <tr>
-        <td style="height:50px;"><div align="center">{$lang['links_not_found']}</div></td>
+        <td style="height:50px;"><div align="center">Ещё не было создано ни одного API ключа</div></td>
     </tr>
 </table>
 </div>
 <div class="panel-footer">
 	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
-	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left"
+	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" 
 	role="button">Настройки</a>
 	</div>
 HTML;
@@ -970,7 +1116,7 @@ HTML;
 <div class="mb-20">{$npp_nav}</div>
 </form>
 
-<script>
+<script>  
 <!--
 
 	$(function() {
@@ -983,7 +1129,7 @@ HTML;
 			}
 		});
 	});
-
+	
 	function ckeck_uncheck_all() {
 	    const frm = document.optionsbar;
 	    for (let i=0;i<frm.elements.length;i++) {
@@ -994,21 +1140,21 @@ HTML;
 	        }
 	    }
 	    frm.master_box.checked=frm.master_box.checked!==true;
-
+		
 		$(frm.master_box).parents('tr').removeClass('warning');
-
+		
 		$.uniform.update();
-
+	
 	}
-
+	
 	function search_submit(prm){
       document.navi.start_from.value=prm;
       document.navi.submit();
       return false;
     }
-
-
-
+    
+    
+					 	
 					 	$('.btn-delete').on('click', function() {
 					 		$.ajax({
 					 			url: '{$config['http_home_url']}{$config['admin_path']}?mod={$version['id']}&action=delete&id=' + $(this).data('id'),
@@ -1016,7 +1162,7 @@ HTML;
 					 			data: $('#optionsbar').serializeArray(),
 					 			success: function(data) {
 					 				$("#dlepopup").remove();
-					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" +
+					 				$("body").append("<div id='dlepopup' title='Информация' style='display:none'>" + 
 					 				data +
 					 				"</div>");
 					 				$('#dlepopup').dialog({
@@ -1028,8 +1174,8 @@ HTML;
 					 			}
 					 		})
 					 	});
-
-
+	
+	
 //-->
 </script>
 HTML;

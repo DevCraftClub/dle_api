@@ -182,6 +182,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
+		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
 			$orderBy = $header['orderby'] ?: 'id';
@@ -192,12 +193,17 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $header as $data => $value) {
 				$keyData = array_search($data, array_column($possibleData, 'name'));
-
+				if (in_array($data, ['autor']) && (strlen( $possibleParams ) === 0 && (!$access['full'] && $access['own_only']['access']))) continue;
 				if ($keyData !== false) {
 					$postData = $possibleData[$keyData];
 					if ( strlen( $possibleParams ) === 0 ) $possibleParams .= " WHERE {$data}" . getComparer( $header[$data], $postData['type'] );
 					else $possibleParams .= " AND {$data}" . getComparer( $header[$data], $postData['type'] );
 				}
+			}
+			if (!$access['full']) {
+				if (strlen($possibleParams) === 0 && $access['own_only']['access'])
+					$possibleParams .= " WHERE autor = '{$access['own_only']['user_name']}'";
+				else $possibleParams .= " AND autor = '{$access['own_only']['user_name']}'";
 			}
 
 			$sql = 'SELECT * FROM '. PREFIX . "_{$api_name} {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
@@ -206,7 +212,67 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
 				$getData->setData(json_encode($data));
-				$getData->create();
+				$data = $getData->create();
+			} else {
+				$data = json_decode($getData->get(), true);
+			}
+
+			$response->withStatus( 200 )->getBody()->write( json_encode( $data ) );
+
+		} else {
+
+			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на просмотр данных!')));
+
+		}
+
+		return $response->withHeader('Content-type', 'application/json; charset=UTF-8');
+	});
+
+	$this->get('/all[/]', function (Request $request, Response $response, Array $args) use ($possibleData, $api_name,
+		$connect, $header, $access ) {
+		foreach ( $request->getHeaders() as $name => $value ) {
+			$name = strtolower(str_replace('HTTP_', '', $name));
+			$header[$name] = $value[0];
+		}
+
+		$checkAccess = checkAPI($header['x_api_key'], $api_name);
+		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+
+		$access['full'] = $checkAccess['admin'];
+		$access['can_read'] = $checkAccess['read'];
+		$access['own_only'] = $checkAccess['own'];
+
+		if ($access['full'] || $access['can_read']) {
+			$orderBy = $header['orderby'] ?: 'id';
+			$sort = $header['sort'] ?: 'DESC';
+			$limit = $header['limit'] ? 'LIMIT '.(int)$header['limit'] : '';
+
+			$possibleParams = '';
+
+			foreach ( $header as $data => $value) {
+				$keyData = array_search($data, array_column($possibleData, 'name'));
+				if (in_array($data, ['autor', 'user_id']) && (strlen( $possibleParams ) === 0 && (!$access['full'] &&
+																							$access['own_only']['access']))) continue;
+				if ($keyData !== false) {
+					$postData = $possibleData[$keyData];
+					if ( strlen( $possibleParams ) === 0 ) $possibleParams .= " WHERE {$data}" . getComparer( $header[$data], $postData['type'] );
+					else $possibleParams .= " AND {$data}" . getComparer( $header[$data], $postData['type'] );
+				}
+			}
+
+			if (!$access['full']) {
+				if (strlen($possibleParams) === 0 && $access['own_only']['access'])
+					$possibleParams .= " WHERE autor = '{$access['own_only']['user_name']}' OR user_id = {$access['own_only']['user_id']}";
+				else $possibleParams .= " AND (autor = '{$access['own_only']['user_name']}' OR user_id = {$access['own_only']['user_id']})";
+			}
+
+			$sql = 'SELECT * FROM '. PREFIX . '_post p INNER JOIN '. PREFIX . "_post_extras e on p.id = e.news_id {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
+
+			$getData = new CacheSystem($api_name, $sql);
+			if (empty($getData->get())) {
+				$data = $connect->query($sql);
+				$getData->setData(json_encode($data));
+				$data = $getData->create();
 			} else {
 				$data = json_decode($getData->get(), true);
 			}
