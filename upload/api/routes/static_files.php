@@ -105,6 +105,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
+		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
 			$orderBy = $header['orderby'] ?: 'id';
@@ -115,12 +116,18 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $header as $data => $value) {
 				$keyData = array_search($data, array_column($possibleData, 'name'));
-
+				if (in_array($data, ['author']) && (strlen( $possibleParams ) === 0 && (!$access['full']
+																								   && $access['own_only']['access']))) continue;
 				if ($keyData !== false) {
 					$postData = $possibleData[$keyData];
 					if ( strlen( $possibleParams ) === 0 ) $possibleParams .= " WHERE {$data}" . getComparer( $header[$data], $postData['type'] );
 					else $possibleParams .= " AND {$data}" . getComparer( $header[$data], $postData['type'] );
 				}
+			}
+			if(!$access['full']) {
+				if (strlen($possibleParams) === 0 && $access['own_only']['access'])
+					$possibleParams .= " WHERE author = '{$access['own_only']['user_name']}'";
+				else $possibleParams .= " AND author = '{$access['own_only']['user_name']}'";
 			}
 
 			$sql = 'SELECT * FROM '. PREFIX . "_{$api_name} {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
@@ -129,7 +136,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
 				$getData->setData(json_encode($data));
-				$getData->create();
+				$data = $getData->create();
 			} else {
 				$data = json_decode($getData->get(), true);
 			}

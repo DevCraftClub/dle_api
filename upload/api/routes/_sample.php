@@ -17,6 +17,7 @@ $possibleData = array(
 		'type' => "Type of value",  // integer, string, boolean, double
 		'required' => true/false,   // Обязательное поле?
 		'post' => true/false,       // Разрешить использовать при добавлении или редактуре?
+		'length' => 0,       		// Указывается ограничение для типа string. Содержимое будет обрезаться при нарушении макс. значения
 	),
 );
 
@@ -40,6 +41,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		'can_read' => false,
 		'can_write' => false,
 		'can_delete' => false,
+		'own_only' => false,
 	);
 
 	// Метод GET
@@ -58,6 +60,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		// Перенемаем значения от API ключа
 		$access['full'] = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
+		$access['own_only'] = $checkAccess['own'];
 
 		// Если доступ полный или есть разрешение на чтение
 		if ($access['full'] || $access['can_read']) {
@@ -74,6 +77,13 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 				// Находим позицию ключа
 				$keyData = array_search($data, array_column($possibleData, 'name'));
 
+				// Если нет полного доступа, то проверяем входящие данные
+				if (!$access['full'])
+					// Проверяем ячейку на параметр пользователя (ID или имя)
+					// Если ячейка соответствует значению в массиве, то пропускаем этот круг проверки
+					if (in_array($data, ['name', 'user_id', 'autor', 'author', 'member', 'user'])
+						&& $access['own_only']['access']) continue;
+
 				// Если ключ и значение есть в массиве таблицы, то начинаем пополнять параметр поиска
 				if ($keyData !== false) {
 					// получаем данные о поле таблицы
@@ -84,6 +94,14 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 					if ( strlen( $possibleParams ) === 0 ) $possibleParams .= " WHERE {$data}" . getComparer( $header[$data], $postData['type'] );
 					else $possibleParams .= " AND {$data}" . getComparer( $header[$data], $postData['type'] );
 				}
+			}
+			// Если нет полного доступа, то проверяем входящие данные
+			if (!$access['full']) {
+				// Если переменная с возможной фильтрацией пуста и настроен доступ лишь на вывод данных пользователя
+				// с запрошенным API ключём, то проставляем фильтрацию
+				if (strlen($possibleParams) === 0 && $access['own_only']['access'])
+					$possibleParams .= " WHERE user_id = {$access['own_only']['user_id']} OR name = '{$access['own_only']['user_name']}'";
+				else $possibleParams .= " AND (user_id = {$access['own_only']['user_id']} OR name = '{$access['own_only']['user_name']}')";
 			}
 
 			// Оформляем SQL запрос
@@ -100,7 +118,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 				// передаём данные в кеш
 				$getData->setData(json_encode($data));
 				// сохраняем
-				$getData->create();
+				$data = $getData->create();
 			} else {
 				// или просто передаём данные из кеша
 				$data = json_decode($getData->get(), true);

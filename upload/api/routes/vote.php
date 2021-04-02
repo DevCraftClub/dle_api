@@ -136,7 +136,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
 				$getData->setData(json_encode($data));
-				$getData->create();
+				$data = $getData->create();
 			} else {
 				$data = json_decode($getData->get(), true);
 			}

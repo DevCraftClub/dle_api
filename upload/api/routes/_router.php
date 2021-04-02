@@ -73,6 +73,8 @@
 		include_once (DLEPlugins::Check(API_DIR . '/routes/xfsearch.php'));
 
 		// Own path add
+		// MaHarder Assets
+		include_once (DLEPlugins::Check(ROOT_DIR . '/engine/inc/maharder/assets/include/api/routes/languages.php'));
 	});
 
 	$app->run();
