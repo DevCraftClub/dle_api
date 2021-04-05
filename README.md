@@ -5,7 +5,7 @@
 ![DLE-13.x](https://img.shields.io/badge/DLE-13.x-green.svg?style=flat-square)
 ![MySQL-5.5.6](https://img.shields.io/badge/MySQL-5.5.6-red.svg?style=flat-square)
 
-![Версия_релиза](https://img.shields.io/badge/Version-0.1.3-orange.svg?style=flat-square)
+![Версия_релиза](https://img.shields.io/github/manifest-json/v/Gokujo/dle_api?filename=manifest.json&style=flat-square)
 ![Версия_релиза](https://img.shields.io/badge/Version-BETA-orange.svg?style=flat-square)
 
 # DLE API
