@@ -24,13 +24,14 @@ $version = [
 	'changelog' => [
 		'0.1.4' => [
 			'Безопасный вывод данных (IP, пароли и хэшсуммы)',
-			'Для удаления комментариев была использована функция движка',
-			'Изменил нумерование версий',
+			'Добавлена функция вывода только принедлежащих API-ключу записей',
+			'Добавлена функция массовых действий (удалиение, (де-)активация, снятие / добавление ограничение, снятие / удаление администраторских ограничений)',
 			'composer настроил под версию PHP 5.6'
 		],
 		'0.1.3' => [
 			'Для удаления новостей была использована функция движка',
 			'Для удаления комментариев была использована функция движка',
+			'Для удаления новостей была использована функция движка',
 			'Изменил нумерование версий',
 			'composer настроил под версию PHP 5.6'
 		],
@@ -51,10 +52,11 @@ $version = [
 	'id' => 'dleapi',
 ];
 
-$subtitle = $version['descr'];
-if ($_GET['action'] === 'add') $subtitle .= ': добавление ключа';
-else if ($_GET['action'] === 'settings') $subtitle .= ': настройка';
-else if ($_GET['action'] === 'edit') $subtitle .= ': обновление ключа';
+$subtitle = ['' => $version['descr']];
+if ($_GET['action'] === 'add') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Добавление ключа'];
+else if ($_GET['action'] === 'settings') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Настройка'];
+else if ($_GET['action'] === 'edit') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Обновление ключа'];
+else if ($_GET['action'] === 'changelog') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Изменения в всериях'];
 
 echoheader( "<i class=\"fa fa-id-card-o position-left\"></i><span class=\"text-semibold\">{$version['name']} (v{$version['version']})</span>", $subtitle );
 function showRow($title = "", $description = "", $field = "", $class = "") {
@@ -881,6 +883,51 @@ HTML;
 
 		break;
 
+	case 'changelog':
+
+
+		echo <<<HTML
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				{$version['name']}: История изменений
+			</div>
+			<div class="panel-body">
+				<div class="accordion" id="accordion">
+HTML;
+
+		foreach($version['changelog'] as $id => $c) {
+			$vId = str_replace('.', '', $id);
+			$cont = <<<HTML
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" 
+							href="#collapse{$vId}" aria-expanded="false"><b>Версия</b>: {$id}</a>
+						</div>
+						<div id="collapse{$vId}" class="accordion-body collapse" aria-expanded="false" >
+							<div class="accordion-inner mt-20" >
+								<ul class="list-circle">
+HTML;
+									foreach($c as $i => $l) $cont .= "<li>{$l}</li>";
+$cont .= <<<HTML
+      						
+								</ul>				
+							</div>
+						</div>
+					</div>
+HTML;
+			echo $cont;
+	  }
+  		echo <<<HTML
+		</div></div><div class="panel-footer">
+	<a href="?mod={$version['id']}" class="btn bg-green btn-sm btn-raised position-left" role="button">Главная</a>
+	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
+	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" 
+	role="button">Настройки</a>
+	</div></div>
+HTML;
+
+		break;
+
 	default:
 
 
@@ -1031,8 +1078,8 @@ HTML;
 HTML;
 
 				$status = $row['active'] ? 'активен' : 'неактивен';
-				$own = $row['own_only'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-times-circle"></i>';
-				$admin = $row['is_admin'] ? '<i class="far fa-check-circle"></i>' : '<i class="far fa-times-circle"></i>';
+				$own = $row['own_only'] ? '<i class="fa fa-check-circle text-success text-success"></i>' : '<i class="fa fa-times-circle text-danger"></i>';
+				$admin = $row['is_admin'] ? '<i class="fa fa-check-circle text-success"></i>' : '<i class="fa fa-times-circle text-danger"></i>';
 
 				$entries .= "<tr id='api_{$row['id']}'>
         <td style=\"word-break: break-all;\"><div id=\"content_{$row['id']}\">{$row['id']}</div></td>
@@ -1060,8 +1107,8 @@ HTML;
         <th>Дата</th>
         <th>Пользователь</th>
         <th>Статус</th>
-        <th>Только своё</th>
-        <th>Полный доступ</th>
+        <th style='text-align:center'>Только своё</th>
+        <th style='text-align:center'>Полный доступ</th>
         <th style="width: 70px">&nbsp;</th>
         <th style="width: 40px"><input class="icheck" type="checkbox" name="master_box" title="{$lang['edit_selall']}" onclick="javascript:ckeck_uncheck_all()"></th>
       </tr>
@@ -1074,8 +1121,8 @@ HTML;
 <div class="panel-footer">
 	<div class="pull-right">
 	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
-	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" 
-	role="button">Настройки</a>
+	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" role="button">Настройки</a>
+	<a href="?mod={$version['id']}&action=changelog" class="btn bg-green btn-sm btn-raised position-left" role="button">История версиий</a>
 	<select class="uniform position-left" name="action" data-dropdown-align-right="auto">
 		<option value="">{$lang['edit_selact']}</option>
 		<option value="mass_deactivate">Деактивировать</option>
@@ -1106,6 +1153,7 @@ HTML;
 	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
 	<a href="?mod={$version['id']}&action=settings" class="btn bg-blue btn-sm btn-raised position-left" 
 	role="button">Настройки</a>
+	<a href="?mod={$version['id']}&action=changelog" class="btn bg-green btn-sm btn-raised position-left" role="button">История версиий</a>
 	</div>
 HTML;
 
