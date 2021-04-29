@@ -89,7 +89,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			foreach ( $header as $data => $value) {
 				$keyData = array_search($data, array_column($possibleData, 'name'));
 				if (!$access['full'])
-				if (in_array($data, ['author']) && (strlen( $possibleParams ) === 0 && (!$access['full']
+					if (in_array($data, ['author']) && (strlen( $possibleParams ) === 0 && (!$access['full']
 																								   && $access['own_only']['access']))) continue;
 				if ($keyData !== false) {
 					$postData = $possibleData[$keyData];
@@ -109,13 +109,13 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			$getData = new CacheSystem($api_name, $sql);
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
-				$getData->setData(json_encode($data));
+				$getData->setData($data);
 				$data = $getData->create();
 			} else {
-				$data = json_decode($getData->get(), true);
+				$data = $getData->get();
 			}
 
-			$response->withStatus( 200 )->getBody()->write( json_encode( $data ) );
+			$response->withStatus( 200 )->getBody()->write( $data );
 
 		} else {
 

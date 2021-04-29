@@ -133,7 +133,7 @@
 		 * @param string $app    // Тип кеша
 		 * @param string $path   // Путь кеша
 		 */
-		public function __construct ($module, $id = '', $data = '', $app = 'full', $path = ENGINE_DIR . '/cache') {
+		public function __construct ($module, $id = '', $data = '', $app = 'api', $path = ENGINE_DIR . '/cache') {
 			$this->data = $data;
 			$this->app = $app;
 			$this->module = $module;
@@ -145,7 +145,7 @@
 		/**
 		 * @param string $cachePath
 		 */
-		public function setCachePath ($cachePath): void {
+		public function setCachePath ($cachePath) {
 			if (!mkdir($cachePath) && !is_dir($cachePath)) {
 				throw new \RuntimeException(sprintf('Directory "%s" was not created', $cachePath));
 			}
@@ -182,7 +182,7 @@
 		/**
 		 * @param string $app
 		 */
-		public function clear($app = ''): void {
+		public function clear($app = '') {
 			$pattern = (empty($app)) ? '*' : $this->app .'_'. $app . '_*';
 			$pattern .= '.json';
 			try {
@@ -207,7 +207,7 @@
 		 *
 		 * @return mixed|string
 		 */
-		private function secureData($data, $value): string {
+		private function secureData($data, $value) {
 			global $dleapi;
 			$secure_arr = ['password', 'hash', 'ip', 'logged_ip'];
 

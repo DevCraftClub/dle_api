@@ -88,8 +88,6 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			foreach ( $header as $data => $value) {
 				$keyData = array_search($data, array_column($possibleData, 'name'));
-				if (!$access['full'])
-
 				if ($keyData !== false) {
 					$postData = $possibleData[$keyData];
 					if ( strlen( $possibleParams ) === 0 ) $possibleParams .= " WHERE {$data}" . getComparer( $header[$data], $postData['type'] );
@@ -102,13 +100,13 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			$getData = new CacheSystem($api_name, $sql);
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
-				$getData->setData(json_encode($data));
+				$getData->setData($data);
 				$data = $getData->create();
 			} else {
-				$data = json_decode($getData->get(), true);
+				$data = $getData->get();
 			}
 
-			$response->withStatus( 200 )->getBody()->write( json_encode( $data ) );
+			$response->withStatus( 200 )->getBody()->write( $data );
 
 		} else {
 

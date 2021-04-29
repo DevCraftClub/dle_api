@@ -92,16 +92,14 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
-			$orderBy = $header['orderby'] ? $header['orderby'] : 'id';
-			$sort = $header['sort'] ? $header['sort'] : 'DESC';
-			$limit = $header['limit'] ? 'LIMIT '.intval($header['limit']) : '';
+			$orderBy = $header['orderby'] ?: 'id';
+			$sort = $header['sort'] ?: 'DESC';
+			$limit = $header['limit'] ? 'LIMIT ' . (int)$header['limit'] : '';
 
 			$possibleParams = '';
 
 			foreach ($header as $data => $value) {
 				$keyData = array_search($data, array_column($possibleData, 'name'));
-				if (!$access['full'])
-
 				if (false !== $keyData) {
 					$postData = $possibleData[$keyData];
 					if (0 === strlen($possibleParams)) {
@@ -117,13 +115,13 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$getData = new CacheSystem($api_name, $sql);
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
-				$getData->setData(json_encode($data));
+				$getData->setData($data);
 				$data = $getData->create();
 			} else {
-				$data = json_decode($getData->get(), true);
+				$data = $getData->get();
 			}
 
-			$response->withStatus(200)->getBody()->write(json_encode($data));
+			$response->withStatus( 200 )->getBody()->write( $data );
 		} else {
 			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на просмотр данных!']));
 		}
