@@ -87,7 +87,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
-			$orderBy = $header['orderby'] ? $header['orderby'] : 'id';
+			$orderBy = $header['orderby'] ?: 'id';
 			$sort = $header['sort'] ? $header['sort'] : 'DESC';
 			$limit = $header['limit'] ? "LIMIT " .(int)$header['limit'] : '';
 
@@ -96,7 +96,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			foreach ( $header as $data => $value) {
 				$keyData = array_search($data, array_column($possibleData, 'name'));
 				if (!$access['full'])
-				if (in_array($data, ['users_id']) && $access['own_only']['access']) continue;
+					if (in_array($data, ['users_id']) && $access['own_only']['access']) continue;
 				if ($keyData !== false) {
 					$postData = $possibleData[$keyData];
 					if ( strlen( $possibleParams ) === 0 ) $possibleParams .= " WHERE {$data}" . getComparer( $header[$data], $postData['type'] );
@@ -115,12 +115,13 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			$getData = new CacheSystem($api_name, $sql);
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
-				$getData->setData(json_encode($data));
+				$getData->setData($data);
 				$data = $getData->create();
-			} else
-				$data = json_decode($getData->get(), true);
+			} else {
+				$data = $getData->get();
+			}
 
-			$response->withStatus( 200 )->getBody()->write( json_encode( $data ) );
+			$response->withStatus( 200 )->getBody()->write( $data );
 
 		} else {
 

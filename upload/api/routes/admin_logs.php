@@ -9,7 +9,6 @@
 	use Psr\Http\Message\ServerRequestInterface as Request;
 
 	$api_name = "admin_logs";
-	define('API_NAME', $api_name);
 
 	$possibleData = array(
 	    array(
@@ -94,7 +93,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
-			$orderBy = $header['orderby'] ? $header['orderby'] : 'id';
+			$orderBy = $header['orderby'] ?: 'id';
 			$sort = $header['sort'] ? $header['sort'] : 'DESC';
 			$limit = $header['limit'] ? "LIMIT " . (int)$header['limit'] : '';
 
@@ -121,13 +120,13 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			$getData = new CacheSystem($api_name, $sql);
 			if (empty($getData->get())) {
 				$data = $connect->query($sql);
-				$getData->setData(json_encode($data, JSON_THROW_ON_ERROR));
+				$getData->setData($data);
 				$data = $getData->create();
-			} else
-				$data = json_decode($getData->get(), true, 512, JSON_THROW_ON_ERROR);
+			} else {
+				$data = $getData->get();
+			}
 
-
-			$response->withStatus( 200 )->getBody()->write(json_encode($data, JSON_THROW_ON_ERROR));
+			$response->withStatus( 200 )->getBody()->write( $data );
 
 		} else {
 
