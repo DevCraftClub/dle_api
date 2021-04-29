@@ -81,10 +81,18 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$header[$name] = $value[0];
 		}
 
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+		$order_by = $params['orderby'] ?? $header['orderby'];
+		$sort = $params['sort'] ?? $header['sort'];
+		$limit = $params['limit'] ?? $header['limit'];
+
 		$checkAccess = checkAPI($api_key, $api_name);
 
 		if (isset($checkAccess['error'])) {
-			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
+			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
 
 		$access['full'] = $checkAccess['admin'];
@@ -92,9 +100,9 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
-			$orderBy = $header['orderby'] ?: 'id';
-			$sort = $header['sort'] ?: 'DESC';
-			$limit = $header['limit'] ? 'LIMIT ' . (int)$header['limit'] : '';
+			$orderBy = $order_by ?: 'id';
+			$sort = $sort ?: 'DESC';
+			$limit = $limit ? 'LIMIT '.(int) $limit : '';
 
 			$possibleParams = '';
 
@@ -123,7 +131,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 
 			$response->withStatus( 200 )->getBody()->write( $data );
 		} else {
-			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на просмотр данных!']));
+			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на просмотр данных!'], JSON_UNESCAPED_UNICODE));
 		}
 
 		return $response->withHeader('Content-type', 'application/json; charset=UTF-8');
@@ -140,12 +148,17 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$body[$name] = $value;
 		}
 
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+
 		if (empty($body)) {
-			return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!']));
+			return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!'], JSON_UNESCAPED_UNICODE));
 		}
 		$checkAccess = checkAPI($api_key, $api_name);
 		if (isset($checkAccess['error'])) {
-			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
+			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
 		$access['full'] = $checkAccess['admin'];
 		$access['can_write'] = $checkAccess['write'];
@@ -164,7 +177,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 						continue;
 					}
 					if ($keyData['required'] && empty($value)) {
-						return $response->withStatus(400)->getBody()->write(json_encode(['error' => "Требуемая информация отсутствует: {$name}!"]));
+						return $response->withStatus(400)->getBody()->write(json_encode(['error' => "Требуемая информация отсутствует: {$name}!"], JSON_UNESCAPED_UNICODE));
 					}
 					$names[] = $name;
 					$values[] = defType(checkLength($value, $keyData['length']), $keyData['type']);
@@ -178,7 +191,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 				$sql = 'INSERT INTO '.PREFIX."_{$api_name} ({$names}) VALUES ({$values})";
 				$connect->query($sql);
 			} catch (Exception $e) {
-				return $response->withStatus(500)->getBody()->write(json_encode(['error' => "{$e->getMessage()}!"]));
+				return $response->withStatus(500)->getBody()->write(json_encode(['error' => "{$e->getMessage()}!"], JSON_UNESCAPED_UNICODE));
 			}
 
 			// Почему я не люблю MySQL? Потому что нельзя вернуть данные сразу после добавления в базу данных!
@@ -194,12 +207,12 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 				$cache->clear($api_name);
 				$cache->setData($data);
 			} catch (Exception $e) {
-				return $response->withStatus(500)->getBody()->write(json_encode(['error' => "{$e->getMessage()}!"]));
+				return $response->withStatus(500)->getBody()->write(json_encode(['error' => "{$e->getMessage()}!"], JSON_UNESCAPED_UNICODE));
 			}
 
-			$response->withStatus(200)->getBody()->write(json_encode($data));
+			$response->withStatus(200)->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE));
 		} else {
-			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на добавление новых данных!']));
+			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на добавление новых данных!'], JSON_UNESCAPED_UNICODE));
 		}
 
 		return $response->withHeader('Content-type', 'application/json; charset=UTF-8');
@@ -216,20 +229,25 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$body[$name] = $value;
 		}
 
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+
 		if (empty($body)) {
-			return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!']));
+			return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!'], JSON_UNESCAPED_UNICODE));
 		}
 		$checkAccess = checkAPI($api_key, $api_name);
 		if (isset($checkAccess['error'])) {
-			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
+			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
 		$access['full'] = $checkAccess['admin'];
 		$access['can_write'] = $checkAccess['write'];
 
 		if ($access['full'] || $access['can_write']) {
 			$id = $args['id'];
-			if (!intval($id)) {
-				return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация отсутствует: ID!']));
+			if (!(int)$id) {
+				return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация отсутствует: ID!'], JSON_UNESCAPED_UNICODE));
 			}
 			$values = [];
 
@@ -257,9 +275,9 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$cache->clear($api_name);
 			$cache->setData($data);
 
-			$response->withStatus(200)->getBody()->write(json_encode($data));
+			$response->withStatus(200)->getBody()->write($data);
 		} else {
-			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на изменение данных!']));
+			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на изменение данных!'], JSON_UNESCAPED_UNICODE));
 		}
 
 		return $response->withHeader('Content-type', 'application/json; charset=UTF-8');
@@ -270,17 +288,22 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$header[$name] = $value[0];
 		}
 
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+
 		$checkAccess = checkAPI($api_key, $api_name);
 		if (isset($checkAccess['error'])) {
-			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
+			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
 		$access['full'] = $checkAccess['admin'];
 		$access['can_delete'] = $checkAccess['delete'];
 
 		if ($access['full'] || $access['can_delete']) {
 			$id = $args['id'];
-			if (!intval($id)) {
-				return $response->withStatus(400)->getBody()->write(json_encode(['error' => "Требуемая информация отсутствует: {$id}!"]));
+			if (!(int)$id) {
+				return $response->withStatus(400)->getBody()->write(json_encode(['error' => "Требуемая информация отсутствует: {$id}!"], JSON_UNESCAPED_UNICODE));
 			}
 			$sql = 'DELETE FROM '.PREFIX."_{$api_name} WHERE id = {$id}";
 			$connect->query($sql);
@@ -288,9 +311,9 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$cache = new CacheSystem($api_name, $sql);
 			$cache->clear($api_name);
 
-			$response->withStatus(200)->getBody()->write(json_encode(['success' => 'Данные успешно удалены!']));
+			$response->withStatus(200)->getBody()->write(json_encode(['success' => 'Данные успешно удалены!'], JSON_UNESCAPED_UNICODE));
 		} else {
-			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на удаление данных!']));
+			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на удаление данных!'], JSON_UNESCAPED_UNICODE));
 		}
 
 		return $response->withHeader('Content-type', 'application/json; charset=UTF-8');
