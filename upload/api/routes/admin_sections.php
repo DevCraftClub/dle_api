@@ -81,7 +81,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$header[$name] = $value[0];
 		}
 
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
+		$checkAccess = checkAPI($api_key, $api_name);
 
 		if (isset($checkAccess['error'])) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
@@ -143,7 +143,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		if (empty($body)) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!']));
 		}
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
+		$checkAccess = checkAPI($api_key, $api_name);
 		if (isset($checkAccess['error'])) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
 		}
@@ -192,7 +192,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 
 				$cache = new CacheSystem($api_name, $sql);
 				$cache->clear($api_name);
-				$cache->setData(json_encode($data));
+				$cache->setData($data);
 			} catch (Exception $e) {
 				return $response->withStatus(500)->getBody()->write(json_encode(['error' => "{$e->getMessage()}!"]));
 			}
@@ -219,7 +219,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		if (empty($body)) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!']));
 		}
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
+		$checkAccess = checkAPI($api_key, $api_name);
 		if (isset($checkAccess['error'])) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
 		}
@@ -255,7 +255,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 
 			$cache = new CacheSystem($api_name, $sql);
 			$cache->clear($api_name);
-			$cache->setData(json_encode($data));
+			$cache->setData($data);
 
 			$response->withStatus(200)->getBody()->write(json_encode($data));
 		} else {
@@ -270,7 +270,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$header[$name] = $value[0];
 		}
 
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
+		$checkAccess = checkAPI($api_key, $api_name);
 		if (isset($checkAccess['error'])) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']]));
 		}

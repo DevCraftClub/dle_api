@@ -272,8 +272,16 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			$header[$name] = $value[0];
 		}
 
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
-		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+		$order_by = $params['orderby'] ?? $header['orderby'];
+		$sort = $params['sort'] ?? $header['sort'];
+		$limit = $params['limit'] ?? $header['limit'];
+
+		$checkAccess = checkAPI($api_key, $api_name);
+		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error']), JSON_UNESCAPED_UNICODE));
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
@@ -318,7 +326,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 		} else {
 
-			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на просмотр данных!')));
+			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на просмотр данных!'), JSON_UNESCAPED_UNICODE));
 
 		}
 
@@ -334,17 +342,21 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		$body = array();
 		foreach( $request->getParsedBody() as $name => $value ) $body[$name] = $value;
 
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
 		$requiredData = ['name', 'password', 'email', 'user_group'];
 		foreach ( $requiredData as $data) {
 			if(!isset($body[$data]) && empty($body[$data]))
-				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!')));
+				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!'), JSON_UNESCAPED_UNICODE));
 		}
 
 		if (empty($body))
-			return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!')));
+			return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!'), JSON_UNESCAPED_UNICODE));
 
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
-		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+		$checkAccess = checkAPI($api_key, $api_name);
+		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error']), JSON_UNESCAPED_UNICODE));
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_write'] = $checkAccess['write'];
@@ -381,7 +393,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 				$cache = new CacheSystem($api_name, $sql);
 				$cache->clear($api_name);
-				$cache->setData(json_encode($data));
+				$cache->setData($data);
 
 				$response->withStatus(200)->getBody()->write(json_encode($data));
 			} elseif (-1 === (int) $user_register) {
@@ -395,7 +407,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			}
 		} else {
 
-			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на добавление новых данных!')));
+			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на добавление новых данных!'), JSON_UNESCAPED_UNICODE));
 
 		}
 
@@ -411,17 +423,21 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		$body = array();
 		foreach( $request->getParsedBody() as $name => $value ) $body[$name] = $value;
 
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
 		$requiredData = ['name', 'password'];
 		foreach ( $requiredData as $data) {
 			if(!isset($body[$data]) && empty($body[$data]))
-				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!')));
+				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!'), JSON_UNESCAPED_UNICODE));
 		}
 
 		if (empty($body))
-			return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!')));
+			return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!'), JSON_UNESCAPED_UNICODE));
 
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
-		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+		$checkAccess = checkAPI($api_key, $api_name);
+		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error']), JSON_UNESCAPED_UNICODE));
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
@@ -435,7 +451,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 				$cache = new CacheSystem($api_name, $sql);
 				if (empty($cache->get())) {
 					$data = $connect->row($sql, ['name' => $body['name']]);
-					$cache->setData(json_encode($data));
+					$cache->setData($data);
 					$cache->create();
 				} else {
 					$data = json_decode($cache->get(), true);
@@ -448,7 +464,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 		} else {
 
-			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на добавление новых данных!')));
+			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на добавление новых данных!'), JSON_UNESCAPED_UNICODE));
 
 		}
 
@@ -464,11 +480,15 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 		$body = array();
 		foreach( $request->getParsedBody() as $name => $value ) $body[$name] = $value;
 
-		if (empty($body))
-			return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!')));
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
 
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
-		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+		if (empty($body))
+			return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация пуста: Заполните POST-форму и попробуйте снова!'), JSON_UNESCAPED_UNICODE));
+
+		$checkAccess = checkAPI($api_key, $api_name);
+		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error']), JSON_UNESCAPED_UNICODE));
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_write'] = $checkAccess['write'];
@@ -477,7 +497,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			$id = $args['id'];
 			if (!(int)$id)
-				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация отсутствует: ID!')));
+				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация отсутствует: ID!'), JSON_UNESCAPED_UNICODE));
 			$values = array();
 
 			foreach ( $body as $name => $value ) {
@@ -502,13 +522,13 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			$cache = new CacheSystem($api_name, $sql);
 			$cache->clear($api_name);
-			$cache->setData(json_encode($data));
+			$cache->setData($data);
 
-			$response->withStatus( 200 )->getBody()->write( json_encode( $data ) );
+			$response->withStatus( 200 )->getBody()->write( $data );
 
 		} else {
 
-			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на изменение данных!')));
+			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на изменение данных!'), JSON_UNESCAPED_UNICODE));
 
 		}
 
@@ -520,8 +540,13 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			$header[$name] = $value[0];
 		}
 
-		$checkAccess = checkAPI($header['x_api_key'], $api_name);
-		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error'])));
+		$params = [];
+		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+
+		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+
+		$checkAccess = checkAPI($api_key, $api_name);
+		if (isset($checkAccess['error'])) return $response->withStatus(400)->getBody()->write(json_encode(array('error' => $checkAccess['error']), JSON_UNESCAPED_UNICODE));
 
 		$access['full'] = $checkAccess['admin'];
 		$access['can_delete'] = $checkAccess['delete'];
@@ -530,7 +555,7 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 
 			$id = $args['id'];
 			if (!(int)$id)
-				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация отсутствует: ID!')));
+				return $response->withStatus(400)->getBody()->write(json_encode(array('error' => 'Требуемая информация отсутствует: ID!'), JSON_UNESCAPED_UNICODE));
 
 			$sql = 'DELETE FROM '. USERPREFIX . "_{$api_name} WHERE id = {$id}";
 			$connect->query( $sql );
@@ -538,11 +563,11 @@ $app->group('/' . $api_name, function ( ) use ( $connect, $api_name, $possibleDa
 			$cache = new CacheSystem($api_name, $sql);
 			$cache->clear($api_name);
 
-			$response->withStatus( 200 )->getBody()->write( json_encode( array('success' => 'Данные успешно удалены!') ) );
+			$response->withStatus( 200 )->getBody()->write( json_encode( array('success' => 'Данные успешно удалены!'), JSON_UNESCAPED_UNICODE) );
 
 		} else {
 
-			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на удаление данных!')));
+			$response->withStatus(400)->getBody()->write(json_encode(array('error' => 'У вас нет прав на удаление данных!'), JSON_UNESCAPED_UNICODE));
 
 		}
 
