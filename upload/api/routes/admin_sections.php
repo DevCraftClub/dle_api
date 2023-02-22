@@ -10,51 +10,52 @@ if (!defined('DATALIFEENGINE')) {
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-$api_name = 'admin_sections';
-$possibleData = [
-	[
-		'name' => 'id',
-		'type' => 'integer',
-		'required' => false,
-		'post' => false,
-		'length' => 0
-	],
-	[
-		'name' => 'name',
-		'type' => 'string',
-		'required' => false,
-		'post' => true,
-		'length' => 100
-	],
-	[
-		'name' => 'title',
-		'type' => 'string',
-		'required' => false,
-		'post' => true,
-		'length' => 255
-	],
-	[
-		'name' => 'descr',
-		'type' => 'string',
-		'required' => false,
-		'post' => true,
-		'length' => 255
-	],
-	[
-		'name' => 'icon',
-		'type' => 'string',
-		'required' => false,
-		'post' => true,
-		'length' => 255
-	],
-	[
-		'name' => 'allow_groups',
-		'type' => 'string',
-		'required' => false,
-		'post' => true,
-		'length' => 255
-	],
-];
+$api_name     = 'admin_sections';
+$possibleData = array(
+	array(
+		'name'     => 'integer',
+		'type'     => 'null',
+		'required' => true,
+		'post'     => false,
+		'length'   => 9
+	),
+	array(
+		'name'     => 'string',
+		'type'     => 'null',
+		'required' => true,
+		'post'     => true,
+		'length'   => 100
+	),
+	array(
+		'name'     => 'string',
+		'type'     => 'null',
+		'required' => true,
+		'post'     => true,
+		'length'   => 255
+	),
+	array(
+		'name'     => 'string',
+		'type'     => 'null',
+		'required' => true,
+		'post'     => true,
+		'length'   => 255
+	),
+	array(
+		'name'     => 'string',
+		'type'     => 'null',
+		'required' => true,
+		'post'     => true,
+		'length'   => 255
+	),
+	array(
+		'name'     => 'string',
+		'type'     => 'null',
+		'required' => true,
+		'post'     => true,
+		'length'   => 255
+	),
+
+);
 
 // possibleData
 // $possibleData[] = array(
@@ -66,28 +67,28 @@ $possibleData = [
 // );
 // possibleData Add );
 
-$app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) {
+$app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData) {
 	$header = [];
 	$access = [
-		'full' => false,
-		'can_read' => false,
-		'can_write' => false,
+		'full'       => false,
+		'can_read'   => false,
+		'can_write'  => false,
 		'can_delete' => false,
 	];
 
 	$this->get('[/]', function (Request $request, Response $response, array $args) use ($possibleData, $api_name, $connect, $header, $access) {
 		foreach ($request->getHeaders() as $name => $value) {
-			$name = strtolower(str_replace('HTTP_', '', $name));
+			$name          = strtolower(str_replace('HTTP_', '', $name));
 			$header[$name] = $value[0];
 		}
 
 		$params = [];
-		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+		foreach ($request->getQueryParams() as $name => $value) $params[$name] = $value;
 
-		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
+		$api_key  = $params['x-api-key'] ?? $header['x_api_key'];
 		$order_by = $params['orderby'] ?? $header['orderby'];
-		$sort = $params['sort'] ?? $header['sort'];
-		$limit = $params['limit'] ?? $header['limit'];
+		$sort     = $params['sort'] ?? $header['sort'];
+		$limit    = $params['limit'] ?? $header['limit'];
 
 		$checkAccess = checkAPI($api_key, $api_name);
 
@@ -95,14 +96,14 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
 
-		$access['full'] = $checkAccess['admin'];
+		$access['full']     = $checkAccess['admin'];
 		$access['can_read'] = $checkAccess['read'];
 		$access['own_only'] = $checkAccess['own'];
 
 		if ($access['full'] || $access['can_read']) {
 			$orderBy = $order_by ?: 'id';
-			$sort = $sort ?: 'DESC';
-			$limit = $limit ? 'LIMIT '.(int) $limit : '';
+			$sort    = $sort ?: 'DESC';
+			$limit   = $limit ? 'LIMIT ' . (int) $limit : '';
 
 			$possibleParams = '';
 
@@ -111,14 +112,14 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 				if (false !== $keyData) {
 					$postData = $possibleData[$keyData];
 					if (0 === strlen($possibleParams)) {
-						$possibleParams .= " WHERE {$data}".getComparer($header[$data], $postData['type']);
+						$possibleParams .= " WHERE {$data}" . getComparer($header[$data], $postData['type']);
 					} else {
-						$possibleParams .= " AND {$data}".getComparer($header[$data], $postData['type']);
+						$possibleParams .= " AND {$data}" . getComparer($header[$data], $postData['type']);
 					}
 				}
 			}
 
-			$sql = 'SELECT * FROM '.PREFIX."_{$api_name} {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
+			$sql = 'SELECT * FROM ' . PREFIX . "_{$api_name} {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
 
 			$getData = new CacheSystem($api_name, $sql);
 			if (empty($getData->get())) {
@@ -129,7 +130,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 				$data = $getData->get();
 			}
 
-			$response->withStatus( 200 )->getBody()->write( $data );
+			$response->withStatus(200)->getBody()->write($data);
 		} else {
 			$response->withStatus(400)->getBody()->write(json_encode(['error' => 'У вас нет прав на просмотр данных!'], JSON_UNESCAPED_UNICODE));
 		}
@@ -139,7 +140,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 
 	$this->post('[/]', function (Request $request, Response $response, array $args) use ($possibleData, $api_name, $connect, $header, $access) {
 		foreach ($request->getHeaders() as $name => $value) {
-			$name = strtolower(str_replace('HTTP_', '', $name));
+			$name          = strtolower(str_replace('HTTP_', '', $name));
 			$header[$name] = $value[0];
 		}
 
@@ -149,7 +150,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		}
 
 		$params = [];
-		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+		foreach ($request->getQueryParams() as $name => $value) $params[$name] = $value;
 
 		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
 
@@ -160,11 +161,11 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		if (isset($checkAccess['error'])) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
-		$access['full'] = $checkAccess['admin'];
+		$access['full']      = $checkAccess['admin'];
 		$access['can_write'] = $checkAccess['write'];
 
 		if ($access['full'] || $access['can_write']) {
-			$names = [];
+			$names  = [];
 			$values = [];
 
 			foreach ($body as $name => $value) {
@@ -179,16 +180,16 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 					if ($keyData['required'] && empty($value)) {
 						return $response->withStatus(400)->getBody()->write(json_encode(['error' => "Требуемая информация отсутствует: {$name}!"], JSON_UNESCAPED_UNICODE));
 					}
-					$names[] = $name;
+					$names[]  = $name;
 					$values[] = defType(checkLength($value, $keyData['length']), $keyData['type']);
 				}
 			}
 
-			$names = implode(', ', $names);
+			$names  = implode(', ', $names);
 			$values = implode(', ', $values);
 
 			try {
-				$sql = 'INSERT INTO '.PREFIX."_{$api_name} ({$names}) VALUES ({$values})";
+				$sql = 'INSERT INTO ' . PREFIX . "_{$api_name} ({$names}) VALUES ({$values})";
 				$connect->query($sql);
 			} catch (Exception $e) {
 				return $response->withStatus(500)->getBody()->write(json_encode(['error' => "{$e->getMessage()}!"], JSON_UNESCAPED_UNICODE));
@@ -200,7 +201,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 			$lastID = $connect->lastInsertId();
 
 			try {
-				$sql = 'SELECT * FROM '.PREFIX."_{$api_name} WHERE id = :id";
+				$sql  = 'SELECT * FROM ' . PREFIX . "_{$api_name} WHERE id = :id";
 				$data = $connect->row($sql, ['id' => $lastID]);
 
 				$cache = new CacheSystem($api_name, $sql);
@@ -220,7 +221,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 
 	$this->put('/{id:[0-9]+}[/]', function (Request $request, Response $response, array $args) use ($possibleData, $api_name, $connect, $header, $access) {
 		foreach ($request->getHeaders() as $name => $value) {
-			$name = strtolower(str_replace('HTTP_', '', $name));
+			$name          = strtolower(str_replace('HTTP_', '', $name));
 			$header[$name] = $value[0];
 		}
 
@@ -230,7 +231,7 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		}
 
 		$params = [];
-		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+		foreach ($request->getQueryParams() as $name => $value) $params[$name] = $value;
 
 		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
 
@@ -241,12 +242,12 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		if (isset($checkAccess['error'])) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
-		$access['full'] = $checkAccess['admin'];
+		$access['full']      = $checkAccess['admin'];
 		$access['can_write'] = $checkAccess['write'];
 
 		if ($access['full'] || $access['can_write']) {
 			$id = $args['id'];
-			if (!(int)$id) {
+			if (!(int) $id) {
 				return $response->withStatus(400)->getBody()->write(json_encode(['error' => 'Требуемая информация отсутствует: ID!'], JSON_UNESCAPED_UNICODE));
 			}
 			$values = [];
@@ -258,17 +259,17 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 					if ($keyNum !== false) {
 						$keyData = $possibleData[$keyNum];
 
-						$values[] ="{$name} = " . defType(checkLength($value, $keyData['length']), $keyData['type']);
+						$values[] = "{$name} = " . defType(checkLength($value, $keyData['length']), $keyData['type']);
 
 					}
 				}
 			}
 			$values = implode(', ', $values);
 
-			$sql = 'UPDATE '.PREFIX."_{$api_name} SET {$values} WHERE id = :id";
+			$sql = 'UPDATE ' . PREFIX . "_{$api_name} SET {$values} WHERE id = :id";
 			$connect->query($sql, ['id' => $id]);
 
-			$sql = 'SELECT * FROM '.PREFIX."_{$api_name} WHERE id = :id";
+			$sql  = 'SELECT * FROM ' . PREFIX . "_{$api_name} WHERE id = :id";
 			$data = $connect->row($sql, ['id' => $id]);
 
 			$cache = new CacheSystem($api_name, $sql);
@@ -284,12 +285,12 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 	});
 	$this->delete('/{id:[0-9]+}[/]', function (Request $request, Response $response, array $args) use ($api_name, $connect, $header, $access) {
 		foreach ($request->getHeaders() as $name => $value) {
-			$name = strtolower(str_replace('HTTP_', '', $name));
+			$name          = strtolower(str_replace('HTTP_', '', $name));
 			$header[$name] = $value[0];
 		}
 
 		$params = [];
-		foreach( $request->getQueryParams() as $name => $value ) $params[$name] = $value;
+		foreach ($request->getQueryParams() as $name => $value) $params[$name] = $value;
 
 		$api_key = $params['x-api-key'] ?? $header['x_api_key'];
 
@@ -297,15 +298,15 @@ $app->group('/'.$api_name, function () use ($connect, $api_name, $possibleData) 
 		if (isset($checkAccess['error'])) {
 			return $response->withStatus(400)->getBody()->write(json_encode(['error' => $checkAccess['error']], JSON_UNESCAPED_UNICODE));
 		}
-		$access['full'] = $checkAccess['admin'];
+		$access['full']       = $checkAccess['admin'];
 		$access['can_delete'] = $checkAccess['delete'];
 
 		if ($access['full'] || $access['can_delete']) {
 			$id = $args['id'];
-			if (!(int)$id) {
+			if (!(int) $id) {
 				return $response->withStatus(400)->getBody()->write(json_encode(['error' => "Требуемая информация отсутствует: {$id}!"], JSON_UNESCAPED_UNICODE));
 			}
-			$sql = 'DELETE FROM '.PREFIX."_{$api_name} WHERE id = {$id}";
+			$sql = 'DELETE FROM ' . PREFIX . "_{$api_name} WHERE id = {$id}";
 			$connect->query($sql);
 
 			$cache = new CacheSystem($api_name, $sql);

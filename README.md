@@ -13,11 +13,10 @@
 Совместимость проверенна на DLE-версиях 13.х. Для корректной работы требуется минимальная версия MySQL 5.5.6 или MariaDB 10.0, поскольку используются Foreign Key, которые требуют наличие InnoDB.
 
 Для установки достаточно скачать [релиз](https://github.com/Gokujo/dle_api/releases/latest).
-Документация к API находится на сервере [POSTMAN](https://documenter.getpostman.com/view/7856564/SW7T9BsW). На данный момент она не полная и пополняется медлено, но верно.
+Документация к API находится на сервере [POSTMAN](https://documenter.getpostman.com/view/7856564/SW7T9BsW). На данный момент она не полная и пополняется медленно, но верно.
 Релизы выше только для версий DLE 13 и выше.
 
-Для пожеланий можно использовать [feathub](https://feathub.com/Gokujo/dle_api).
-[![Feature Requests](https://feathub.com/Gokujo/dle_api?format=svg)](https://feathub.com/Gokujo/dle_api)
+Чтобы пополнить описания к полям - делаем форк репозитория и редактируем файл в папке apidata **DLE-API.postman_collection.json**. Изменяем и делаем пуш риквест.
 
 
 # DLE >= 13.x

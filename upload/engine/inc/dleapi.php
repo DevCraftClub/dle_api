@@ -11,17 +11,28 @@
 =====================================================
 */
 
-if( !defined( 'DATALIFEENGINE' ) OR !defined( 'LOGGED_IN' ) ) {
-	header( "HTTP/1.1 403 Forbidden" );
-	header ( 'Location: ../../' );
-	die( "Hacking attempt!" );
+if (!defined('DATALIFEENGINE') or !defined('LOGGED_IN')) {
+	header("HTTP/1.1 403 Forbidden");
+	header('Location: ../../');
+	die("Hacking attempt!");
 }
 
+global $db, $config, $dle_login_hash, $_TIME;
+
 $version = [
-	'name' => 'DLE-API',
-	'descr' => 'Неофициальное API',
-	'version' => '0.1.4',
+	'name'      => 'DLE-API',
+	'descr'     => 'Неофициальное API',
+	'version'   => '0.2.0',
 	'changelog' => [
+		'0.2.0' => [
+			'Оптимизирован код',
+			'Генерация ключа привязана к времени',
+			'Добавлена возможность добавлять ключи независимо от пользователя => для этого нужно выбрать в меню пользователя "Гость / Неавторизованный"',
+			'Добавлена возможность генерировать свои рутеры на основе базы данных => читайте документацию',
+			'Обновлены данные для таблиц базы данных',
+			'Обновлена документация API',
+			'Минимальные требования к серверу поднял до минимально требуемой версии от DLE-News -> 7.4, возможно не будет работать на версиях ниже 15.х'
+		],
 		'0.1.4' => [
 			'Безопасный вывод данных (IP, пароли и хэш суммы)',
 			'Добавлена функция вывода только принадлежащих API-ключу записей',
@@ -48,8 +59,16 @@ $version = [
 			'Первая стандартная версия'
 		],
 	],
-	'id' => 'dleapi',
+	'id'        => 'dleapi',
 ];
+
+$dleapi = array();
+if (file_exists(ENGINE_DIR . '/data/' . $version['id'] . '.json'))
+	$dleapi = json_decode(file_get_contents(ENGINE_DIR . '/data/' . $version['id'] . '.json'), true);
+
+foreach ($dleapi as $name => $value) {
+	$dleapi[$name] = htmlspecialchars(strip_tags(stripslashes(trim(urldecode($value)))));
+}
 
 $subtitle = ['' => $version['descr']];
 if ($_GET['action'] === 'add') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Добавление ключа'];
@@ -57,9 +76,8 @@ else if ($_GET['action'] === 'settings') $subtitle = ['?mod=dleapi' => $version[
 else if ($_GET['action'] === 'edit') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Обновление ключа'];
 else if ($_GET['action'] === 'changelog') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Изменения в всериях'];
 
-echoheader( "<i class=\"fa fa-id-card-o position-left\"></i><span class=\"text-semibold\">{$version['name']} (v{$version['version']})</span>", $subtitle );
+echoheader("<i class=\"fa fa-id-card-o position-left\"></i><span class=\"text-semibold\">{$version['name']} (v{$version['version']})</span>", $subtitle);
 function showRow($title = "", $description = "", $field = "", $class = "") {
-
 
 	echo "<tr>
         <td class=\"col-xs-6 col-sm-6 col-md-5\"><h6 class=\"media-heading text-semibold\">{$title}</h6><span class=\"text-muted text-size-small hidden-xs\">{$description}</span></td>
@@ -76,9 +94,9 @@ function showRow($title = "", $description = "", $field = "", $class = "") {
  */
 function makeDropDown($options, $name, $selected) {
 	$output = "<select class=\"uniform\" name=\"$name\">\r\n";
-	foreach ( $options as $value => $description ) {
+	foreach ($options as $value => $description) {
 		$output .= "<option value=\"$value\"";
-		if( $selected == $value ) {
+		if ($selected == $value) {
 			$output .= " selected ";
 		}
 		$output .= ">$description</option>\n";
@@ -107,10 +125,12 @@ function makeCheckBox($name, $selected) {
 function getUsers() {
 	global $db;
 
-	$db->query('SELECT * FROM '. USERPREFIX . "_users WHERE restricted = '0'");
-	$user_ar = array();
+	$db->query('SELECT * FROM ' . USERPREFIX . "_users WHERE restricted = '0'");
+	$user_ar = array(
+		0 => 'Гость / Неавторизованный'
+	);
 
-	while($build = $db->get_array()) {
+	while ($build = $db->get_array()) {
 		$user_ar[$build['user_id']] = $build['name'];
 	}
 
@@ -127,7 +147,7 @@ function getTables() {
 	$db->query('SHOW tables');
 	$tables = array();
 
-	while($build = $db->get_array()) {
+	while ($build = $db->get_array()) {
 		$name = str_replace(array(PREFIX . '_', USERPREFIX . '_'), '', $build[0]);
 		if (in_array($name, array('api_keys', 'api_scope'))) continue;
 		$tables[] = $name;
@@ -138,7 +158,8 @@ function getTables() {
 }
 
 /**
- * @param int 	 $algorithm
+ * @link https://www.php.net/manual/en/function.hash-hmac.php#109260
+ *
  * @param        $user_id
  * @param        $salt
  * @param        $key_length
@@ -146,32 +167,36 @@ function getTables() {
  * @param        $block_length
  * @param int    $count
  *
+ * @param int    $algorithm
+ *
  * @return string
  *
- * @link https://www.php.net/manual/en/function.hash-hmac.php#109260
  */
 function pbkdf2($algorithm = 2, $user_id, $salt, $key_length, $separator, $block_length, $count = 1024) {
+	global $_TIME, $dleapi;
 	$algos = [];
 	foreach (hash_algos() as $id => $algo) {
 		$algos[$id] = $algo;
 	}
-	if(empty($algorithm)) $algorithm = 2;
-	if(empty($salt)) $salt = 'localhost';
-	if(empty($key_length)) $key_length = 20;
-	if(empty($separator)) $separator = '-';
-	if(empty($block_length)) $separator = 4;
+	if (empty($algorithm)) $algorithm = 2;
+	if (empty($salt)) $salt = 'localhost';
+	if (empty($key_length)) $key_length = 20;
+	if (empty($separator)) $separator = '-';
+	if (empty($block_length)) $separator = 4;
 	$algorithm = strtolower($algos[$algorithm]);
-	if(!in_array($algorithm, hash_algos(), true))
+	if (!in_array($algorithm, hash_algos(), true))
 		die('PBKDF2 ERROR: Invalid hash algorithm.');
-	if($count <= 0 || $key_length <= 0)
+	if ($count <= 0 || $key_length <= 0)
 		die('PBKDF2 ERROR: Invalid parameters.');
-	if(empty($user_id))
+	if ($user_id !== 0 && empty($user_id))
 		die('You have to be logged in to generate a key!');
+	if (count($dleapi) === 0) die('Нужно сначала настроить плагин, затем создавать ключ!');
 
 	$hash_length = strlen(hash($algorithm, "", true));
 	$block_count = ceil($key_length / $hash_length);
-	$output = '';
-	for($i = 1; $i <= $block_count; $i++) {
+	$output      = '';
+	$salt		 = $_TIME . $salt;
+	for ($i = 1; $i <= $block_count; $i++) {
 		// $i encoded as 4 bytes, big endian.
 		$last = $salt . pack("N", $i);
 		// first iteration
@@ -184,25 +209,17 @@ function pbkdf2($algorithm = 2, $user_id, $salt, $key_length, $separator, $block
 	}
 	$output = bin2hex($output);
 
-	$api = [];
-	$block_length = floor($key_length/$block_length);
+	$api          = [];
+	$block_length = floor($key_length / $block_length);
 	for ($i = 0; $i < $key_length; $i += 4) {
 		$tempK = '';
 		for ($k = 0; $k < $block_length; $k++) {
-			$tempK .= $output[($i+$k)];
+			$tempK .= $output[($i + $k)];
 		}
 		$api[] = $tempK;
 	}
 
 	return implode($separator, $api);
-}
-
-$dleapi = array();
-if (file_exists(ENGINE_DIR . '/data/' . $version['id'] . '.json'))
-	$dleapi = json_decode(file_get_contents(ENGINE_DIR . '/data/' . $version['id'] . '.json'), true);
-
-foreach ($dleapi as $name => $value) {
-	$dleapi[$name] = htmlspecialchars( strip_tags( stripslashes( trim( urldecode ($value)))));
 }
 
 $action = (empty($action)) ? $_GET['action'] : $action;
@@ -213,11 +230,11 @@ switch ($action) {
 		if ($_GET) {
 			ob_end_clean();
 
-			$key = $_GET['save_con'];
+			$key         = $_GET['save_con'];
 			$key['user'] = (int)$key['user'];
 
 			echo pbkdf2($dleapi['algo'], $key['user'], $dleapi['secret'], $dleapi['length'],
-				$dleapi['trennen'], $dleapi['block']);
+						$dleapi['trennen'], $dleapi['block']);
 		}
 		return false;
 
@@ -232,21 +249,22 @@ switch ($action) {
 
 			$key['is_admin'] = $key['is_admin'] ? (bool)$key['is_admin'] : 0;
 			$key['active']   = $key['active'] ? (bool)$key['active'] : 0;
-			$key['own_only']   = $key['own_only'] ? (bool)$key['own_only'] : 0;
+			$key['own_only'] = $key['own_only'] ? (bool)$key['own_only'] : 0;
 			$key['user']     = (int)$key['user'];
 
 			try {
 				$key_api = $db->super_query('SELECT api FROM ' . PREFIX . "_api_keys WHERE api = '{$key['api']}' or user_id = {$key['user']}");
 				if (count($key_api) === 0) {
 
-					$db->query('INSERT INTO '.PREFIX."_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
+					$db->query('INSERT INTO ' . PREFIX .
+							   "_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
 					$apiKey = $db->insert_id();
 
 					foreach ($tables as $table => $data) {
 						$data['read']   = $data['read'] ? (bool)$data['read'] : 0;
 						$data['write']  = $data['write'] ? (bool)$data['write'] : 0;
 						$data['delete'] = $data['delete'] ? (bool)$data['delete'] : 0;
-						$db->query('INSERT INTO '.PREFIX."_api_scope (`table`, `read`, `write`, `delete`, `key_id`) VALUES ('{$table}', {$data['read']}, {$data['write']}, {$data['delete']}, {$apiKey})");
+						$db->query('INSERT INTO ' . PREFIX . "_api_scope (`table`, `read`, `write`, `delete`, `key_id`) VALUES ('{$table}', {$data['read']}, {$data['write']}, {$data['delete']}, {$apiKey})");
 					}
 
 					echo 'Ключ создан';
@@ -254,7 +272,7 @@ switch ($action) {
 					echo 'Этому пользователю уже был присвоен ключ доступа!';
 				}
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -272,12 +290,12 @@ switch ($action) {
 
 			$key['is_admin'] = $key['is_admin'] ? (bool)$key['is_admin'] : 0;
 			$key['active']   = $key['active'] ? (bool)$key['active'] : 0;
-			$key['own_only']   = $key['own_only'] ? (bool)$key['own_only'] : 0;
+			$key['own_only'] = $key['own_only'] ? (bool)$key['own_only'] : 0;
 			$key['user']     = (int)$key['user'];
 
 			try {
 
-				$db->query('UPDATE '.PREFIX."_api_keys SET api = '{$key['api']}', is_admin = {$key['is_admin']}, active = {$key['active']}, user_id = {$key['user']}, own_only = {$key['own_only']} WHERE id = {$this_id}");
+				$db->query('UPDATE ' . PREFIX . "_api_keys SET api = '{$key['api']}', is_admin = {$key['is_admin']}, active = {$key['active']}, user_id = {$key['user']}, own_only = {$key['own_only']} WHERE id = {$this_id}");
 
 				foreach ($tables as $table => $data) {
 					$data['read']   = $data['read'] ? (bool)$data['read'] : 0;
@@ -289,11 +307,11 @@ switch ($action) {
 					if ($tab['count'] > 0) {
 						$db->query("UPDATE " . PREFIX . "_api_scope SET `read`= {$data['read']}, `write`= {$data['write']}, `delete`= {$data['delete']} WHERE key_id = {$this_id} AND `table` = '{$table}'");
 					} else {
-						$db->query('INSERT INTO '.PREFIX."_api_scope (`table`, `read`, `write`, `delete`, `key_id`) VALUES ('{$table}', {$data['read']}, {$data['write']}, {$data['delete']}, {$this_id})");
+						$db->query('INSERT INTO ' . PREFIX . "_api_scope (`table`, `read`, `write`, `delete`, `key_id`) VALUES ('{$table}', {$data['read']}, {$data['write']}, {$data['delete']}, {$this_id})");
 					}
 				}
 
-					echo 'Ключ сохранён!';
+				echo 'Ключ сохранён!';
 			} catch (Exception $e) {
 				echo $e->getMessage();
 			}
@@ -311,11 +329,11 @@ switch ($action) {
 
 			try {
 
-				$db->query('DELETE FROM '.PREFIX."_api_keys WHERE id = {$this_id}");
+				$db->query('DELETE FROM ' . PREFIX . "_api_keys WHERE id = {$this_id}");
 
 				echo 'Ключ удалён!';
 			} catch (Exception $e) {
-				echo  $e->getMessage();
+				echo $e->getMessage();
 			}
 		}
 		return false;
@@ -329,11 +347,11 @@ switch ($action) {
 
 			try {
 
-				foreach ($_POST['selected_keys'] as $key) $db->query('DELETE FROM '.PREFIX."_api_keys WHERE id = {$key}");
+				foreach ($_POST['selected_keys'] as $key) $db->query('DELETE FROM ' . PREFIX . "_api_keys WHERE id = {$key}");
 				msg('success', 'Всё прошло успешно', 'Ключи были удалены!', ['?mod=dleapi' => 'К списку']);
 
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -347,11 +365,11 @@ switch ($action) {
 
 			try {
 
-				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET active = 0 WHERE id = {$key}");
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE ' . PREFIX . "_api_keys SET active = 0 WHERE id = {$key}");
 				msg('success', 'Всё прошло успешно', 'Ключи были деактивированы', ['?mod=dleapi' => 'К списку']);
 
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -365,11 +383,11 @@ switch ($action) {
 
 			try {
 
-				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET active = 1 WHERE id = {$key}");
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE ' . PREFIX . "_api_keys SET active = 1 WHERE id = {$key}");
 				msg('success', 'Всё прошло успешно', 'Ключи были активированы', ['?mod=dleapi' => 'К списку']);
 
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -383,11 +401,11 @@ switch ($action) {
 
 			try {
 
-				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET is_admin = 1 WHERE id = {$key}");
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE ' . PREFIX . "_api_keys SET is_admin = 1 WHERE id = {$key}");
 				msg('success', 'Всё прошло успешно', 'Доступ был выдан', ['?mod=dleapi' => 'К списку']);
 
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -401,11 +419,11 @@ switch ($action) {
 
 			try {
 
-				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET is_admin = 0 WHERE id = {$key}");
+				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE ' . PREFIX . "_api_keys SET is_admin = 0 WHERE id = {$key}");
 				msg('success', 'Всё прошло успешно', 'Доступ был снят', ['?mod=dleapi' => 'К списку']);
 
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -419,12 +437,14 @@ switch ($action) {
 
 			try {
 
-				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET own_only = 1 WHERE id = {$key}");
-				msg('success', 'Всё прошло успешно', 'Ограничение на свои записи было установлено', ['?mod=dleapi' =>
-																										 'К списку']);
+				foreach ($_POST['selected_keys'] as $key)
+					$db->query('UPDATE ' . PREFIX . "_api_keys SET own_only = 1 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Ограничение на свои записи было установлено', [
+					'?mod=dleapi' => 'К списку'
+				]);
 
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -438,12 +458,14 @@ switch ($action) {
 
 			try {
 
-				foreach ($_POST['selected_keys'] as $key) $db->query('UPDATE '.PREFIX."_api_keys SET own_only = 0 WHERE id = {$key}");
-				msg('success', 'Всё прошло успешно', 'Ограничение на свои записи было снято', ['?mod=dleapi' =>
-																										 'К списку']);
+				foreach ($_POST['selected_keys'] as $key)
+					$db->query('UPDATE ' . PREFIX . "_api_keys SET own_only = 0 WHERE id = {$key}");
+				msg('success', 'Всё прошло успешно', 'Ограничение на свои записи было снято', [
+					'?mod=dleapi' => 'К списку'
+				]);
 
 			} catch (Exception $e) {
-				msg('error', 'Всё плохо',  $e->getMessage(), ['?mod=dleapi' => 'К списку']);
+				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
 			}
 		}
 		return false;
@@ -455,7 +477,7 @@ switch ($action) {
 			ob_end_clean();
 			$confdata = array();
 			foreach ($_POST['save'] as $name => $value) {
-				$confdata[$name] = htmlspecialchars( strip_tags( stripslashes( trim( urlencode ($value)))));
+				$confdata[$name] = htmlspecialchars(strip_tags(stripslashes(trim(urlencode($value)))));
 			}
 
 			file_put_contents(ENGINE_DIR . '/data/' . $version['id'] . '.json', json_encode($confdata));
@@ -485,17 +507,23 @@ switch ($action) {
 						<tbody>
 HTML;
 
-							$dleapi['secret'] = $dleapi['secret'] ?: $config['http_home_url'];
-							showRow('Алгоритм шифрования', 'Выбираем алгоритм шифрования. По умолчанию: md5',
-								makeDropDown(hash_algos(), 'save[algo]', $dleapi['algo']));
-							showRow('Безопасный вывод информации', 'Вместо паролей, IP-адресов и хэшсум будет выводить заглушилки', makeCheckBox('save[secure]', $dleapi['secure']));
-							showRow('Длина блока', 'Задаём длину блока, по которой будет генерироваться автоматический API ключ.', '<input type="number" class="form-control" name="save[block]" value="' . $dleapi['block'] . '">');
-							showRow('Длина ключа', 'Задаём длину ключа, по которой будет генерироваться автоматический API ключ. Разделитель не учитывается. Если будет не хватка символов, то будут генерироваться случайные символы, пока не заполнят длину ключа. Или же набор символов будет урезан. <br><b>Важно:</b> Деление общей длины и длины блока должно быть без остатка. Скрипт будет сам подставлять нужное значение.', '<input type="number" class="form-control" name="save[length]" value="' . $dleapi['length'] . '">');
-							showRow('Разделитель блока', 'Задаём разделитель блока, который будет делить блоки. Пример: <b>-</b>',	'<input type="text" max="1" class="form-control" name="save[trennen]" value="' . $dleapi['trennen'] . '">');
-							showRow('Секретный ключ', 'Секретный ключ для генерации ключа. Пример: <b>' .
-								$config['http_home_url'] . '</b>',
-								'<input type="text" class="form-control" name="save[secret]" value="' .
-								$dleapi['secret'] . '">');
+		$dleapi['secret'] = $dleapi['secret'] ?: $config['http_home_url'];
+		showRow('Алгоритм шифрования', 'Выбираем алгоритм шифрования. По умолчанию: md5',
+				makeDropDown(hash_algos(), 'save[algo]', $dleapi['algo']));
+		showRow('Безопасный вывод информации', 'Вместо паролей, IP-адресов и хэшсум будет выводить заглушилки',
+				makeCheckBox('save[secure]', $dleapi['secure']));
+		showRow('Длина блока', 'Задаём длину блока, по которой будет генерироваться автоматический API ключ.',
+				'<input type="number" class="form-control" name="save[block]" value="' . $dleapi['block'] . '">');
+		showRow('Длина ключа',
+				'Задаём длину ключа, по которой будет генерироваться автоматический API ключ. Разделитель не учитывается. Если будет не хватка символов, то будут генерироваться случайные символы, пока не заполнят длину ключа. Или же набор символов будет урезан. <br><b>Важно:</b> Деление общей длины и длины блока должно быть без остатка. Скрипт будет сам подставлять нужное значение.',
+				'<input type="number" class="form-control" name="save[length]" value="' . $dleapi['length'] . '">');
+		showRow('Разделитель блока', 'Задаём разделитель блока, который будет делить блоки. Пример: <b>-</b>',
+				'<input type="text" max="1" class="form-control" name="save[trennen]" value="' . $dleapi['trennen'] .
+				'">');
+		showRow('Секретный ключ', 'Секретный ключ для генерации ключа. Пример: <b>' .
+								  $config['http_home_url'] . '</b>',
+				'<input type="text" class="form-control" name="save[secret]" value="' .
+				$dleapi['secret'] . '">');
 
 		echo <<<HTML
 
@@ -557,11 +585,17 @@ HTML;
 						</thead>
 						<tbody>
 HTML;
-							showRow( 'Ключ', 'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',	'<input type="text" class="form-control" name="save_con[api]" value=""><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">', 'white-line');
-							showRow( 'Пользователь', 'Выбор пользователя для ключа', makeDropDown(getUsers(), 'save_con[user]', ''));
-							showRow( 'Полный доступ', 'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам', makeCheckBox('save_con[is_admin]', ''));
-							showRow( 'Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.', makeCheckBox('save_con[own_only]', '' ));
-							showRow( 'Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]','1'));
+		showRow('Ключ',
+				'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
+				'<input type="text" class="form-control" name="save_con[api]" value=""><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
+				'white-line');
+		showRow('Пользователь', 'Выбор пользователя для ключа', makeDropDown(getUsers(), 'save_con[user]', ''));
+		showRow('Полный доступ',
+				'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
+				makeCheckBox('save_con[is_admin]', ''));
+		showRow('Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.',
+				makeCheckBox('save_con[own_only]', ''));
+		showRow('Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]', '1'));
 		echo <<<HTML
 					 	</tbody>
 					</table>
@@ -581,8 +615,8 @@ HTML;
 						</thead>
 						<tbody>
 HTML;
-							foreach (getTables() as $table ) {
-								echo <<<HTML
+		foreach (getTables() as $table) {
+			echo <<<HTML
 									<tr>
         								<td class="col-xs-6 col-sm-6 col-md-6">
         									<h6 class="media-heading text-semibold">Таблица: {$table}</h6>
@@ -604,7 +638,7 @@ HTML;
 										</td>
 									</tr>
 HTML;
-							}
+		}
 		echo <<<HTML
 					 	</tbody>
 					</table>
@@ -708,7 +742,7 @@ HTML;
 
 		$this_id = (int)$_GET['id'];
 
-		$api_key = $db->super_query('SELECT * FROM '. PREFIX . "_api_keys WHERE id = {$this_id}");
+		$api_key = $db->super_query('SELECT * FROM ' . PREFIX . "_api_keys WHERE id = {$this_id}");
 
 		echo <<<HTML
 			<form action="?mod={$version['id']}&action=edit&id={$this_id}" method="post" name="optionsbar" 
@@ -727,12 +761,20 @@ HTML;
 						</thead>
 						<tbody>
 HTML;
-							showRow( 'Ключ', 'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',	'<input type="text" class="form-control" name="save_con[api]" value="'. $api_key['api'] .'"><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">', 'white-line');
-							showRow( 'Пользователь', 'Выбор пользователя для ключа', makeDropDown(getUsers(), 'save_con[user]', $api_key['user_id']));
-							showRow( 'Полный доступ', 'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам', makeCheckBox('save_con[is_admin]', $api_key['is_admin'] ));
-							showRow( 'Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.', makeCheckBox('save_con[own_only]', $api_key['own_only'] ));
-							showRow( 'Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]',
-								$api_key['active']));
+		showRow('Ключ',
+				'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
+				'<input type="text" class="form-control" name="save_con[api]" value="' . $api_key['api'] .
+				'"><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
+				'white-line');
+		showRow('Пользователь', 'Выбор пользователя для ключа',
+				makeDropDown(getUsers(), 'save_con[user]', $api_key['user_id']));
+		showRow('Полный доступ',
+				'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
+				makeCheckBox('save_con[is_admin]', $api_key['is_admin']));
+		showRow('Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.',
+				makeCheckBox('save_con[own_only]', $api_key['own_only']));
+		showRow('Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]',
+																			$api_key['active']));
 		echo <<<HTML
 					 	</tbody>
 					</table>
@@ -753,15 +795,15 @@ HTML;
 						<tbody>
 HTML;
 
-							foreach (getTables() as $tables) {
-								$scope = $db->super_query('SELECT * FROM '. PREFIX . "_api_scope WHERE key_id = {$this_id} and `table` = '{$tables}'");
-								$scope['read'] = $scope['read'] ? 1 : 0;
-								$scope['write'] = $scope['write'] ? 1 : 0;
-								$scope['delete'] = $scope['delete'] ? 1 : 0;
-								$read = $scope['read'] ? ' checked': '';
-								$write = $scope['write'] ? ' checked': '';
-								$delete = $scope['delete'] ? ' checked': '';
-								echo <<<HTML
+		foreach (getTables() as $tables) {
+			$scope           = $db->super_query('SELECT * FROM ' . PREFIX . "_api_scope WHERE key_id = {$this_id} and `table` = '{$tables}'");
+			$scope['read']   = $scope['read'] ? 1 : 0;
+			$scope['write']  = $scope['write'] ? 1 : 0;
+			$scope['delete'] = $scope['delete'] ? 1 : 0;
+			$read            = $scope['read'] ? ' checked' : '';
+			$write           = $scope['write'] ? ' checked' : '';
+			$delete          = $scope['delete'] ? ' checked' : '';
+			echo <<<HTML
 									<tr>
         								<td class="col-xs-6 col-sm-6 col-md-6">
         									<h6 class="media-heading text-semibold">Таблица: {$tables}</h6>
@@ -783,7 +825,7 @@ HTML;
 										</td>
 									</tr>
 HTML;
-							}
+		}
 		echo <<<HTML
 					 	</tbody>
 					</table>
@@ -894,8 +936,8 @@ HTML;
 				<div class="accordion" id="accordion">
 HTML;
 
-		foreach($version['changelog'] as $id => $c) {
-			$vId = str_replace('.', '', $id);
+		foreach ($version['changelog'] as $id => $c) {
+			$vId  = str_replace('.', '', $id);
 			$cont = <<<HTML
 					<div class="accordion-group">
 						<div class="accordion-heading">
@@ -906,8 +948,8 @@ HTML;
 							<div class="accordion-inner mt-20" >
 								<ul class="list-circle">
 HTML;
-									foreach($c as $i => $l) $cont .= "<li>{$l}</li>";
-$cont .= <<<HTML
+			foreach ($c as $i => $l) $cont .= "<li>{$l}</li>";
+			$cont .= <<<HTML
       						
 								</ul>				
 							</div>
@@ -915,8 +957,8 @@ $cont .= <<<HTML
 					</div>
 HTML;
 			echo $cont;
-	  }
-  		echo <<<HTML
+		}
+		echo <<<HTML
 		</div></div><div class="panel-footer">
 	<a href="?mod={$version['id']}" class="btn bg-green btn-sm btn-raised position-left" role="button">Главная</a>
 	<a href="?mod={$version['id']}&action=add" class="btn bg-teal btn-sm btn-raised position-left" role="button">Новый ключ</a>
@@ -930,29 +972,29 @@ HTML;
 	default:
 
 
-		$start_from = (int)$_REQUEST['start_from'];
+		$start_from   = (int)$_REQUEST['start_from'];
 		$api_per_page = 50;
 
-		if( $start_from < 0 ) $start_from = 0;
+		if ($start_from < 0) $start_from = 0;
 		echo <<<HTML
 <form action="?mod={$version['id']}" method="get" name="navi" id="navi">
-<input type="hidden" name="mod" value="{$version['id']}">
-<input type="hidden" name="start_from" id="start_from" value="{$start_from}">
+	<input type="hidden" name="mod" value="{$version['id']}">
+	<input type="hidden" name="start_from" id="start_from" value="{$start_from}">
 </form>
 <form action="?mod={$version['id']}" method="post" name="optionsbar" id="optionsbar">
-<input type="hidden" name="mod" value="{$version['id']}">
-<input type="hidden" name="user_hash" value="{$dle_login_hash}">
-<input type="hidden" name="start_from" id="start_from" value="{$start_from}">
-<div class="panel panel-default">
-	<div class="panel-heading">
-		{$version['name']}
-  	</div>
+	<input type="hidden" name="mod" value="{$version['id']}">
+	<input type="hidden" name="user_hash" value="{$dle_login_hash}">
+	<input type="hidden" name="start_from" id="start_from" value="{$start_from}">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			{$version['name']}
+		</div>
 HTML;
 
-		$i = $start_from+$api_per_page;
+		$i = $start_from + $api_per_page;
 
 
-		$result_count = $db->super_query('SELECT COUNT(*) as count FROM '. PREFIX . "_api_keys {$where}");
+		$result_count   = $db->super_query('SELECT COUNT(*) as count FROM ' . PREFIX . "_api_keys {$where}");
 		$all_count_apis = $result_count['count'];
 
 
@@ -960,22 +1002,22 @@ HTML;
 
 		$npp_nav = "";
 
-		if( $all_count_apis > $api_per_page ) {
+		if ($all_count_apis > $api_per_page) {
 
-			if( $start_from > 0 ) {
+			if ($start_from > 0) {
 				$previous = $start_from - $api_per_page;
-				$npp_nav .= "<li><a onclick=\"javascript:search_submit($previous); return(false);\" href=\"#\" title=\"{$lang['edit_prev']}\">&lt;&lt;</a></li>";
+				$npp_nav  .= "<li><a onclick=\"javascript:search_submit($previous); return(false);\" href=\"#\" title=\"{$lang['edit_prev']}\">&lt;&lt;</a></li>";
 			}
 
-			$enpages_count = @ceil( $all_count_apis / $api_per_page );
+			$enpages_count      = @ceil($all_count_apis / $api_per_page);
 			$enpages_start_from = 0;
-			$enpages = "";
+			$enpages            = "";
 
-			if( $enpages_count <= 10 ) {
+			if ($enpages_count <= 10) {
 
-				for($j = 1; $j <= $enpages_count; $j ++) {
+				for ($j = 1; $j <= $enpages_count; $j++) {
 
-					if( $enpages_start_from != $start_from ) {
+					if ($enpages_start_from != $start_from) {
 
 						$enpages .= "<li><a onclick=\"javascript:search_submit($enpages_start_from); return(false);\" href=\"#\">$j</a></li>";
 
@@ -992,18 +1034,18 @@ HTML;
 			} else {
 
 				$start = 1;
-				$end = 10;
+				$end   = 10;
 
-				if( $start_from > 0 ) {
+				if ($start_from > 0) {
 
-					if( ($start_from / $api_per_page) > 4 ) {
+					if (($start_from / $api_per_page) > 4) {
 
-						$start = @ceil( $start_from / $api_per_page ) - 3;
-						$end = $start + 9;
+						$start = @ceil($start_from / $api_per_page) - 3;
+						$end   = $start + 9;
 
-						if( $end > $enpages_count ) {
+						if ($end > $enpages_count) {
 							$start = $enpages_count - 10;
-							$end = $enpages_count - 1;
+							$end   = $enpages_count - 1;
 						}
 
 						$enpages_start_from = ($start - 1) * $api_per_page;
@@ -1012,15 +1054,15 @@ HTML;
 
 				}
 
-				if( $start > 2 ) {
+				if ($start > 2) {
 
 					$enpages .= "<li><a onclick=\"javascript:search_submit(0); return(false);\" href=\"#\">1</a></li> <li><span>...</span></li>";
 
 				}
 
-				for($j = $start; $j <= $end; $j ++) {
+				for ($j = $start; $j <= $end; $j++) {
 
-					if( $enpages_start_from != $start_from ) {
+					if ($enpages_start_from != $start_from) {
 
 						$enpages .= "<li><a onclick=\"javascript:search_submit($enpages_start_from); return(false);\" href=\"#\">$j</a></li>";
 
@@ -1033,21 +1075,21 @@ HTML;
 				}
 
 				$enpages_start_from = ($enpages_count - 1) * $api_per_page;
-				$enpages .= "<li><span>...</span></li><li><a onclick=\"javascript:search_submit($enpages_start_from); return(false);\" href=\"#\">$enpages_count</a></li>";
+				$enpages            .= "<li><span>...</span></li><li><a onclick=\"javascript:search_submit($enpages_start_from); return(false);\" href=\"#\">$enpages_count</a></li>";
 
 				$npp_nav .= $enpages;
 
 			}
 
-			if( $all_count_apis > $i ) {
+			if ($all_count_apis > $i) {
 				$how_next = $all_count_apis - $i;
-				if( $how_next > $api_per_page ) {
+				if ($how_next > $api_per_page) {
 					$how_next = $api_per_page;
 				}
 				$npp_nav .= "<li><a onclick=\"javascript:search_submit($i); return(false);\" href=\"#\" title=\"{$lang['edit_next']}\">&gt;&gt;</a></li>";
 			}
 
-			$npp_nav = "<ul class=\"pagination pagination-sm\">".$npp_nav."</ul>";
+			$npp_nav = "<ul class=\"pagination pagination-sm\">" . $npp_nav . "</ul>";
 
 		}
 
@@ -1055,13 +1097,13 @@ HTML;
 
 		$i = 0;
 
-		if ( $all_count_apis ) {
+		if ($all_count_apis) {
 
 			$entries = "";
 
-			$db->query("SELECT * FROM " . PREFIX . "_api_keys api, ". USERPREFIX . "_users users WHERE api.user_id = users.user_id ORDER BY api.id DESC LIMIT {$start_from},{$api_per_page}");
+			$db->query("SELECT * FROM " . PREFIX . "_api_keys api, " . USERPREFIX . "_users users WHERE api.user_id = users.user_id ORDER BY api.id DESC LIMIT {$start_from},{$api_per_page}");
 
-			while($row = $db->get_row()) {
+			while ($row = $db->get_row()) {
 
 				$menu_link = <<<HTML
         <div class="btn-group">
@@ -1077,8 +1119,10 @@ HTML;
 HTML;
 
 				$status = $row['active'] ? 'активен' : 'неактивен';
-				$own = $row['own_only'] ? '<i class="fa fa-check-circle text-success text-success"></i>' : '<i class="fa fa-times-circle text-danger"></i>';
-				$admin = $row['is_admin'] ? '<i class="fa fa-check-circle text-success"></i>' : '<i class="fa fa-times-circle text-danger"></i>';
+				$own    = $row['own_only'] ? '<i class="fa fa-check-circle text-success text-success"></i>'
+					: '<i class="fa fa-times-circle text-danger"></i>';
+				$admin  = $row['is_admin'] ? '<i class="fa fa-check-circle text-success"></i>'
+					: '<i class="fa fa-times-circle text-danger"></i>';
 
 				$entries .= "<tr id='api_{$row['id']}'>
         <td style=\"word-break: break-all;\"><div id=\"content_{$row['id']}\">{$row['id']}</div></td>
@@ -1138,7 +1182,7 @@ HTML;
 HTML;
 
 
-		}  else {
+		} else {
 
 			echo <<<HTML
 <div class="panel-body">
