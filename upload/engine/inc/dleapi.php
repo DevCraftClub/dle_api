@@ -22,8 +22,13 @@ global $db, $config, $dle_login_hash, $_TIME;
 $version = [
 	'name'      => 'DLE-API',
 	'descr'     => 'Неофициальное API',
-	'version'   => '0.2.2',
+	'version'   => '0.3.0',
 	'changelog' => [
+		'0.3.0' => [
+			'Оптимизация кода под PHP 8.2',
+			'Минимально поддерживаемая версия DLE - 16.0',
+			'Изменён список алгоритмов на hash_hmac_algos'
+		],
 		'0.2.2' => [
 			'[FIX] Поправлены файлы рутинга, которые забыл заменить',
 			'[FIX] Поправлена функция сохранения кеша, из-за чего выдавало ответ null',
@@ -84,7 +89,17 @@ else if ($_GET['action'] === 'edit') $subtitle = ['?mod=dleapi' => $version['des
 else if ($_GET['action'] === 'changelog') $subtitle = ['?mod=dleapi' => $version['descr'], '' => 'Изменения в всериях'];
 
 echoheader("<i class=\"fa fa-id-card-o position-left\"></i><span class=\"text-semibold\">{$version['name']} (v{$version['version']})</span>", $subtitle);
-function showRow($title = "", $description = "", $field = "", $class = "") {
+
+/**
+ * Функция создания заголовка
+ *
+ * @param string|null $title
+ * @param string|null $description
+ * @param string|null $field
+ * @param string|null $class
+ * @return void
+ */
+function showRow(?string $title, ?string $description, ?string $field, ?string $class) : void {
 
 	echo "<tr>
         <td class=\"col-xs-6 col-sm-6 col-md-5\"><h6 class=\"media-heading text-semibold\">{$title}</h6><span class=\"text-muted text-size-small hidden-xs\">{$description}</span></td>
@@ -93,13 +108,15 @@ function showRow($title = "", $description = "", $field = "", $class = "") {
 }
 
 /**
- * @param $options
- * @param $name
- * @param $selected
+ * Функция выпадающего меню
+ *
+ * @param array $options
+ * @param string $name
+ * @param string|null $selected
  *
  * @return string
  */
-function makeDropDown($options, $name, $selected) {
+function makeDropDown(array $options, string $name, ?string $selected) : string {
 	$output = "<select class=\"uniform\" name=\"$name\">\r\n";
 	foreach ($options as $value => $description) {
 		$output .= "<option value=\"$value\"";
@@ -113,12 +130,14 @@ function makeDropDown($options, $name, $selected) {
 }
 
 /**
- * @param $name
- * @param $selected
+ * Функция создания чекбокса / флажка
+ *
+ * @param string $name
+ * @param string|null $selected
  *
  * @return string
  */
-function makeCheckBox($name, $selected) {
+function makeCheckBox(string $name, ?string $selected) : string {
 
 	$selected = $selected ? "checked" : "";
 
@@ -127,9 +146,11 @@ function makeCheckBox($name, $selected) {
 }
 
 /**
+ * Функция вывода всех пользователей в массиве в виде 1 => "Пользователь"
+ *
  * @return array
  */
-function getUsers() {
+function getUsers() : array {
 	global $db;
 
 	$db->query('SELECT * FROM ' . USERPREFIX . "_users WHERE restricted = '0'");
@@ -146,9 +167,11 @@ function getUsers() {
 }
 
 /**
+ * Функция вывода всех таблиц в виде массива
+ *
  * @return array
  */
-function getTables() {
+function getTables() : array {
 	global $db;
 
 	$db->query('SHOW tables');
@@ -167,31 +190,28 @@ function getTables() {
 /**
  * @link https://www.php.net/manual/en/function.hash-hmac.php#109260
  *
- * @param        $user_id
- * @param        $salt
- * @param        $key_length
- * @param        $separator
- * @param        $block_length
- * @param int    $count
- *
- * @param int    $algorithm
+ * @param int $algorithm
+ * @param int $user_id
+ * @param string $salt
+ * @param int $key_length
+ * @param string $separator
+ * @param int $block_length
+ * @param int $count
  *
  * @return string
- *
  */
-function pbkdf2($algorithm = 2, $user_id, $salt, $key_length, $separator, $block_length, $count = 1024) {
+function pbkdf2(int $algorithm = 2, int $user_id, string $salt, int $key_length, string $separator, int $block_length, int $count = 1024) : string {
 	global $_TIME, $dleapi;
 	$algos = [];
-	foreach (hash_algos() as $id => $algo) {
+	foreach (hash_hmac_algos() as $id => $algo) {
 		$algos[$id] = $algo;
 	}
-	if (empty($algorithm)) $algorithm = 2;
 	if (empty($salt)) $salt = 'localhost';
 	if (empty($key_length)) $key_length = 20;
 	if (empty($separator)) $separator = '-';
 	if (empty($block_length)) $separator = 4;
-	$algorithm = strtolower($algos[$algorithm]);
-	if (!in_array($algorithm, hash_algos(), true))
+	$algo = strtolower($algos[$algorithm]);
+	if (!in_array($algo, $algos, true))
 		die('PBKDF2 ERROR: Invalid hash algorithm.');
 	if ($count <= 0 || $key_length <= 0)
 		die('PBKDF2 ERROR: Invalid parameters.');
@@ -199,18 +219,18 @@ function pbkdf2($algorithm = 2, $user_id, $salt, $key_length, $separator, $block
 		die('You have to be logged in to generate a key!');
 	if (count($dleapi) === 0) die('Нужно сначала настроить плагин, затем создавать ключ!');
 
-	$hash_length = strlen(hash($algorithm, "", true));
+	$hash_length = strlen(hash($algo, "", true));
 	$block_count = ceil($key_length / $hash_length);
 	$output      = '';
-	$salt		 = $_TIME . $salt;
+	$salt        = $_TIME . $salt;
 	for ($i = 1; $i <= $block_count; $i++) {
 		// $i encoded as 4 bytes, big endian.
 		$last = $salt . pack("N", $i);
 		// first iteration
-		$last = $xorsum = hash_hmac($algorithm, $last, $user_id, true);
+		$last = $xorsum = hash_hmac($algo, $last, $user_id, true);
 		// perform the other $count - 1 iterations
 		for ($j = 1; $j < $count; $j++) {
-			$xorsum ^= ($last = hash_hmac($algorithm, $last, $user_id, true));
+			$xorsum ^= ($last = hash_hmac($algo, $last, $user_id, true));
 		}
 		$output .= $xorsum;
 	}
@@ -238,10 +258,10 @@ switch ($action) {
 			ob_end_clean();
 
 			$key         = $_GET['save_con'];
-			$key['user'] = (int)$key['user'];
+			$key['user'] = (int) $key['user'];
 
 			echo pbkdf2($dleapi['algo'], $key['user'], $dleapi['secret'], $dleapi['length'],
-						$dleapi['trennen'], $dleapi['block']);
+				$dleapi['trennen'], $dleapi['block']);
 		}
 		return false;
 
@@ -254,23 +274,23 @@ switch ($action) {
 			$key    = $_POST['save_con'];
 			$tables = $_POST['tables'];
 
-			$key['is_admin'] = $key['is_admin'] ? (bool)$key['is_admin'] : 0;
-			$key['active']   = $key['active'] ? (bool)$key['active'] : 0;
-			$key['own_only'] = $key['own_only'] ? (bool)$key['own_only'] : 0;
-			$key['user']     = (int)$key['user'];
+			$key['is_admin'] = $key['is_admin'] ? (bool) $key['is_admin'] : 0;
+			$key['active']   = $key['active'] ? (bool) $key['active'] : 0;
+			$key['own_only'] = $key['own_only'] ? (bool) $key['own_only'] : 0;
+			$key['user']     = (int) $key['user'];
 
 			try {
 				$key_api = $db->super_query('SELECT api FROM ' . PREFIX . "_api_keys WHERE api = '{$key['api']}' or user_id = {$key['user']}");
 				if (count($key_api) === 0) {
 
 					$db->query('INSERT INTO ' . PREFIX .
-							   "_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
+						"_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
 					$apiKey = $db->insert_id();
 
 					foreach ($tables as $table => $data) {
-						$data['read']   = $data['read'] ? (bool)$data['read'] : 0;
-						$data['write']  = $data['write'] ? (bool)$data['write'] : 0;
-						$data['delete'] = $data['delete'] ? (bool)$data['delete'] : 0;
+						$data['read']   = $data['read'] ? (bool) $data['read'] : 0;
+						$data['write']  = $data['write'] ? (bool) $data['write'] : 0;
+						$data['delete'] = $data['delete'] ? (bool) $data['delete'] : 0;
 						$db->query('INSERT INTO ' . PREFIX . "_api_scope (`table`, `read`, `write`, `delete`, `key_id`) VALUES ('{$table}', {$data['read']}, {$data['write']}, {$data['delete']}, {$apiKey})");
 					}
 
@@ -290,24 +310,24 @@ switch ($action) {
 		if ($_POST) {
 			ob_end_clean();
 
-			$this_id = (int)$_GET['id'];
+			$this_id = (int) $_GET['id'];
 
 			$key    = $_POST['save_con'];
 			$tables = $_POST['tables'];
 
-			$key['is_admin'] = $key['is_admin'] ? (bool)$key['is_admin'] : 0;
-			$key['active']   = $key['active'] ? (bool)$key['active'] : 0;
-			$key['own_only'] = $key['own_only'] ? (bool)$key['own_only'] : 0;
-			$key['user']     = (int)$key['user'];
+			$key['is_admin'] = $key['is_admin'] ? (bool) $key['is_admin'] : 0;
+			$key['active']   = $key['active'] ? (bool) $key['active'] : 0;
+			$key['own_only'] = $key['own_only'] ? (bool) $key['own_only'] : 0;
+			$key['user']     = (int) $key['user'];
 
 			try {
 
 				$db->query('UPDATE ' . PREFIX . "_api_keys SET api = '{$key['api']}', is_admin = {$key['is_admin']}, active = {$key['active']}, user_id = {$key['user']}, own_only = {$key['own_only']} WHERE id = {$this_id}");
 
 				foreach ($tables as $table => $data) {
-					$data['read']   = $data['read'] ? (bool)$data['read'] : 0;
-					$data['write']  = $data['write'] ? (bool)$data['write'] : 0;
-					$data['delete'] = $data['delete'] ? (bool)$data['delete'] : 0;
+					$data['read']   = $data['read'] ? (bool) $data['read'] : 0;
+					$data['write']  = $data['write'] ? (bool) $data['write'] : 0;
+					$data['delete'] = $data['delete'] ? (bool) $data['delete'] : 0;
 
 					$tab = $db->super_query("SELECT count(*) as count FROM " . PREFIX . "_api_scope WHERE key_id = {$this_id} AND `table` = '{$table}'");
 
@@ -331,7 +351,7 @@ switch ($action) {
 		if ($_POST) {
 			ob_end_clean();
 
-			$this_id = (int)$_GET['id'];
+			$this_id = (int) $_GET['id'];
 
 
 			try {
@@ -516,21 +536,21 @@ HTML;
 
 		$dleapi['secret'] = $dleapi['secret'] ?: $config['http_home_url'];
 		showRow('Алгоритм шифрования', 'Выбираем алгоритм шифрования. По умолчанию: md5',
-				makeDropDown(hash_algos(), 'save[algo]', $dleapi['algo']));
+			makeDropDown(hash_algos(), 'save[algo]', $dleapi['algo']));
 		showRow('Безопасный вывод информации', 'Вместо паролей, IP-адресов и хэшсум будет выводить заглушилки',
-				makeCheckBox('save[secure]', $dleapi['secure']));
+			makeCheckBox('save[secure]', $dleapi['secure']));
 		showRow('Длина блока', 'Задаём длину блока, по которой будет генерироваться автоматический API ключ.',
-				'<input type="number" class="form-control" name="save[block]" value="' . $dleapi['block'] . '">');
+			'<input type="number" class="form-control" name="save[block]" value="' . $dleapi['block'] . '">');
 		showRow('Длина ключа',
-				'Задаём длину ключа, по которой будет генерироваться автоматический API ключ. Разделитель не учитывается. Если будет не хватка символов, то будут генерироваться случайные символы, пока не заполнят длину ключа. Или же набор символов будет урезан. <br><b>Важно:</b> Деление общей длины и длины блока должно быть без остатка. Скрипт будет сам подставлять нужное значение.',
-				'<input type="number" class="form-control" name="save[length]" value="' . $dleapi['length'] . '">');
+			'Задаём длину ключа, по которой будет генерироваться автоматический API ключ. Разделитель не учитывается. Если будет не хватка символов, то будут генерироваться случайные символы, пока не заполнят длину ключа. Или же набор символов будет урезан. <br><b>Важно:</b> Деление общей длины и длины блока должно быть без остатка. Скрипт будет сам подставлять нужное значение.',
+			'<input type="number" class="form-control" name="save[length]" value="' . $dleapi['length'] . '">');
 		showRow('Разделитель блока', 'Задаём разделитель блока, который будет делить блоки. Пример: <b>-</b>',
-				'<input type="text" max="1" class="form-control" name="save[trennen]" value="' . $dleapi['trennen'] .
-				'">');
+			'<input type="text" max="1" class="form-control" name="save[trennen]" value="' . $dleapi['trennen'] .
+			'">');
 		showRow('Секретный ключ', 'Секретный ключ для генерации ключа. Пример: <b>' .
-								  $config['http_home_url'] . '</b>',
-				'<input type="text" class="form-control" name="save[secret]" value="' .
-				$dleapi['secret'] . '">');
+			$config['http_home_url'] . '</b>',
+			'<input type="text" class="form-control" name="save[secret]" value="' .
+			$dleapi['secret'] . '">');
 
 		echo <<<HTML
 
@@ -593,15 +613,15 @@ HTML;
 						<tbody>
 HTML;
 		showRow('Ключ',
-				'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
-				'<input type="text" class="form-control" name="save_con[api]" value=""><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
-				'white-line');
+			'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
+			'<input type="text" class="form-control" name="save_con[api]" value=""><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
+			'white-line');
 		showRow('Пользователь', 'Выбор пользователя для ключа', makeDropDown(getUsers(), 'save_con[user]', ''));
 		showRow('Полный доступ',
-				'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
-				makeCheckBox('save_con[is_admin]', ''));
+			'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
+			makeCheckBox('save_con[is_admin]', ''));
 		showRow('Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.',
-				makeCheckBox('save_con[own_only]', ''));
+			makeCheckBox('save_con[own_only]', ''));
 		showRow('Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]', '1'));
 		echo <<<HTML
 					 	</tbody>
@@ -747,7 +767,7 @@ HTML;
 
 	case 'edit':
 
-		$this_id = (int)$_GET['id'];
+		$this_id = (int) $_GET['id'];
 
 		$api_key = $db->super_query('SELECT * FROM ' . PREFIX . "_api_keys WHERE id = {$this_id}");
 
@@ -769,19 +789,19 @@ HTML;
 						<tbody>
 HTML;
 		showRow('Ключ',
-				'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
-				'<input type="text" class="form-control" name="save_con[api]" value="' . $api_key['api'] .
-				'"><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
-				'white-line');
+			'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
+			'<input type="text" class="form-control" name="save_con[api]" value="' . $api_key['api'] .
+			'"><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
+			'white-line');
 		showRow('Пользователь', 'Выбор пользователя для ключа',
-				makeDropDown(getUsers(), 'save_con[user]', $api_key['user_id']));
+			makeDropDown(getUsers(), 'save_con[user]', $api_key['user_id']));
 		showRow('Полный доступ',
-				'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
-				makeCheckBox('save_con[is_admin]', $api_key['is_admin']));
+			'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
+			makeCheckBox('save_con[is_admin]', $api_key['is_admin']));
 		showRow('Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.',
-				makeCheckBox('save_con[own_only]', $api_key['own_only']));
+			makeCheckBox('save_con[own_only]', $api_key['own_only']));
 		showRow('Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]',
-																			$api_key['active']));
+			$api_key['active']));
 		echo <<<HTML
 					 	</tbody>
 					</table>
@@ -979,7 +999,7 @@ HTML;
 	default:
 
 
-		$start_from   = (int)$_REQUEST['start_from'];
+		$start_from   = (int) $_REQUEST['start_from'];
 		$api_per_page = 50;
 
 		if ($start_from < 0) $start_from = 0;

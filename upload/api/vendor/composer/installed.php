@@ -19,13 +19,22 @@
             'reference' => NULL,
             'dev_requirement' => false,
         ),
+        'lincanbin/php-pdo-mysql-class' => array(
+            'pretty_version' => 'v2.2',
+            'version' => '2.2.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../lincanbin/php-pdo-mysql-class',
+            'aliases' => array(),
+            'reference' => '7517d30ffc514a3c54217717b97721ab394fa87a',
+            'dev_requirement' => false,
+        ),
         'monolog/monolog' => array(
-            'pretty_version' => '2.9.1',
-            'version' => '2.9.1.0',
+            'pretty_version' => '3.3.1',
+            'version' => '3.3.1.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../monolog/monolog',
             'aliases' => array(),
-            'reference' => 'f259e2b15fb95494c83f52d3caad003bbf5ffaa1',
+            'reference' => '9b5daeaffce5b926cac47923798bba91059e60e2',
             'dev_requirement' => false,
         ),
         'nikic/fast-route' => array(
@@ -71,18 +80,18 @@
             ),
         ),
         'psr/log' => array(
-            'pretty_version' => '1.1.4',
-            'version' => '1.1.4.0',
+            'pretty_version' => '3.0.0',
+            'version' => '3.0.0.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../psr/log',
             'aliases' => array(),
-            'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
+            'reference' => 'fe5ea303b0887d5caefd3d431c3e61ad47037001',
             'dev_requirement' => false,
         ),
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '3.0.0',
             ),
         ),
         'slim/slim' => array(
