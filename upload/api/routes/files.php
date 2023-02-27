@@ -11,78 +11,78 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "files";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'news_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'name',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 250
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'onserver',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 250
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'author',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'date',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 15
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'dcount',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'bigint',
-		'type'     => 'null',
+		'name'     => 'size',
+		'type'     => 'bigint',
 		'required' => true,
 		'post'     => true,
 		'length'   => 20
 	),
 	array(
-		'name'     => 'char',
-		'type'     => 'null',
+		'name'     => 'checksum',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 32
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'driver',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'is_public',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1

@@ -11,190 +11,190 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "category";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 9
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'parentid',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 9
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'posi',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 9
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'name',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 50
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'alt_name',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 50
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'icon',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 200
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'skin',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 50
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'descr',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 300
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'keywords',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'news_sort',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 10
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'news_msort',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 4
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'news_number',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 6
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'short_tpl',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'full_tpl',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'metatitle',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'show_sub',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'allow_rss',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'fulldescr',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'disable_search',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'disable_main',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'disable_rating',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'disable_comments',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'enable_dzen',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'enable_turbo',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'active',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'rating_type',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'schema_org',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 50

@@ -12,43 +12,43 @@ $api_name = "admin_logs";
 
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'name',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'date',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'ip',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 46
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'action',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'extras',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0

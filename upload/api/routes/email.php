@@ -11,29 +11,29 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "email";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 3
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'name',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 10
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'template',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'use_html',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1

@@ -11,64 +11,64 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "complaint";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'p_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'c_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'n_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'text',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'from',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'to',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'date',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'email',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 50

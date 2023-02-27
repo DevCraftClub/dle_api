@@ -11,43 +11,43 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "comments_files";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'c_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'author',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'date',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 15
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'name',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'driver',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1

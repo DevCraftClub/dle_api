@@ -11,43 +11,43 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "banned";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 6
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'users_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'descr',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'date',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 15
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'days',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 4
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'ip',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 46

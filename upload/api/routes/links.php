@@ -11,57 +11,57 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "links";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'word',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'link',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'only_one',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'replacearea',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'rcount',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 3
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'targetblank',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'title',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255

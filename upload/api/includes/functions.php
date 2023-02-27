@@ -157,7 +157,7 @@
 		 */
 		public function create() {
 			$file_name = "{$this->app}_{$this->module}_" . md5($this->id) .'.json';
-			file_put_contents($this->cachePath .'/'. $file_name, $this->data);
+			file_put_contents($this->cachePath .'/'. $file_name, json_encode($this->data, JSON_UNESCAPED_UNICODE));
 
 			return $this->get();
 		}

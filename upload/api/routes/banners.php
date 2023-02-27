@@ -11,155 +11,155 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "banners";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 6
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'banner_tag',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'descr',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 200
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'code',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'approve',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'short_place',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'bstick',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'main',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'category',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'grouplevel',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 100
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'start',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 15
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'end',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 15
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'fpage',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'innews',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'devicelevel',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 10
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'allow_views',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'max_views',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'allow_counts',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'max_counts',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'views',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'clicks',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'rubric',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 9
