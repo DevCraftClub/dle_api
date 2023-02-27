@@ -3,11 +3,12 @@
 		"ext-json": "*",
 		"slim/slim": "3.*",
 		"monolog/monolog": "*",
-		"ext-pdo": "*"
+		"ext-pdo": "*",
+		"lincanbin/php-pdo-mysql-class": "*"
 	},
 	"config": {
 		"platform": {
-			"php": "7.4"
+			"php": "8.1"
 		}
 	}
 }

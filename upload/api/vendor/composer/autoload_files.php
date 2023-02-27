@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     '253c157292f75eb38082b5acb06f3f01' => $vendorDir . '/nikic/fast-route/src/functions.php',
+    'bdf151f62a69e3ca51f07e0bd032de74' => $vendorDir . '/lincanbin/php-pdo-mysql-class/src/PDO.class.php',
 );

@@ -7,6 +7,7 @@ if (!defined('DATALIFEENGINE')) {
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+global $connect, $app;
 
 $api_name = "admin_logs";
 
