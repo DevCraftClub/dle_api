@@ -11,22 +11,22 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "ignore_list";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'user',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'user_from',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40

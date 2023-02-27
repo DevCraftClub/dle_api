@@ -11,29 +11,29 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "login_log";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'ip',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 46
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'count',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 6
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'date',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11

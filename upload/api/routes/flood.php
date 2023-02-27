@@ -11,29 +11,29 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "flood";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'f_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'ip',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 46
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 20
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'flag',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1

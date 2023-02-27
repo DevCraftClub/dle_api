@@ -11,29 +11,29 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "banners_rubrics";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 9
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'parentid',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 9
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'title',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 70
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'description',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255

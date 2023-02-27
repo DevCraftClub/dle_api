@@ -3,7 +3,7 @@
 	<name>DLE-API</name>
 	<description>Неофициальное API для CMS DLE</description>
 	<icon></icon>
-	<version>0.2.0</version>
+	<version>0.2.2</version>
 	<dleversion>13.0</dleversion>
 	<versioncompare>greater</versioncompare>
 	<upgradeurl></upgradeurl>

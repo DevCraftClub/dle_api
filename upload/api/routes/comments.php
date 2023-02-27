@@ -11,92 +11,92 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = "comments";
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'post_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'user_id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'datetime',
-		'type'     => 'null',
+		'name'     => 'date',
+		'type'     => 'datetime',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'autor',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'email',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 40
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'text',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 0
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'ip',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 46
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'is_register',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'approve',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 1
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'rating',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'vote_num',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11
 	),
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'parent',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => true,
 		'length'   => 11

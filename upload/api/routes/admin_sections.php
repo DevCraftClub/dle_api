@@ -13,43 +13,43 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 $api_name     = 'admin_sections';
 $possibleData = array(
 	array(
-		'name'     => 'integer',
-		'type'     => 'null',
+		'name'     => 'id',
+		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 9
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'name',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 100
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'title',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'descr',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'icon',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
 	),
 	array(
-		'name'     => 'string',
-		'type'     => 'null',
+		'name'     => 'allow_groups',
+		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
