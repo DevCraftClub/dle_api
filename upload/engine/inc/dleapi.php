@@ -22,8 +22,12 @@ global $db, $config, $dle_login_hash, $_TIME;
 $version = [
 	'name'      => 'DLE-API',
 	'descr'     => 'Неофициальное API',
-	'version'   => '0.3.0',
+	'version'   => '0.3.1',
 	'changelog' => [
+		'0.3.1' => [
+			'[FIX] Исправлена <a href="https://skripters.biz/forum/threads/dle-api.50709/post-499483" target="_blank">заявленная ошибка</a>',
+			'[FIX] Исправлена <a href="https://skripters.biz/forum/threads/dle-api.50709/post-499640" target="_blank">заявленная ошибка</a>',
+		],
 		'0.3.0' => [
 			'Оптимизация кода под PHP 8.2',
 			'Минимально поддерживаемая версия DLE - 16.0',
@@ -99,7 +103,7 @@ echoheader("<i class=\"fa fa-id-card-o position-left\"></i><span class=\"text-se
  * @param string|null $class
  * @return void
  */
-function showRow(?string $title, ?string $description, ?string $field, ?string $class) : void {
+function showRow(?string $title = null, ?string $description = null, ?string $field = null, ?string $class = null) : void {
 
 	echo "<tr>
         <td class=\"col-xs-6 col-sm-6 col-md-5\"><h6 class=\"media-heading text-semibold\">{$title}</h6><span class=\"text-muted text-size-small hidden-xs\">{$description}</span></td>
@@ -116,7 +120,7 @@ function showRow(?string $title, ?string $description, ?string $field, ?string $
  *
  * @return string
  */
-function makeDropDown(array $options, string $name, ?string $selected) : string {
+function makeDropDown(array $options, string $name, ?string $selected = null) : string {
 	$output = "<select class=\"uniform\" name=\"$name\">\r\n";
 	foreach ($options as $value => $description) {
 		$output .= "<option value=\"$value\"";
@@ -137,7 +141,7 @@ function makeDropDown(array $options, string $name, ?string $selected) : string 
  *
  * @return string
  */
-function makeCheckBox(string $name, ?string $selected) : string {
+function makeCheckBox(string $name, ?string $selected = null) : string {
 
 	$selected = $selected ? "checked" : "";
 
@@ -281,22 +285,26 @@ switch ($action) {
 
 			try {
 				$key_api = $db->super_query('SELECT api FROM ' . PREFIX . "_api_keys WHERE api = '{$key['api']}' or user_id = {$key['user']}");
-				if (count($key_api) === 0) {
+				try {
+					if (is_null($key_api) || count($key_api) === 0) {
 
-					$db->query('INSERT INTO ' . PREFIX .
-						"_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
-					$apiKey = $db->insert_id();
+						$db->query('INSERT INTO ' . PREFIX .
+							"_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
+						$apiKey = $db->insert_id();
 
-					foreach ($tables as $table => $data) {
-						$data['read']   = $data['read'] ? (bool) $data['read'] : 0;
-						$data['write']  = $data['write'] ? (bool) $data['write'] : 0;
-						$data['delete'] = $data['delete'] ? (bool) $data['delete'] : 0;
-						$db->query('INSERT INTO ' . PREFIX . "_api_scope (`table`, `read`, `write`, `delete`, `key_id`) VALUES ('{$table}', {$data['read']}, {$data['write']}, {$data['delete']}, {$apiKey})");
+						foreach ($tables as $table => $data) {
+							$data['read']   = $data['read'] ? (bool) $data['read'] : 0;
+							$data['write']  = $data['write'] ? (bool) $data['write'] : 0;
+							$data['delete'] = $data['delete'] ? (bool) $data['delete'] : 0;
+							$db->query('INSERT INTO ' . PREFIX . "_api_scope (`table`, `read`, `write`, `delete`, `key_id`) VALUES ('{$table}', {$data['read']}, {$data['write']}, {$data['delete']}, {$apiKey})");
+						}
+
+						echo 'Ключ создан';
+					} else {
+						echo 'Этому пользователю уже был присвоен ключ доступа!';
 					}
-
-					echo 'Ключ создан';
-				} else {
-					echo 'Этому пользователю уже был присвоен ключ доступа!';
+				} catch (Exception $e) {
+					echo $e->getMessage();
 				}
 			} catch (Exception $e) {
 				msg('error', 'Всё плохо', $e->getMessage(), ['?mod=dleapi' => 'К списку']);
