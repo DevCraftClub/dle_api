@@ -22,8 +22,11 @@ global $db, $config, $dle_login_hash, $_TIME;
 $version = [
 	'name'      => 'DLE-API',
 	'descr'     => 'Неофициальное API',
-	'version'   => '0.3.1',
+	'version'   => '0.3.2',
 	'changelog' => [
+		'0.3.2' => [
+			'[FIX] Забыл добавить файлы класса и обновлённый файл функций. Хотел как лучше, через композер, но получилось как всегда',
+		],
 		'0.3.1' => [
 			'[FIX] Исправлена <a href="https://skripters.biz/forum/threads/dle-api.50709/post-499483" target="_blank">заявленная ошибка</a>',
 			'[FIX] Исправлена <a href="https://skripters.biz/forum/threads/dle-api.50709/post-499640" target="_blank">заявленная ошибка</a>',

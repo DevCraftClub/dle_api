@@ -5,9 +5,11 @@ if (!defined('DATALIFEENGINE')) {
 	die('Hacking attempt!');
 }
 
+
 include_once(DLEPlugins::Check(API_DIR . '/vendor/autoload.php'));
 include_once(DLEPlugins::Check(ENGINE_DIR . '/data/dbconfig.php'));
 include_once DLEPlugins::Check(ENGINE_DIR . '/inc/includes/functions.inc.php');
+include_once DLEPlugins::Check(__DIR__ . '/PDO.class.php');
 $dleapi = json_decode(file_get_contents(DLEPlugins::Check(ENGINE_DIR . '/data/dleapi.json')), true);
 
 $dbHostPort = explode(':', DBHOST);
