@@ -5,12 +5,10 @@ if (!defined('DATALIFEENGINE')) {
 	die("Hacking attempt!");
 }
 
+global $dle_api;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
-include_once(ENGINE_DIR . '/api/api.class.php');
-
-$dle_api = new DLE_API();
 
 $api_name     = 'users';
 $possibleData = array(
@@ -257,7 +255,7 @@ $possibleData = array(
 // );
 // possibleData Add
 
-$app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData) {
+$app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData, $dle_api) {
 	$header = array();
 	$access = array(
 		'full'       => false,
@@ -333,7 +331,7 @@ $app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData
 		return $response->withHeader('Content-type', 'application/json; charset=UTF-8');
 	});
 
-	$this->post('/register[/]', function (Request $request, Response $response, array $args) use ($possibleData, $api_name, $connect, $header, $access) {
+	$this->post('/register[/]', function (Request $request, Response $response, array $args) use ($possibleData, $api_name, $connect, $header, $access, $dle_api) {
 		foreach ($request->getHeaders() as $name => $value) {
 			$name          = strtolower(str_replace('HTTP_', '', $name));
 			$header[$name] = $value[0];
@@ -414,7 +412,8 @@ $app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData
 		return $response->withHeader('Content-type', 'application/json; charset=UTF-8');
 	});
 
-	$this->post('/auth[/]', function (Request $request, Response $response, array $args) use ($possibleData, $api_name, $connect, $header, $access) {
+	$this->post('/auth[/]', function (Request $request, Response $response, array $args) use ($possibleData, $api_name, $connect, $header, $access, $dle_api) {
+
 		foreach ($request->getHeaders() as $name => $value) {
 			$name          = strtolower(str_replace('HTTP_', '', $name));
 			$header[$name] = $value[0];
@@ -446,15 +445,16 @@ $app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData
 
 			$user_auth = $dle_api->external_auth($body['name'], $body['password']);
 			if ($user_auth) {
-				$sql = 'SELECT * FROM' . USERPREFIX . "_{$api_name} WHERE name = :name";
+				$sql = 'SELECT * FROM ' . USERPREFIX . "_{$api_name} WHERE name = :name";
 
 				$cache = new CacheSystem($api_name, $sql);
-				if (empty($cache->get())) {
+				$cache_data =  json_decode($cache->get(), true);
+				if (count($cache_data) == 0) {
 					$data = $connect->row($sql, ['name' => $body['name']]);
 					$cache->setData($data);
 					$cache->create();
 				} else {
-					$data = json_decode($cache->get(), true);
+					$data = $cache_data;
 				}
 
 				$response->withStatus(200)->getBody()->write(json_encode($data));
