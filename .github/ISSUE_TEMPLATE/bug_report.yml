@@ -34,15 +34,6 @@ body:
             value: "В ожидании чуда"
         validations:
             required: false
-    -   type: dropdown
-        id: plugin
-        attributes:
-            label: Плагин
-            description: Какой плагин не работает, как полагается?
-            options:
-                - "Fullstory-Metatags by Sander (MOD)"
-        validations:
-            required: true
     -   type: input
         id: plugin-version
         attributes:
