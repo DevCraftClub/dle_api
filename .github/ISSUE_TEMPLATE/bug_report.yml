@@ -21,10 +21,10 @@ body:
     -   type: checkboxes
         id: read-docs
         attributes:
-            label: Я читал документацию, перед созданием тикета
-            description: Рекомендую прочесть и ознакомится с документацией - [нужно прочесть документацип](https://documenter.getpostman.com/view/7856564/2s93CLsZ6p).
+            label: Я читал / читала документацию, перед созданием тикета
+            description: Рекомендую прочесть и ознакомится с документацией - [нужно прочесть документацию](https://documenter.getpostman.com/view/7856564/2s93CLsZ6p).
             options:
-                -   label: Я прочёл / прочла и ознакомился /ознакомилась документацию
+                -   label: Я прочёл / прочла и ознакомился / ознакомилась с документацией
                     required: true
     -   type: textarea
         id: what-happened
