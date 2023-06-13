@@ -3,6 +3,8 @@ description: Сообщить об ошибке / баге
 title: "[Ошибка]: "
 assignees:
     - Gokujo
+labels:
+    - bug
 body:
     -   type: markdown
         attributes:
@@ -15,6 +17,14 @@ body:
             description: Перед просьбой добавить или "починить" что-либо в срочном порядке - [нужно прочесть соглашение](https://devcraft.club/pages/licence-agreement/).
             options:
                 -   label: Я прочёл / прочла соглашение и согласен / согласна с ними
+                    required: true
+    -   type: checkboxes
+        id: read-docs
+        attributes:
+            label: Я читал документацию, перед созданием тикета
+            description: Рекомендую прочесть и ознакомится с документацией - [нужно прочесть документацип](https://documenter.getpostman.com/view/7856564/2s93CLsZ6p).
+            options:
+                -   label: Я прочёл / прочла и ознакомился /ознакомилась документацию
                     required: true
     -   type: textarea
         id: what-happened
