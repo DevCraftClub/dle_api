@@ -1,38 +1,86 @@
----
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
+name: Ошибка
+description: Сообщить об ошибке / баге
+title: "[Ошибка]: "
+assignees:
+    - Gokujo
+body:
+    -   type: markdown
+        attributes:
+            value: |
+                Спасибо, что нашли время, чтобы составить этот отчёт
+    -   type: checkboxes
+        id: read-rules
+        attributes:
+            label: Пользовательское соглашение
+            description: Перед просьбой добавить или "починить" что-либо в срочном порядке - [нужно прочесть соглашение](https://devcraft.club/pages/licence-agreement/).
+            options:
+                -   label: Я прочёл / прочла соглашение и согласен / согласна с ними
+                    required: true
+    -   type: textarea
+        id: what-happened
+        attributes:
+            label: В чём проблема?
+            description: Если можно, то пожалуйста, опиши проблему в деталях и то, как до неё добраться. Если можно пошагово
+            placeholder: Я - проблема, и вот моё описание
+            value: "Проблемка нарисовалась!"
+        validations:
+            required: true
+    -   type: textarea
+        id: what-should-happen
+        attributes:
+            label: Что ожидали?
+            description: Когда плагин был установлен, то что должно было произойти по твоему мнению, но не произошло?
+            placeholder: Чтобы всё решилось, а не всё это
+            value: "В ожидании чуда"
+        validations:
+            required: false
+    -   type: dropdown
+        id: plugin
+        attributes:
+            label: Плагин
+            description: Какой плагин не работает, как полагается?
+            options:
+                - "Fullstory-Metatags by Sander (MOD)"
+        validations:
+            required: true
+    -   type: input
+        id: plugin-version
+        attributes:
+            label: Версия плагина
+            description: Какой версией плагина пользуешься? Стоит обычно в менеджере плагинов
+        validations:
+            required: true
+    -   type: dropdown
+        id: dle-version
+        attributes:
+            label: Версия DLE
+            description: На какой версии DLE это произошло?
+            options:
+                - "16.x (Default)"
+                - "15.x"
+                - "14.x"
+                - "13.x"
+                - "< 13.x"
+        validations:
+            required: true
+    -   type: dropdown
+        id: php-version
+        attributes:
+            label: Версия PHP
+            description: На какой версии PHP работает сайт?
+            options:
+                - "8.x (Default)"
+                - "7.x"
+                - "5.x"
+        validations:
+            required: true
 
----
-
-**Describe the bug**
-A clear and concise description of what the bug is.
-
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
-
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+    -   type: textarea
+        id: "screenshots"
+        attributes:
+            label: Скриншоты
+            description: Если есть возможность, добавь скриншоты преступления
+            value: |
+                ![DESCRIPTION](LINK.png)
+        validations:
+            required: false
