@@ -10,7 +10,10 @@ include_once(DLEPlugins::Check(API_DIR . '/vendor/autoload.php'));
 include_once(DLEPlugins::Check(ENGINE_DIR . '/data/dbconfig.php'));
 include_once DLEPlugins::Check(ENGINE_DIR . '/inc/includes/functions.inc.php');
 include_once DLEPlugins::Check(__DIR__ . '/PDO.class.php');
+include_once DLEPlugins::Check(ENGINE_DIR . '/api/api.class.php');
 $dleapi = json_decode(file_get_contents(DLEPlugins::Check(ENGINE_DIR . '/data/dleapi.json')), true);
+$dle_api = new DLE_API();
+$dle_api->db = $db;
 
 $dbHostPort = explode(':', DBHOST);
 $dbHost = $dbHostPort[0] ?: 'localhost';
@@ -77,7 +80,7 @@ function checkAPI($key, $name) : array {
 
 	try {
 		if (!empty($key) && !empty($name)) {
-			$keyCheck = $connect->query("SELECT k.id, k.api, k.is_admin, k.active, u.user_id, k.own_only, u.name FROM  {$DLEprefix}_api_keys k, {$USERprefix}_users u WHERE u.user_id = k.user_id and api = :key", array('key' => $key));
+			$keyCheck = $connect->query("SELECT k.id, k.api, k.is_admin, k.active, u.user_id, k.own_only, u.name FROM  {$DLEprefix}_api_keys k, {$USERprefix}_users u WHERE u.user_id = k.user_id and k.api = :key", array('key' => $key));
 
 			if (!empty($keyCheck)) {
 				if ($keyCheck[0]['is_admin'] && $keyCheck[0]['active'] === 1) {
@@ -159,7 +162,7 @@ class CacheSystem {
 	private string $cachePath;
 	private string $module;
 	private string $id;
-	private string $data;
+	private mixed $data;
 	private string $app;
 
 	/**
@@ -207,13 +210,14 @@ class CacheSystem {
 	 */
 	public function get() : string {
 		$file_name = "{$this->app}_{$this->module}_" . md5($this->id) . '.json';
-		if (file_exists($this->cachePath . '/' . $file_name)) {
-			$return_data = json_decode(file_get_contents($this->cachePath . '/' . $file_name), true);
+		$cache_file = $this->cachePath . DIRECTORY_SEPARATOR . $file_name;
+		if (file_exists($cache_file)) {
+			$return_data = json_decode(file_get_contents($cache_file), true);
 			foreach ($return_data as $id => $data) {
 				foreach ($data as $key => $value)
 					$return_data[$id][$key] = $this->secureData($key, $value);
 			}
-			return '';
+			return json_encode($return_data, JSON_UNESCAPED_UNICODE);
 		}
 
 		return json_encode([], JSON_UNESCAPED_UNICODE);
