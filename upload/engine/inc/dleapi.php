@@ -22,8 +22,11 @@ global $db, $config, $dle_login_hash, $_TIME;
 $version = [
 	'name'      => 'DLE-API',
 	'descr'     => 'Неофициальное API',
-	'version'   => '160.0.33',
+	'version'   => '160.0.34',
 	'changelog' => [
+		'160.0.34' => [
+			'[FIX] Исправлена <a href="https://github.com/DevCraftClub/dle_api/issues/10" target="_blank">заявленная ошибка</a>',
+		],
 		'160.0.33' => [
 			'[FIX] Исправлена <a href="https://github.com/DevCraftClub/dle_api/issues/7" target="_blank">заявленная ошибка</a>',
 			'[FIX] Исправлено подключение встроенного DLE API',
@@ -291,7 +294,7 @@ switch ($action) {
 			$key['user']     = (int) $key['user'];
 
 			try {
-				$key_api = $db->super_query('SELECT api FROM ' . PREFIX . "_api_keys WHERE api = '{$key['api']}' or user_id = {$key['user']}");
+				$key_api = $db->super_query('SELECT api FROM ' . PREFIX . "_api_keys WHERE (api = '{$key['api']}' or user_id = {$key['user']}) and user_id <> 0");
 				try {
 					if (is_null($key_api) || count($key_api) === 0) {
 
@@ -1143,9 +1146,12 @@ HTML;
 
 			$entries = "";
 
-			$db->query("SELECT * FROM " . PREFIX . "_api_keys api, " . USERPREFIX . "_users users WHERE api.user_id = users.user_id ORDER BY api.id DESC LIMIT {$start_from},{$api_per_page}");
+			$users = getUsers();
+
+			$db->query("SELECT * FROM " . PREFIX . "_api_keys api ORDER BY api.id DESC LIMIT {$start_from},{$api_per_page}");
 
 			while ($row = $db->get_row()) {
+				$user_name = $users[$row['user_id']];
 
 				$menu_link = <<<HTML
         <div class="btn-group">
@@ -1170,7 +1176,7 @@ HTML;
         <td style=\"word-break: break-all;\"><div id=\"content_{$row['id']}\">{$row['id']}</div></td>
         <td style=\"word-break: break-all;\"><div id=\"key_{$row['id']}\">{$row['api']}</div></td>
         <td style=\"word-break: break-all;\"><div id=\"date_{$row['id']}\">{$row['created']}</div></td>
-        <td style=\"word-break: break-all;\"><div id=\"user_{$row['id']}\">{$row['name']}</div></td>
+        <td style=\"word-break: break-all;\"><div id=\"user_{$row['id']}\">{$user_name}</div></td>
         <td style=\"word-break: break-all;\"><div id=\"status_{$row['id']}\">{$status}</div></td>
         <td style=\"word-break: break-all;\"><div id=\"own_{$row['id']}\" style='text-align:center'>{$own}</div></td>
         <td style=\"word-break: break-all;\"><div id=\"admin{$row['id']}\" style='text-align:center'>{$admin}</div></td>
