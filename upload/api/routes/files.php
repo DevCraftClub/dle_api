@@ -158,8 +158,8 @@ $app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData
 			$sql = 'SELECT * FROM ' . PREFIX . "_{$api_name} {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
 
 			$getData = new CacheSystem($api_name, $sql);
-			if (empty($getData->get())) {
-				$data = $connect->query($sql);
+			if (check_response($getData->get())) {
+				$data = $connect->query($sql, []);
 				$getData->setData($data);
 				$data = $getData->create();
 			} else {

@@ -22,8 +22,12 @@ global $db, $config, $dle_login_hash, $_TIME;
 $version = [
 	'name'      => 'DLE-API',
 	'descr'     => 'Неофициальное API',
-	'version'   => '160.0.34',
+	'version'   => '160.0.35',
 	'changelog' => [
+		'160.0.35' => [
+			'[FIX] Исправлена <a href="https://github.com/DevCraftClub/dle_api/issues/11" target="_blank">заявленная ошибка</a>',
+			'[FIX] Исправлены функции проверки доступа для других пользователей и гостевых ключей',
+		],
 		'160.0.34' => [
 			'[FIX] Исправлена <a href="https://github.com/DevCraftClub/dle_api/issues/10" target="_blank">заявленная ошибка</a>',
 		],
