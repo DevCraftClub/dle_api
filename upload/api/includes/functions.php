@@ -11,13 +11,13 @@ include_once(DLEPlugins::Check(ENGINE_DIR . '/data/dbconfig.php'));
 include_once DLEPlugins::Check(ENGINE_DIR . '/inc/includes/functions.inc.php');
 include_once DLEPlugins::Check(__DIR__ . '/PDO.class.php');
 include_once DLEPlugins::Check(ENGINE_DIR . '/api/api.class.php');
-$dleapi = json_decode(file_get_contents(DLEPlugins::Check(ENGINE_DIR . '/data/dleapi.json')), true);
-$dle_api = new DLE_API();
+$dleapi      = json_decode(file_get_contents(DLEPlugins::Check(ENGINE_DIR . '/data/dleapi.json')), true);
+$dle_api     = new DLE_API();
 $dle_api->db = $db;
 
 $dbHostPort = explode(':', DBHOST);
-$dbHost = $dbHostPort[0] ?: 'localhost';
-$dbPort = (isset($dbHostPort[1])) ? (int) $dbHostPort[1] : 3306;
+$dbHost     = $dbHostPort[0] ?: 'localhost';
+$dbPort     = (isset($dbHostPort[1])) ? (int) $dbHostPort[1] : 3306;
 
 $connect    = new database($dbHost, $dbPort, DBNAME, DBUSER, DBPASS);
 $DLEprefix  = PREFIX;
@@ -28,6 +28,7 @@ $USERprefix = USERPREFIX;
  *
  * @param $value
  * @param $type
+ *
  * @return string
  */
 function getComparer($value, $type = null) : string {
@@ -66,6 +67,7 @@ function getComparer($value, $type = null) : string {
  *
  * @param $key
  * @param $name
+ *
  * @return array|false[]
  */
 function checkAPI($key, $name) : array {
@@ -80,7 +82,12 @@ function checkAPI($key, $name) : array {
 
 	try {
 		if (!empty($key) && !empty($name)) {
-			$keyCheck = $connect->query("SELECT k.id, k.api, k.is_admin, k.active, u.user_id, k.own_only, u.name FROM  {$DLEprefix}_api_keys k, {$USERprefix}_users u WHERE u.user_id = k.user_id and k.api = :key", array('key' => $key));
+			$keyCheck = $connect->query(
+				"SELECT k.id, k.api, k.is_admin, k.active, k.user_id, k.own_only, u.name FROM  {$DLEprefix}_api_keys k, {$USERprefix}_users u WHERE k.api = :key",
+				array('key' => $key)
+			);
+
+			$username = (int) $keyCheck[0]['user_id'] > 0 ? $keyCheck[0]['name'] : 'Гость';
 
 			if (!empty($keyCheck)) {
 				if ($keyCheck[0]['is_admin'] && $keyCheck[0]['active'] === 1) {
@@ -92,15 +99,15 @@ function checkAPI($key, $name) : array {
 						'own'    => [
 							'access'    => true,
 							'user_id'   => $keyCheck[0]['user_id'],
-							'user_name' => $keyCheck[0]['name']
+							'user_name' => $username
 						],
 					);
 				} else {
 
-					$tablesCheck = $connect->query("SELECT * FROM {$DLEprefix}_api_scope
-														WHERE table = :name and key_id = :api", array('name' => $name,
-																									  'api'  => $keyCheck[0]['api']
-					));
+					$tablesCheck = $connect->query(
+						"SELECT * FROM {$DLEprefix}_api_scope das WHERE das.table = :name and das.key_id = :api_id",
+						array('name' => $name, 'api_id' => $keyCheck[0]['id'])
+					);
 
 					if (count($tablesCheck) > 0) {
 						if ($keyCheck[0]['active'] === 1) {
@@ -110,7 +117,7 @@ function checkAPI($key, $name) : array {
 							if ($tablesCheck[0]['delete'] === 1) $antwort['delete'] = true;
 							if ($keyCheck[0]['own_only'] === 1) $antwort['own']['access'] = true;
 							$antwort['own']['user_id']   = $keyCheck[0]['user_id'];
-							$antwort['own']['user_name'] = $keyCheck[0]['name'];
+							$antwort['own']['user_name'] = $username;
 						} else $antwort['error'] = 'API-ключ не активен!';
 					} else $antwort['error'] = 'API-ключ не действителен!';
 				}
@@ -132,6 +139,7 @@ function checkAPI($key, $name) : array {
  *
  * @param $value
  * @param $type
+ *
  * @return bool|float|int|string
  */
 function defType($value, $type = null) : float|bool|int|string {
@@ -149,6 +157,7 @@ function defType($value, $type = null) : float|bool|int|string {
  *
  * @param $text
  * @param $max
+ *
  * @return string
  */
 function checkLength($text, $max) : string {
@@ -162,17 +171,17 @@ class CacheSystem {
 	private string $cachePath;
 	private string $module;
 	private string $id;
-	private mixed $data;
+	private mixed  $data;
 	private string $app;
 
 	/**
 	 * CacheSystem constructor.
 	 *
-	 * @param        $module // Название таблицы
-	 * @param string $id // Идентификационный набор символов
-	 * @param mixed $data // Передаваемые и сохраняемые данные
-	 * @param string $app // Тип кеша
-	 * @param string $path // Путь кеша
+	 * @param              $module    // Название таблицы
+	 * @param    string    $id        // Идентификационный набор символов
+	 * @param    mixed     $data      // Передаваемые и сохраняемые данные
+	 * @param    string    $app       // Тип кеша
+	 * @param    string    $path      // Путь кеша
 	 */
 	public function __construct(string $module, string $id = '', mixed $data = '', string $app = 'api', string $path = ENGINE_DIR . '/cache') {
 		$this->data   = $data;
@@ -184,7 +193,7 @@ class CacheSystem {
 	}
 
 	/**
-	 * @param string $cachePath
+	 * @param    string    $cachePath
 	 */
 	public function setCachePath(string $cachePath) : void {
 		if (!mkdir($cachePath) && !is_dir($cachePath)) {
@@ -209,7 +218,7 @@ class CacheSystem {
 	 * @return string
 	 */
 	public function get() : string {
-		$file_name = "{$this->app}_{$this->module}_" . md5($this->id) . '.json';
+		$file_name  = "{$this->app}_{$this->module}_" . md5($this->id) . '.json';
 		$cache_file = $this->cachePath . DIRECTORY_SEPARATOR . $file_name;
 		if (file_exists($cache_file)) {
 			$return_data = json_decode(file_get_contents($cache_file), true);
@@ -226,7 +235,7 @@ class CacheSystem {
 	/**
 	 * Очищает файлы кеша
 	 *
-	 * @param string $app
+	 * @param    string    $app
 	 */
 	public function clear(string $app = '') : void {
 		$pattern = (empty($app)) ? '*' : $this->app . '_' . $app . '_*';
@@ -241,7 +250,7 @@ class CacheSystem {
 	}
 
 	/**
-	 * @param mixed $data
+	 * @param    mixed    $data
 	 */
 	public function setData(mixed $data) : void {
 		$this->data = $data;
@@ -269,4 +278,14 @@ class CacheSystem {
 		return $value;
 
 	}
+}
+
+function check_response(mixed $data) : bool {
+	if (is_array($data)) return count($data) > 0;
+	else {
+		if (!empty($data)) {
+			return str_contains($data, '[]');
+		}
+	}
+	return false;
 }

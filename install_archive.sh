@@ -3,8 +3,8 @@
 mkdir temp
 rsync -avz upload/ temp/
 cd temp
-zip -r maharder_assets.zip *
+zip -r dle_api.zip *
 cd ..
-cp -f temp/maharder_assets.zip install.zip
+cp -f temp/dle_api.zip install.zip
 rm -rf temp
 exit 0

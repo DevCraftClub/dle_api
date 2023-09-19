@@ -209,16 +209,18 @@ $app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData
 				}
 			}
 			if (!$access['full']) {
-				if (strlen($possibleParams) === 0 && $access['own_only']['access'])
-					$possibleParams .= " WHERE autor = '{$access['own_only']['user_name']}'";
-				else $possibleParams .= " AND autor = '{$access['own_only']['user_name']}'";
+				if (strlen($possibleParams) === 0) {
+					if ($access['own_only']['access']) $possibleParams .= " WHERE autor = '{$access['own_only']['user_name']}'";
+				} else {
+					if ($access['own_only']['access']) $possibleParams .= " AND autor = '{$access['own_only']['user_name']}'";
+				}
 			}
 
 			$sql = 'SELECT * FROM ' . PREFIX . "_{$api_name} {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
 
 			$getData = new CacheSystem($api_name, $sql);
-			if (empty($getData->get())) {
-				$data = $connect->query($sql);
+			if (check_response($getData->get())) {
+				$data = $connect->query($sql, []);
 				$getData->setData($data);
 				$data = $getData->create();
 			} else {
@@ -279,16 +281,18 @@ $app->group('/' . $api_name, function () use ($connect, $api_name, $possibleData
 			}
 
 			if (!$access['full']) {
-				if (strlen($possibleParams) === 0 && $access['own_only']['access'])
-					$possibleParams .= " WHERE autor = '{$access['own_only']['user_name']}' OR user_id = {$access['own_only']['user_id']}";
-				else $possibleParams .= " AND (autor = '{$access['own_only']['user_name']}' OR user_id = {$access['own_only']['user_id']})";
+				if (strlen($possibleParams) === 0) {
+					if ($access['own_only']['access']) $possibleParams .= " WHERE autor = '{$access['own_only']['user_name']}' OR user_id = {$access['own_only']['user_id']}";
+				} else {
+					if ($access['own_only']['access']) $possibleParams .= " AND (autor = '{$access['own_only']['user_name']}' OR user_id = {$access['own_only']['user_id']})";
+				}
 			}
 
 			$sql = 'SELECT * FROM ' . PREFIX . '_post p INNER JOIN ' . PREFIX . "_post_extras e on p.id = e.news_id {$possibleParams} ORDER by {$orderBy} {$sort} {$limit}";
 
 			$getData = new CacheSystem($api_name, $sql);
-			if (empty($getData->get())) {
-				$data = $connect->query($sql);
+			if (check_response($getData->get())) {
+				$data = $connect->query($sql, []);
 				$getData->setData($data);
 				$data = $getData->create();
 			} else {
