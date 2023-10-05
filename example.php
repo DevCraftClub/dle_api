@@ -12,21 +12,24 @@
  * @param    string    $key         Ключ API
  * @param    string    $db_table    Название таблицы данных, а так-же точки подключения к DLE API
  *
+ * @throws JsonException
  * @return string Возвращает ответ API
  */
-function api_connect(string $key, string $db_table, array $values = [], string $method = 'GET') {
+function api_connect(string $key, string $db_table, array $values = [], string $method = 'GET') : string {
 	if (!in_array(strtoupper($method), ['GET', 'POST', 'PUT', 'DELETE'])) {
-		return json_encode(["status"  => "error",
-							"message" => "Выбранный вами метод ({$method}) не поддерживается. Доступные методы: GET, POST, PUT, DELETE"
-		], JSON_UNESCAPED_UNICODE);
+		return json_encode([
+			"status"  => "error",
+			"message" => "Выбранный вами метод ({$method}) не поддерживается. Доступные методы: GET, POST, PUT, DELETE"
+		], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
 	}
 
 	$url = "http://ваш-сайт.dev/api/v1/{$db_table}";
 
 	$header = ['x-api-key' => $key,];
 
-	if (strtoupper($method) === 'GET')
+	if (strtoupper($method) === 'GET') {
 		$header = array_merge($header, $values);
+	}
 
 	$header_array = [];
 
@@ -42,7 +45,9 @@ function api_connect(string $key, string $db_table, array $values = [], string $
 		CURLOPT_HTTPHEADER     => $header_array,
 	);
 
-	if (in_array(strtoupper($method), ['POST', 'PUT'])) $curl_data['CURLOPT_POSTFIELDS'] = urlencode($values);
+	if (in_array(strtoupper($method), ['POST', 'PUT'])) {
+		$curl_data['CURLOPT_POSTFIELDS'] = http_build_query($values);
+	}
 
 	$curl = curl_init();
 
@@ -54,5 +59,11 @@ function api_connect(string $key, string $db_table, array $values = [], string $
 	return $response;
 }
 
+echo '<pre>';
+try {
+	echo api_connect('b733557-557d45d-45d6747-747774f-74f63d4-3d422f6-2f62dcf-dcf0d2c', 'users') ;
+} catch (JsonException $e) {
+	echo $e->getMessage();
+}
 
-echo '<pre>' . api_connect('b733557-557d45d-45d6747-747774f-74f63d4-3d422f6-2f62dcf-dcf0d2c', 'users',) . '</pre>';
+echo '</pre>';
