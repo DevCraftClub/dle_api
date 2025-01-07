@@ -22,8 +22,11 @@ global $db, $config, $dle_login_hash, $_TIME;
 $version = [
 	'name'      => 'DLE-API',
 	'descr'     => 'Неофициальное API',
-	'version'   => '173.0.36',
+	'version'   => '173.0.37',
 	'changelog' => [
+		'173.0.37' => [
+			'[FIX] Исправлена мелкие проблемы с маршутизацией',
+		],
 		'173.0.36' => [
 			'[FIX] Исправлена заявленная ошибка для запросов POST & PUT',
 			'[UPDATE] Обновлено до версии DLE 17.3',
@@ -285,7 +288,7 @@ switch ($action) {
 			$key['user'] = (int) $key['user'];
 
 			echo pbkdf2($dleapi['algo'], $key['user'], $dleapi['secret'], $dleapi['length'],
-						$dleapi['trennen'], $dleapi['block']);
+				$dleapi['trennen'], $dleapi['block']);
 		}
 		return false;
 
@@ -309,7 +312,7 @@ switch ($action) {
 					if (is_null($key_api) || count($key_api) === 0) {
 
 						$db->query('INSERT INTO ' . PREFIX .
-								   "_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
+							"_api_keys (api, is_admin, creator, active, user_id, own_only) VALUES ('{$key['api']}', {$key['is_admin']}, {$_COOKIE['dle_user_id']}, {$key['active']}, {$key['user']}, {$key['own_only']})");
 						$apiKey = $db->insert_id();
 
 						foreach ($tables as $table => $data) {
@@ -564,21 +567,21 @@ HTML;
 
 		$dleapi['secret'] = $dleapi['secret'] ?: $config['http_home_url'];
 		showRow('Алгоритм шифрования', 'Выбираем алгоритм шифрования. По умолчанию: md5',
-				makeDropDown(hash_algos(), 'save[algo]', $dleapi['algo']));
+			makeDropDown(hash_algos(), 'save[algo]', $dleapi['algo']));
 		showRow('Безопасный вывод информации', 'Вместо паролей, IP-адресов и хэшсум будет выводить заглушилки',
-				makeCheckBox('save[secure]', $dleapi['secure']));
+			makeCheckBox('save[secure]', $dleapi['secure']));
 		showRow('Длина блока', 'Задаём длину блока, по которой будет генерироваться автоматический API ключ.',
-				'<input type="number" class="form-control" name="save[block]" value="' . $dleapi['block'] . '">');
+			'<input type="number" class="form-control" name="save[block]" value="' . $dleapi['block'] . '">');
 		showRow('Длина ключа',
-				'Задаём длину ключа, по которой будет генерироваться автоматический API ключ. Разделитель не учитывается. Если будет не хватка символов, то будут генерироваться случайные символы, пока не заполнят длину ключа. Или же набор символов будет урезан. <br><b>Важно:</b> Деление общей длины и длины блока должно быть без остатка. Скрипт будет сам подставлять нужное значение.',
-				'<input type="number" class="form-control" name="save[length]" value="' . $dleapi['length'] . '">');
+			'Задаём длину ключа, по которой будет генерироваться автоматический API ключ. Разделитель не учитывается. Если будет не хватка символов, то будут генерироваться случайные символы, пока не заполнят длину ключа. Или же набор символов будет урезан. <br><b>Важно:</b> Деление общей длины и длины блока должно быть без остатка. Скрипт будет сам подставлять нужное значение.',
+			'<input type="number" class="form-control" name="save[length]" value="' . $dleapi['length'] . '">');
 		showRow('Разделитель блока', 'Задаём разделитель блока, который будет делить блоки. Пример: <b>-</b>',
-				'<input type="text" max="1" class="form-control" name="save[trennen]" value="' . $dleapi['trennen'] .
-				'">');
+			'<input type="text" max="1" class="form-control" name="save[trennen]" value="' . $dleapi['trennen'] .
+			'">');
 		showRow('Секретный ключ', 'Секретный ключ для генерации ключа. Пример: <b>' .
-								$config['http_home_url'] . '</b>',
-				'<input type="text" class="form-control" name="save[secret]" value="' .
-				$dleapi['secret'] . '">');
+			$config['http_home_url'] . '</b>',
+			'<input type="text" class="form-control" name="save[secret]" value="' .
+			$dleapi['secret'] . '">');
 
 		echo <<<HTML
 
@@ -641,15 +644,15 @@ HTML;
 						<tbody>
 HTML;
 		showRow('Ключ',
-				'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
-				'<input type="text" class="form-control" name="save_con[api]" value=""><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
-				'white-line');
+			'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
+			'<input type="text" class="form-control" name="save_con[api]" value=""><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
+			'white-line');
 		showRow('Пользователь', 'Выбор пользователя для ключа', makeDropDown(getUsers(), 'save_con[user]', ''));
 		showRow('Полный доступ',
-				'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
-				makeCheckBox('save_con[is_admin]', ''));
+			'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
+			makeCheckBox('save_con[is_admin]', ''));
 		showRow('Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.',
-				makeCheckBox('save_con[own_only]', ''));
+			makeCheckBox('save_con[own_only]', ''));
 		showRow('Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]', '1'));
 		echo <<<HTML
 					 	</tbody>
@@ -817,19 +820,19 @@ HTML;
 						<tbody>
 HTML;
 		showRow('Ключ',
-				'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
-				'<input type="text" class="form-control" name="save_con[api]" value="' . $api_key['api'] .
-				'"><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
-				'white-line');
+			'Уникальный ключ доступа. Генерация ключа происходит при помощи алгоритма, ID пользователя и секретного ключа.',
+			'<input type="text" class="form-control" name="save_con[api]" value="' . $api_key['api'] .
+			'"><br><input type="button" class="btn bg-teal-400 btn-sm btn-raised" id="genKey" value="Создать ключ">',
+			'white-line');
 		showRow('Пользователь', 'Выбор пользователя для ключа',
-				makeDropDown(getUsers(), 'save_con[user]', $api_key['user_id']));
+			makeDropDown(getUsers(), 'save_con[user]', $api_key['user_id']));
 		showRow('Полный доступ',
-				'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
-				makeCheckBox('save_con[is_admin]', $api_key['is_admin']));
+			'Данная опция будет игнорировать прочие полномочия и даст полный доступ ко всем таблицам',
+			makeCheckBox('save_con[is_admin]', $api_key['is_admin']));
 		showRow('Только своё?', 'Данная опция будет выводить только те данные, что связаны с API пользователя.',
-				makeCheckBox('save_con[own_only]', $api_key['own_only']));
+			makeCheckBox('save_con[own_only]', $api_key['own_only']));
 		showRow('Активен?', 'Данная опция включает этот ключ', makeCheckBox('save_con[active]',
-																			$api_key['active']));
+			$api_key['active']));
 		echo <<<HTML
 					 	</tbody>
 					</table>
