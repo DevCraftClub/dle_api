@@ -1,13 +1,16 @@
 {
 	"require": {
 		"ext-json": "*",
-		"slim/slim": "3.*",
+		"slim/slim": "^4.14",
 		"monolog/monolog": "*",
-		"ext-pdo": "*"
+		"ext-pdo": "*",
+		"ext-simplexml": "*",
+		"php-di/php-di": "^7.0",
+		"slim/psr7": "^1.7"
 	},
 	"config": {
 		"platform": {
-			"php": "8.1"
+			"php": "8.3"
 		}
-	}
+	},
 }
