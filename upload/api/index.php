@@ -67,6 +67,9 @@ $app = AppFactory::create();
 
 $app->setBasePath('/api/v1');
 
+$app->addBodyParsingMiddleware();
+$app->addRoutingMiddleware();
+
 // Middleware для обработки ошибок
 $app->addErrorMiddleware(
 	$container->get('settings')['displayErrorDetails'],
