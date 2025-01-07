@@ -8,14 +8,26 @@ if (!defined('DATALIFEENGINE')) {
 	die("Hacking attempt!");
 }
 
-$routePath  = API_DIR . '/routes';
-$routeFiles = glob($routePath . '/*.php');
+$routePath = API_DIR . '/routes';
+$forbiddenFiles = ['_router.php', '_sample.php', '.', '..'];
+$routeFiles = array_diff(scandir($routePath), $forbiddenFiles);
 
-$route_path = str_replace([$_SERVER['REQUEST_SCHEME'] . '://', $_SERVER['SERVER_NAME'], 'api', 'v1', '/'], '', $_SERVER['REDIRECT_URL']);
-$forbidden = ['_router.php', '_sample.php'];
+// Проверяем соответствие URL-адреса маршруту
+if (!preg_match('#/api/v1/([^/]+)/#', $_SERVER['REDIRECT_URL'], $matches)) {
+	die('Некорректный рутинг!');
+}
 
-if(in_array("{$route_path}.php", $forbidden)) die('Данный рутинг запрещён!');
-if(!in_array("{$routePath}/{$route_path}.php", $routeFiles)) die('Данного рутинга не существует!');
+$routeFileName = "{$matches[1]}.php";
 
-include_once DLEPlugins::Check("{$routePath}/{$route_path}.php");
+// Проверяем запрещённые или отсутствующие маршруты
+if (in_array($routeFileName, $forbiddenFiles, true)) {
+	die('Данный рутинг запрещён!');
+}
+
+if (!in_array($routeFileName, $routeFiles, true)) {
+	die('Данного рутинга не существует!');
+}
+
+// Подключаем файл маршрута с проверкой через DLEPlugins
+include_once DLEPlugins::Check("{$routePath}/{$routeFileName}");
 
