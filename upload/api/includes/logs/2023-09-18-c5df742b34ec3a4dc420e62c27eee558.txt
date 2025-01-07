@@ -1,0 +1,15 @@
+Time : 19:29:34
+SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'table = ? and key_id = ?' at line 1
+Raw SQL : SELECT * FROM dle_api_scope WHERE table = :name and key_id = :api
+
+Time : 19:28:42
+SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'table = ? and key_id = ?' at line 1
+Raw SQL : SELECT * FROM dle_api_scope WHERE table = :name and key_id = :api
+
+Time : 19:26:18
+SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'table = ? and key_id = ?' at line 1
+Raw SQL : SELECT * FROM dle_api_scope WHERE table = :name and key_id = :api
+
+Time : 19:25:57
+SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'table = ? and key_id = ?' at line 1
+Raw SQL : SELECT * FROM dle_api_scope WHERE table = :name and key_id = :api
