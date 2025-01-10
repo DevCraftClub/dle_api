@@ -43,6 +43,7 @@ $Cruds = new CrudController($api_name, $possibleData, $own_fields, prefix: 'user
 
 $app->group('/' . $api_name, function (RouteCollectorProxy $subgroup) use ($Cruds) {
 	$subgroup->get('[/]', [$Cruds, 'handleGet']);
+	$subgroup->get('/{id}[/]', [$Cruds, 'handleGetSingle']);
 	$subgroup->post('[/]', [$Cruds, 'handlePost']);
 	$subgroup->put('/{id}[/]', [$Cruds, 'handlePut']);
 	$subgroup->delete('{id}[/]', [$Cruds, 'handleDelete']);

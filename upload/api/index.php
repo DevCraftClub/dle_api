@@ -34,6 +34,7 @@ include_once(API_DIR . '/vendor/autoload.php');
 //Подключаем функционал API и самой DLE
 require_once ENGINE_DIR . '/classes/plugins.class.php';
 include_once DLEPlugins::Check(API_DIR . '/includes/functions.php');
+include_once DLEPlugins::Check(API_DIR . '/includes/ErrorResponse.php');
 include_once DLEPlugins::Check(API_DIR . '/includes/CacheSystem.php');
 include_once DLEPlugins::Check(API_DIR . '/includes/CrudController.php');
 

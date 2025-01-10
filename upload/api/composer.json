@@ -6,11 +6,13 @@
 		"ext-pdo": "*",
 		"ext-simplexml": "*",
 		"php-di/php-di": "^7.0",
-		"slim/psr7": "^1.7"
+		"slim/psr7": "^1.7",
+		"illuminate/database": "^11.37"
 	},
 	"config": {
 		"platform": {
 			"php": "8.3"
 		}
-	},
+	}
+
 }

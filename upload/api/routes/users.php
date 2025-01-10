@@ -1,5 +1,5 @@
 <?php
-global $app, $connect;
+global $app, $connect, $dle_api;
 if (!defined('DATALIFEENGINE')) {
 	header("HTTP/1.1 403 Forbidden");
 	header('Location: ../../');
@@ -254,20 +254,20 @@ $possibleData = [
 	],
 ];
 
-$Cruds = new CrudController($api_name, $possibleData, ['name', 'user_id'], orderBy: 'user_id', prefix: 'user');
+$Cruds = new CrudController($api_name, $possibleData, ['name', 'user_id'], orderBy: 'user_id', prefix: 'user', pk: 'user_id');
 
 $app->group(
 	"/{$api_name}",
-	function (RouteCollectorProxy $sub) use ($Cruds, $api_name, $connect) {
+	function (RouteCollectorProxy $sub) use ($Cruds, $api_name, $connect, $dle_api) {
 		$sub->get('[/]', [$Cruds, 'handleGet']);
+		$sub->get('/{id}[/]', [$Cruds, 'handleGetSingle']);
 		$sub->put('/{id}[/]', [$Cruds, 'handlePut']);
 		$sub->delete('/{id}[/]', [$Cruds, 'handleDelete']);
 		$sub->post(
 			'/register[/]',
-			function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($Cruds, $api_name, $connect) {
+			function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($Cruds, $api_name, $connect, $dle_api) {
 				global $USERprefix, $possibleData;
 
-				$dle_api     = new DLE_API();
 				$header      = $Cruds->parseHeader($request);
 				$params      = $request->getQueryParams() ?: [];
 				$api_key     = $Cruds->extractApiKey($params, $header);
@@ -329,10 +329,10 @@ $app->group(
 						$values = implode(', ', $sql_values);
 
 						$sql = "UPDATE {$USERprefix}_{$api_name} SET {$values} WHERE name = :name";
-						$connect->row($sql, ['name' => $body['name']]);
-						$lastID = $connect->lastInsertId();
+						$connect::update($sql, ['name' => $body['name']]);
+						$lastID = $connect::getPdo()->lastInsertId();
 						$sql    = "SELECT * FROM {$USERprefix}_{$api_name} WHERE user_id = :id";
-						$data   = $connect->row($sql, ['id' => $lastID]);
+						$data   = $connect::selectOne($sql, ['id' => $lastID]);
 
 						$cache = new CacheSystem($api_name, $sql);
 						$cache->clear($api_name);
@@ -372,10 +372,9 @@ $app->group(
 				);
 			}
 		);
-		$sub->post('/auth[/]', function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($Cruds, $api_name, $connect) {
+		$sub->post('/auth[/]', function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($Cruds, $api_name, $connect, $dle_api) {
 				global $USERprefix;
 
-				$dle_api     = new DLE_API();
 				$header      = $Cruds->parseHeader($request);
 				$params      = $request->getQueryParams() ?: [];
 				$api_key     = $Cruds->extractApiKey($params, $header);
@@ -417,7 +416,7 @@ $app->group(
 
 						$getData = new CacheSystem($api_name, $sql);
 						if (check_response($getData->get())) {
-							$data = $connect->row($sql, ['name' => $name]);
+							$data = $connect::selectOne($sql, ['name' => $name]);
 							$getData->setData($data);
 							$data = $getData->create();
 						} else {
