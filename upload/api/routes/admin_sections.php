@@ -11,61 +11,60 @@ if (!defined('DATALIFEENGINE')) {
 use Slim\Routing\RouteCollectorProxy;
 
 $api_name     = 'admin_sections';
-$possibleData = array(
-	array(
+$possibleData = [
+	[
 		'name'     => 'id',
 		'type'     => 'integer',
 		'required' => true,
 		'post'     => false,
 		'length'   => 9
-	),
-	array(
+	],
+	[
 		'name'     => 'name',
 		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 100
-	),
-	array(
+	],
+	[
 		'name'     => 'title',
 		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
-	),
-	array(
+	],
+	[
 		'name'     => 'descr',
 		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
-	),
-	array(
+	],
+	[
 		'name'     => 'icon',
 		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
-	),
-	array(
+	],
+	[
 		'name'     => 'allow_groups',
 		'type'     => 'string',
 		'required' => true,
 		'post'     => true,
 		'length'   => 255
-	),
+	],
 
-);
-
+];
 
 $Cruds = new CrudController($api_name, $possibleData);
 
 $app->group("/{$api_name}", function (RouteCollectorProxy $sub) use ($Cruds) {
-		$sub->get('[/]', [$Cruds, 'handleGet']);
-		$sub->post('[/]', [$Cruds, 'handlePost']);
-		$sub->put('/{id}[/]', [$Cruds, 'handlePut']);
-		$sub->delete('/{id}[/]', [$Cruds, 'handleDelete']);
+	$sub->get('[/]', [$Cruds, 'handleGet']);
+	$sub->get('/{id}[/]', [$Cruds, 'handleGetSingle']);
+	$sub->post('[/]', [$Cruds, 'handlePost']);
+	$sub->put('/{id}[/]', [$Cruds, 'handlePut']);
+	$sub->delete('/{id}[/]', [$Cruds, 'handleDelete']);
 
-		// Own routing Add
-	}
-);
+	// Own routing Add
+});
