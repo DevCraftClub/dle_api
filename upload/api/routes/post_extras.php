@@ -159,10 +159,11 @@ $possibleData = array(
 	),
 );
 
-$Cruds = new CrudController($api_name, $possibleData, orderBy: 'news_id');
+$Cruds = new CrudController($api_name, $possibleData, orderBy: 'news_id', pk: 'eid');
 
 $app->group("/{$api_name}", function (RouteCollectorProxy $sub) use ($Cruds) {
 	$sub->get('[/]', [$Cruds, 'handleGet']);
+	$sub->get('/{id}[/]', [$Cruds, 'handleGetSingle']);
 	$sub->post('[/]', [$Cruds, 'handlePost']);
 	$sub->put('/{id}[/]', [$Cruds, 'handlePut']);
 	$sub->delete('/{id}[/]', [$Cruds, 'handleDelete']);

@@ -12,10 +12,22 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class CrudController {
 	/**
-	 * @var database Экземпляр подключения к базе данных.
+	 * @var \Illuminate\Database\Capsule\Manager Экземпляр подключения к базе данных.
 	 */
-	private database $db;
+	private \Illuminate\Database\Capsule\Manager $db;
+	/**
+	 * @var string Префикс, используемый для формирования запросов или обработки данных в контроллере CRUD.
+	 *
+	 * Применяется для разделения или идентификации связанных ресурсов или действий внутри контроллера.
+	 */
 	private string $prefix;
+	/**
+	 * @var string Первичный ключ, используемый для идентификации основной записи в таблице базы данных.
+	 *
+	 * Это строковый идентификатор, который служит для связи методов контроллера с конкретной записью.
+	 * Используется в различных методах класса для выполнения CRUD-операций.
+	 */
+	private string $primary_key;
 	/**
 	 * @var string Имя таблицы базы данных.
 	 */
@@ -56,8 +68,12 @@ class CrudController {
 	 * @param array  $ownFields     Поля, относящиеся к текущему пользователю (по умолчанию пустой массив).
 	 * @param string $orderBy       Поле для сортировки данных по умолчанию (по умолчанию "id").
 	 * @param string $sort          Направление сортировки по умолчанию (по умолчанию "DESC").
+	 * @param string $prefix        Префикс имен таблиц базы данных. Принимает значение "dle" для использования
+	 *                              глобальной переменной $DLEprefix или другое значение для переменной $USERprefix (по
+	 *                              умолчанию "dle").
+	 * @param string $pk            Имя первичного ключа таблицы базы данных (по умолчанию "id").
 	 */
-	public function __construct(string $table, array $allowedFields, array $ownFields = [], string $orderBy = 'id', string $sort = 'DESC', string $prefix = 'dle') {
+	public function __construct(string $table, array $allowedFields, array $ownFields = [], string $orderBy = 'id', string $sort = 'DESC', string $prefix = 'dle', string $pk = 'id') {
 		global $connect, $DLEprefix, $USERprefix;
 
 		$this->db            = $connect;
@@ -66,7 +82,8 @@ class CrudController {
 		$this->ownFields     = $ownFields;
 		$this->orderBy       = $orderBy;
 		$this->sort          = $sort;
-		$this->prefix		 = $prefix === 'dle' ? $DLEprefix : $USERprefix;
+		$this->prefix        = $prefix === 'dle' ? $DLEprefix : $USERprefix;
+		$this->primary_key   = $pk;
 	}
 
 	/**
@@ -79,7 +96,7 @@ class CrudController {
 	 *
 	 * @return ResponseInterface Ответ с данными или сообщением об ошибке.
 	 *
-	 * @throws Error|JsonException Если возникает ошибка при проверке API-ключа или построении SQL-запроса.
+	 * @throws \Error|\JsonException Если возникает ошибка при проверке API-ключа или построении SQL-запроса.
 	 */
 	public function handleGet(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
 		$header = $this->parseHeader($request);
@@ -89,14 +106,7 @@ class CrudController {
 
 		$checkAccess = checkAPI($api_key, $this->table);
 		if (isset($checkAccess['error'])) {
-			$response->getBody()->write(
-				json_encode(['error' => $checkAccess['error']],
-							JSON_UNESCAPED_UNICODE)
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(405);
+			return ErrorResponse::error($response, 405, $checkAccess['error']);
 		}
 
 		$this->access['full']     = $checkAccess['admin'];
@@ -119,32 +129,82 @@ class CrudController {
 				}
 			}
 		} else {
-			$response->getBody()->write(
-				json_encode(['error' => "У вас нет прав на просмотр данных!"],
-							JSON_UNESCAPED_UNICODE)
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(405);
+			return ErrorResponse::error($response, 405);
 		}
 
 		$sql = "SELECT * FROM {$this->prefix}_{$this->table} {$possibleParams} ORDER BY {$orderBy} {$sort} {$limit}";
 
 		$getData = new CacheSystem($this->table, $sql);
 		if (check_response($getData->get())) {
-			$data = $this->db->query($sql, []);
+			$data = $this->db::selectOne($sql, []);
 			$getData->setData($data);
 			$data = $getData->create();
 		} else {
 			$data = $getData->get();
 		}
 
-		$response->getBody()->write($data);
-		return $response->withHeader(
-			'Content-Type',
-			'application/json; charset=UTF-8'
-		)->withStatus(201);
+		return ErrorResponse::success($response, $data, 200);
+	}
+
+	/**
+	 * Обрабатывает GET-запрос, извлекает данные из базы данных с учетом фильтров и прав доступа,
+	 * возвращает результат в формате JSON.
+	 *
+	 * @param ServerRequestInterface $request  Запрос от клиента.
+	 * @param ResponseInterface      $response Ответ для клиента.
+	 * @param array                  $args     Массив аргументов маршрута.
+	 *
+	 * @return ResponseInterface Ответ с данными или сообщением об ошибке.
+	 *
+	 * @throws \Error|\JsonException Если возникает ошибка при проверке API-ключа или построении SQL-запроса.
+	 */
+	public function handleGetSingle(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+		$id = filter_var($args['id'], FILTER_VALIDATE_INT);
+
+		if (!$id) {
+			return ErrorResponse::error($response, 400, 'Не указан ID записи!');
+		}
+
+		$header  = $this->parseHeader($request);
+		$params  = $request->getQueryParams() ?: [];
+		$api_key = $this->extractApiKey($params, $header);
+
+		$checkAccess = checkAPI($api_key, $this->table);
+		if (isset($checkAccess['error'])) {
+			return ErrorResponse::error($response, 405, $checkAccess['error']);
+		}
+
+		$this->access['full']     = $checkAccess['admin'];
+		$this->access['can_read'] = $checkAccess['read'];
+		$this->access['own_only'] = $checkAccess['own'];
+
+		if (!$this->access['full'] || !$this->access['can_read']) {
+			return ErrorResponse::error($response, 405);
+		}
+
+		$sql = "SELECT * FROM {$this->prefix}_{$this->table} WHERE {$this->primary_key} = :id";
+
+		$accessFilters = $this->buildAccessFilters();
+		if (count($accessFilters)) {
+			$filter = implode(' OR ', $accessFilters);
+			$sql .= " AND ({$filter})";
+		}
+
+		$getData = new CacheSystem($this->table, "{$sql} {$id}");
+		if (check_response($getData->get())) {
+			$data = $this->db::selectOne($sql, ['id' => $id]);
+
+			if (!$data) {
+				return ErrorResponse::error($response, 404);
+			}
+
+			$getData->setData($data);
+			$data = $getData->create();
+		} else {
+			$data = $getData->get();
+		}
+
+		return ErrorResponse::success($response, $data, 200);
 	}
 
 	/**
@@ -156,8 +216,13 @@ class CrudController {
 	 *
 	 * @return ResponseInterface HTTP-ответ с результатом выполнения (успех или ошибка).
 	 *
-	 * @throws Error Если произошла ошибка при работе с базой данных.
-	 */
+	 * @throws \Error Если произошла ошибка при работе с базой данных.
+	 *
+	 * Ответы:
+	 * - Код 405: Если API-ключ недействителен или недостаточно прав.
+	 * - Код 400: Если тело запроса пустое или ID записи некорректен.
+	 * - Код 201: При успешном создании записи.
+ 	*/
 	public function handlePost(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
 
 		$header      = $this->parseHeader($request);
@@ -167,25 +232,11 @@ class CrudController {
 		$checkAccess = checkAPI($api_key, $this->table);
 
 		if (isset($checkAccess['error'])) {
-			$response->getBody()->write(
-				json_encode(['error' => $checkAccess['error']],
-							JSON_UNESCAPED_UNICODE)
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(405);
+			return ErrorResponse::error($response, 405, $checkAccess['error']);
 		}
 
 		if (empty($body)) {
-			$response->getBody()->write(
-				json_encode(['error' => 'Содержимое POST-запроса не может быть пустым.'],
-							JSON_UNESCAPED_UNICODE)
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(400);
+			return ErrorResponse::error($response, 400, 'Содержимое POST-запроса не может быть пустым.');
 		}
 
 		$this->access['full']      = $checkAccess['admin'];
@@ -205,16 +256,8 @@ class CrudController {
 				if ($postData['post'] === false) continue;
 
 				if ($postData['required'] && empty($value)) {
-					$response->getBody()->write(
-						json_encode(
-							['error' => "Требуемая информация отсутствует: {$name}!"],
-							JSON_UNESCAPED_UNICODE
-						)
-					);
-					return $response->withHeader(
-						'Content-Type',
-						'application/json; charset=UTF-8'
-					)->withStatus(400);
+					return ErrorResponse::error($response, 400, "Требуемая информация отсутствует: {$name}!");
+
 				}
 				$names[]  = $name;
 				$values[] = defType(
@@ -230,34 +273,23 @@ class CrudController {
 			$values = implode(', ', $values);
 
 			$sql = "INSERT INTO {$this->prefix}_{$this->table} ({$names}) VALUES ({$values})";
-			$this->db->query($sql, []);
+			$this->db::insert($sql, []);
 
 			// Почему я не люблю MySQL? Потому что нельзя вернуть данные сразу после добавления в базу данных!
 			// All Heil PostgreSQL! `INSERT INTO xxx (yyy) VALUES (zzz) RETURNING *`! Вот так просто!
 			// Но нет, в MySQL нужно строить такой костыль!!!
-			$lastID = $this->db->lastInsertId();
+			$lastID = $this->db::getPdo()->lastInsertId();
 			$sql    = "SELECT * FROM {$this->prefix}_{$this->table} WHERE id = :id";
-			$data   = $this->db->row($sql, ['id' => $lastID]);
+			$data   = $this->db::selectOne($sql, ['id' => $lastID]);
 
 			$cache = new CacheSystem($this->table, $sql);
 			$cache->clear($this->table);
 			$cache->setData($data);
 
-			$response->getBody()->write($data);
+			return ErrorResponse::success($response, $data);
 		} else {
-			$response->getBody()->write(
-				json_encode(['error' => "У вас нет прав на добавление новых данных!"])
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(405);
+			return ErrorResponse::error($response, 405);
 		}
-
-		return $response->withHeader(
-			'Content-Type',
-			'application/json; charset=UTF-8'
-		)->withStatus(201);
 	}
 
 	/**
@@ -269,7 +301,7 @@ class CrudController {
 	 *
 	 * @return ResponseInterface Ответ с результатом обработки запроса.
 	 *
-	 * @throws Error В случае возникновения ошибок на уровне базы данных или другой логики.
+	 * @throws \Error В случае возникновения ошибок на уровне базы данных или другой логики.
 	 *
 	 * Обработка включает следующие этапы:
 	 * 1. Проверка заголовков и параметров запроса на наличие API-ключа.
@@ -281,9 +313,9 @@ class CrudController {
 	 * Ответы:
 	 * - Код 405: Если API-ключ недействителен или недостаточно прав.
 	 * - Код 400: Если тело запроса пустое или ID записи некорректен.
-	 * - Код 201: При успешном обновлении записи.
+	 * - Код 200: При успешном обновлении записи.
 	 */
-	public function handlePut(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+	public function handlePut(Request $request, Response $response, array $args): ResponseInterface {
 		$header      = $this->parseHeader($request);
 		$params      = $request->getQueryParams() ?: [];
 		$body        = $request->getParsedBody();
@@ -291,25 +323,11 @@ class CrudController {
 		$checkAccess = checkAPI($api_key, $this->table);
 
 		if (isset($checkAccess['error'])) {
-			$response->getBody()->write(
-				json_encode(['error' => $checkAccess['error']],
-							JSON_UNESCAPED_UNICODE)
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(405);
+			return ErrorResponse::error($response, 405, $checkAccess['error']);
 		}
 
-		if (empty($body)) {
-			$response->getBody()->write(
-				json_encode(['error' => 'Содержимое POST-запроса не может быть пустым.'],
-							JSON_UNESCAPED_UNICODE)
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(400);
+		if (!$body) {
+			return ErrorResponse::error($response, 400, 'Содержимое PUT-запроса не может быть пустым.');
 		}
 
 		$this->access['full']      = $checkAccess['admin'];
@@ -321,14 +339,8 @@ class CrudController {
 				FILTER_VALIDATE_INT
 			);
 			if (!$id) {
-				$response->getBody()->write(
-					json_encode(['error' => 'ID не может быть пустым!'],
-								JSON_UNESCAPED_UNICODE)
-				);
-				return $response->withHeader(
-					'Content-Type',
-					'application/json; charset=UTF-8'
-				)->withStatus(400);
+				return ErrorResponse::error($response, 400, 'ID не может быть пустым!');
+
 			}
 
 			$values = [];
@@ -346,13 +358,13 @@ class CrudController {
 			$values = implode(', ', $values);
 
 			$sql = "UPDATE {$this->prefix}_{$this->table} SET {$values} WHERE id = :id";
-			$this->db->query($sql, ['id' => $id]);
+			$this->db::update($sql, ['id' => $id]);
 
 			// Почему я не люблю MySQL? Потому что нельзя вернуть данные сразу после добавления в базу данных!
 			// All Heil PostgreSQL! `INSERT INTO xxx (yyy) VALUES (zzz) RETURNING *`! Вот так просто!
 			// Но нет, в MySQL нужно строить такой костыль!!!
 			$sql  = "SELECT * FROM {$this->prefix}_{$this->table} WHERE id = :id";
-			$data = $this->db->row(
+			$data = $this->db::selectOne(
 				$sql,
 				['id' => $id]
 			);
@@ -361,21 +373,10 @@ class CrudController {
 			$cache->clear($this->table);
 			$cache->setData($data);
 
-			$response->getBody()->write($data);
+			return ErrorResponse::success($response, $data);
 		} else {
-			$response->getBody()->write(
-				json_encode(['error' => "У вас нет прав на изменение данных!"])
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(405);
+			return ErrorResponse::error($response, 405);
 		}
-
-		return $response->withHeader(
-			'Content-Type',
-			'application/json; charset=UTF-8'
-		)->withStatus(201);
 	}
 
 	/**
@@ -388,7 +389,7 @@ class CrudController {
 	 *
 	 * @return ResponseInterface Возвращает HTTP-ответ с результатом выполнения операции.
 	 *
-	 * @throws Exception В случае возникновения ошибок при работе с базой данных или некорректного API-ключа.
+	 * @throws \Exception В случае возникновения ошибок при работе с базой данных или некорректного API-ключа.
 	 *
 	 * Основные этапы работы метода:
 	 * - Извлечение заголовков запроса и параметров (включая тело запроса);
@@ -401,8 +402,9 @@ class CrudController {
 	 *
 	 *  Ответы:
 	 *  - Код 405: Если API-ключ недействителен или недостаточно прав.
+	 *  - Код 404: Если запрашиваемая запись не была найдена.
 	 *  - Код 400: Если тело запроса пустое или ID записи некорректен.
-	 *  - Код 201: При успешном удалении записи.
+	 *  - Код 204: При успешном удалении записи.
 	 */
 	public function handleDelete(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
 		$header      = $this->parseHeader($request);
@@ -411,14 +413,7 @@ class CrudController {
 		$checkAccess = checkAPI($api_key, $this->table);
 
 		if (isset($checkAccess['error'])) {
-			$response->getBody()->write(
-				json_encode(['error' => $checkAccess['error']],
-							JSON_UNESCAPED_UNICODE)
-			);
-			return $response->withHeader(
-				'Content-Type',
-				'application/json; charset=UTF-8'
-			)->withStatus(405);
+			return ErrorResponse::error($response, 405, $checkAccess['error']);
 		}
 
 		$this->access['full']       = $checkAccess['admin'];
@@ -427,32 +422,23 @@ class CrudController {
 		if ($this->access['full'] || $this->access['can_delete']) {
 			$id = filter_var($args['id'], FILTER_VALIDATE_INT);
 			if (!$id) {
-				$response->getBody()->write(
-					json_encode(['error' => 'ID не может быть пустым!'], JSON_UNESCAPED_UNICODE)
-				);
-				return $response->withHeader(
-					'Content-Type',
-					'application/json; charset=UTF-8'
-				)->withStatus(400);
+				return ErrorResponse::error($response, 400, 'ID не может быть пустым!');
 			}
 
 			$sql = "DELETE FROM {$this->prefix}_{$this->table} WHERE id = :id";
-			$this->db->row($sql, ['id' => $id]);
+			if (!$this->db::selectOne($sql, ['id' => $id])) {
+				return ErrorResponse::error($response, 404, 'Такой записи не существует!');
+
+			};
 
 			$cache = new CacheSystem($this->table, $sql);
 			$cache->clear($this->table);
 
-			$response->withStatus(200)->getBody()->write(json_encode(['success' => "Данные успешно удалены!"]));
-		} else {
-			$response->withStatus(405)->getBody()->write(
-				json_encode(['error' => "У вас нет прав на удаление данных!"])
-			);
-		}
+			return ErrorResponse::error($response, 204, 'Данные успешно удалены');
 
-		return $response->withHeader(
-			'Content-Type',
-			'application/json; charset=UTF-8'
-		);
+		} else {
+			return ErrorResponse::error($response, 405);
+		}
 	}
 
 	/**
