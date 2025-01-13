@@ -164,7 +164,7 @@ $app->group("/{$api_name}", function (RouteCollectorProxy $sub) use ($Cruds, $ap
 		$id = filter_var($args['id'], FILTER_VALIDATE_INT);
 
 		if (!$id) {
-			return ErrorResponse::error($response, 400, 'Не указан ID маршрутизации!');
+			return ErrorResponse::response($response, 400, 'Не указан ID маршрутизации!');
 		}
 
 		$header  = $Cruds->parseHeader($request);
@@ -173,7 +173,7 @@ $app->group("/{$api_name}", function (RouteCollectorProxy $sub) use ($Cruds, $ap
 
 		$checkAccess = checkAPI($api_key, $api_name);
 		if (isset($checkAccess['error'])) {
-			return ErrorResponse::error($response, 405, $checkAccess['error']);
+			return ErrorResponse::response($response, 405, $checkAccess['error']);
 
 		}
 
@@ -184,7 +184,7 @@ $app->group("/{$api_name}", function (RouteCollectorProxy $sub) use ($Cruds, $ap
 		$access['own_only'] = $checkAccess['own'];
 
 		if (!$access['full'] || !$access['can_read']) {
-			return ErrorResponse::error($response, 403, 'Недостаточно прав доступа!');
+			return ErrorResponse::response($response, 403, 'Недостаточно прав доступа!');
 		}
 
 		$sql = "SELECT p.*, e.* FROM {$DLEprefix}_post p LEFT JOIN {$DLEprefix}_post_extras e ON p.id = e.news_id WHERE p.id = :id";

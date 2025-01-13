@@ -62,6 +62,7 @@ class CacheSystem {
 		$cache_file = $this->cachePath . DIRECTORY_SEPARATOR . $file_name;
 		if (file_exists($cache_file)) {
 			$return_data = json_decode(file_get_contents($cache_file), true);
+			if (!$return_data) $return_data = [];
 			foreach ($return_data as $id => $data) {
 				foreach ($data as $key => $value)
 					$return_data[$id][$key] = $this->secureData($key, $value);

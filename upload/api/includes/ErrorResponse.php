@@ -3,7 +3,7 @@
 use Psr\Http\Message\ResponseInterface;
 
 
-abstract class ErrorResponse {
+abstract class Response {
 	public static array $error_types
 		= [
 			200 => "Успешный ответ",
@@ -14,24 +14,34 @@ abstract class ErrorResponse {
 			404 => "Указанная запись не найдена",
 		];
 
-	public static function error(ResponseInterface $response, int $errorNumber, ?string $errorMessage = null): ResponseInterface {
-		$response->getBody()->write(
-			json_encode(
-				[
-					"error"       => !in_array($errorNumber, [200, 201, 204]),
-					"status"      => $errorNumber,
-					"description" => ErrorResponse::$error_types[$errorNumber],
-					"message"     => $errorMessage ?? errorResponse::$error_types[$errorNumber]
-				], JSON_UNESCAPED_UNICODE
-			)
-		);
+	public static function getErrorDescr(int $status) {
+		return self::$error_types[$status];
+	}
 
-		return $response->withStatus($errorNumber)->withHeader('Content-Type', 'application/json; charset=UTF-8');
+	public static function response(ResponseInterface $response, int $errorNumber, ?string $errorMessage = null): ResponseInterface {
 	}
 
 	public static function success(ResponseInterface $response, mixed $data = null, int $status = 201): ResponseInterface {
 		$response->getBody()->write($data);
 		return $response->withStatus($status)->withHeader('Content-Type', 'application/json; charset=UTF-8');
+	}
+}
+
+abstract class ErrorResponse extends Response {
+
+	public static function response(ResponseInterface $response, int $errorNumber, ?string $errorMessage = null): ResponseInterface {
+		$response->getBody()->write(
+			json_encode(
+				[
+					"error"       => !in_array($errorNumber, [200, 201, 204]),
+					"status"      => $errorNumber,
+					"description" => self::getErrorDescr($errorNumber),
+					"message"     => $errorMessage ?? self::getErrorDescr($errorNumber)
+				], JSON_UNESCAPED_UNICODE
+			)
+		);
+
+		return $response->withStatus($errorNumber)->withHeader('Content-Type', 'application/json; charset=UTF-8');
 	}
 
 }

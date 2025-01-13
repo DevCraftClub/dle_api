@@ -106,7 +106,7 @@ class CrudController {
 
 		$checkAccess = checkAPI($api_key, $this->table);
 		if (isset($checkAccess['error'])) {
-			return ErrorResponse::error($response, 405, $checkAccess['error']);
+			return ErrorResponse::response($response, 405, $checkAccess['error']);
 		}
 
 		$this->access['full']     = $checkAccess['admin'];
@@ -129,14 +129,14 @@ class CrudController {
 				}
 			}
 		} else {
-			return ErrorResponse::error($response, 405);
+			return ErrorResponse::response($response, 405);
 		}
 
 		$sql = "SELECT * FROM {$this->prefix}_{$this->table} {$possibleParams} ORDER BY {$orderBy} {$sort} {$limit}";
 
 		$getData = new CacheSystem($this->table, $sql);
 		if (check_response($getData->get())) {
-			$data = $this->db::selectOne($sql, []);
+			$data = $this->db::select($sql, []);
 			$getData->setData($data);
 			$data = $getData->create();
 		} else {
@@ -162,7 +162,7 @@ class CrudController {
 		$id = filter_var($args['id'], FILTER_VALIDATE_INT);
 
 		if (!$id) {
-			return ErrorResponse::error($response, 400, 'Не указан ID записи!');
+			return ErrorResponse::response($response, 400, 'Не указан ID записи!');
 		}
 
 		$header  = $this->parseHeader($request);
@@ -171,7 +171,7 @@ class CrudController {
 
 		$checkAccess = checkAPI($api_key, $this->table);
 		if (isset($checkAccess['error'])) {
-			return ErrorResponse::error($response, 405, $checkAccess['error']);
+			return ErrorResponse::response($response, 405, $checkAccess['error']);
 		}
 
 		$this->access['full']     = $checkAccess['admin'];
@@ -179,7 +179,7 @@ class CrudController {
 		$this->access['own_only'] = $checkAccess['own'];
 
 		if (!$this->access['full'] || !$this->access['can_read']) {
-			return ErrorResponse::error($response, 405);
+			return ErrorResponse::response($response, 405);
 		}
 
 		$sql = "SELECT * FROM {$this->prefix}_{$this->table} WHERE {$this->primary_key} = :id";
@@ -195,7 +195,7 @@ class CrudController {
 			$data = $this->db::selectOne($sql, ['id' => $id]);
 
 			if (!$data) {
-				return ErrorResponse::error($response, 404);
+				return ErrorResponse::response($response, 404);
 			}
 
 			$getData->setData($data);
@@ -232,11 +232,11 @@ class CrudController {
 		$checkAccess = checkAPI($api_key, $this->table);
 
 		if (isset($checkAccess['error'])) {
-			return ErrorResponse::error($response, 405, $checkAccess['error']);
+			return ErrorResponse::response($response, 405, $checkAccess['error']);
 		}
 
 		if (empty($body)) {
-			return ErrorResponse::error($response, 400, 'Содержимое POST-запроса не может быть пустым.');
+			return ErrorResponse::response($response, 400, 'Содержимое POST-запроса не может быть пустым.');
 		}
 
 		$this->access['full']      = $checkAccess['admin'];
@@ -256,7 +256,7 @@ class CrudController {
 				if ($postData['post'] === false) continue;
 
 				if ($postData['required'] && empty($value)) {
-					return ErrorResponse::error($response, 400, "Требуемая информация отсутствует: {$name}!");
+					return ErrorResponse::response($response, 400, "Требуемая информация отсутствует: {$name}!");
 
 				}
 				$names[]  = $name;
@@ -288,7 +288,7 @@ class CrudController {
 
 			return ErrorResponse::success($response, $data);
 		} else {
-			return ErrorResponse::error($response, 405);
+			return ErrorResponse::response($response, 405);
 		}
 	}
 
@@ -323,11 +323,11 @@ class CrudController {
 		$checkAccess = checkAPI($api_key, $this->table);
 
 		if (isset($checkAccess['error'])) {
-			return ErrorResponse::error($response, 405, $checkAccess['error']);
+			return ErrorResponse::response($response, 405, $checkAccess['error']);
 		}
 
 		if (!$body) {
-			return ErrorResponse::error($response, 400, 'Содержимое PUT-запроса не может быть пустым.');
+			return ErrorResponse::response($response, 400, 'Содержимое PUT-запроса не может быть пустым.');
 		}
 
 		$this->access['full']      = $checkAccess['admin'];
@@ -339,7 +339,7 @@ class CrudController {
 				FILTER_VALIDATE_INT
 			);
 			if (!$id) {
-				return ErrorResponse::error($response, 400, 'ID не может быть пустым!');
+				return ErrorResponse::response($response, 400, 'ID не может быть пустым!');
 
 			}
 
@@ -375,7 +375,7 @@ class CrudController {
 
 			return ErrorResponse::success($response, $data);
 		} else {
-			return ErrorResponse::error($response, 405);
+			return ErrorResponse::response($response, 405);
 		}
 	}
 
@@ -413,7 +413,7 @@ class CrudController {
 		$checkAccess = checkAPI($api_key, $this->table);
 
 		if (isset($checkAccess['error'])) {
-			return ErrorResponse::error($response, 405, $checkAccess['error']);
+			return ErrorResponse::response($response, 405, $checkAccess['error']);
 		}
 
 		$this->access['full']       = $checkAccess['admin'];
@@ -422,22 +422,22 @@ class CrudController {
 		if ($this->access['full'] || $this->access['can_delete']) {
 			$id = filter_var($args['id'], FILTER_VALIDATE_INT);
 			if (!$id) {
-				return ErrorResponse::error($response, 400, 'ID не может быть пустым!');
+				return ErrorResponse::response($response, 400, 'ID не может быть пустым!');
 			}
 
 			$sql = "DELETE FROM {$this->prefix}_{$this->table} WHERE id = :id";
 			if (!$this->db::selectOne($sql, ['id' => $id])) {
-				return ErrorResponse::error($response, 404, 'Такой записи не существует!');
+				return ErrorResponse::response($response, 404, 'Такой записи не существует!');
 
 			};
 
 			$cache = new CacheSystem($this->table, $sql);
 			$cache->clear($this->table);
 
-			return ErrorResponse::error($response, 204, 'Данные успешно удалены');
+			return ErrorResponse::response($response, 204, 'Данные успешно удалены');
 
 		} else {
-			return ErrorResponse::error($response, 405);
+			return ErrorResponse::response($response, 405);
 		}
 	}
 

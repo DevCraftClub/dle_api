@@ -364,4 +364,18 @@ function parseCategories(string $cats): array {
 	return $post_cats;
 }
 
-
+/**
+ * Санирует каждый элемент массива, применяя указанный фильтр.
+ *
+ * Этот метод использует `filter_var` для обработки каждого значения массива
+ * и применяет фильтр, переданный в параметре `$filter`. По умолчанию используется
+ * фильтр `FILTER_SANITIZE_FULL_SPECIAL_CHARS`.
+ *
+ * @param array $input Массив, элементы которого требуется санитизировать.
+ * @param int $filter Фильтр для обработки значений массива. По умолчанию `FILTER_SANITIZE_FULL_SPECIAL_CHARS`.
+ *
+ * @return array Возвращает массив, в котором каждый элемент обработан заданным фильтром.
+ */
+function sanitizeArray(array $input, int $filter = FILTER_SANITIZE_FULL_SPECIAL_CHARS): array {
+	return array_map(fn($value) => filter_var($value, $filter), $input);
+ }
