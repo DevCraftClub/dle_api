@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dleplugin>
+	<name>DLE-API</name>
+	<description>Неофициальное API для CMS DLE</description>
+	<icon></icon>
+	<version>173.0.38</version>
+	<dleversion>16.0</dleversion>
+	<versioncompare>greater</versioncompare>
+	<upgradeurl></upgradeurl>
+	<filedelete>1</filedelete>
+	<needplugin></needplugin>
+	<mnotice>1</mnotice>
+	<mysqlinstall><![CDATA[CREATE TABLE {prefix}_api_keys (
+	id int auto_increment
+		primary key,
+	api varchar(255) not null,
+	is_admin tinyint(1) default 0 not null,
+	creator int default 0 null,
+	created datetime default CURRENT_TIMESTAMP not null,
+	active tinyint(1) default 0 not null,
+	user_id int default 0 not null,
+  	own_only tinyint(1) default 1 not null,
+	constraint {prefix}_api_keys_key_uindex
+		unique (api)
+);
+
+create table {prefix}_api_scope (
+	scope_id int auto_increment
+		primary key,
+	`table` varchar(255) null,
+	`read` tinyint(1) default 0 not null,
+	`write` tinyint(1) default 0 not null,
+	`delete` tinyint(1) default 0 not null,
+	key_id int default 0 not null,
+	constraint {prefix}_api_scope_{prefix}_api_keys_id_fk
+		foreign key (key_id) references {prefix}_api_keys (id)
+			on update cascade on delete cascade
+);]]></mysqlinstall>
+	<mysqlupgrade><![CDATA[]]></mysqlupgrade>
+	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API', 'Неофициальное API для DLE. Раздел по созданию и управлению над ключами доступа к API.', '/engine/skins/images/icons/dleapi.png', 1);]]></mysqlenable>
+	<mysqldisable><![CDATA[DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi']]></mysqldisable>
+	<mysqldelete><![CDATA[DROP TABLE {prefix}_api_keys cascade, {prefix}_api_scope cascade;DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';]]></mysqldelete>
+	<phpinstall><![CDATA[]]></phpinstall>
+	<phpupgrade><![CDATA[]]></phpupgrade>
+	<phpenable><![CDATA[]]></phpenable>
+	<phpdisable><![CDATA[]]></phpdisable>
+	<phpdelete><![CDATA[]]></phpdelete>
+	<notice><![CDATA[БЕТА версия!
+//TODO
+- Сделать поиск
+- Массовую обработку]]></notice>
+</dleplugin>
