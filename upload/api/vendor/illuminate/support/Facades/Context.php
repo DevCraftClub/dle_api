@@ -4,7 +4,9 @@ namespace Illuminate\Support\Facades;
 
 /**
  * @method static bool has(string $key)
+ * @method static bool missing(string $key)
  * @method static bool hasHidden(string $key)
+ * @method static bool missingHidden(string $key)
  * @method static array all()
  * @method static array allHidden()
  * @method static mixed get(string $key, mixed $default = null)
@@ -25,6 +27,7 @@ namespace Illuminate\Support\Facades;
  * @method static mixed popHidden(string $key)
  * @method static bool stackContains(string $key, mixed $value, bool $strict = false)
  * @method static bool hiddenStackContains(string $key, mixed $value, bool $strict = false)
+ * @method static mixed scope(callable $callback, array $data = [], array $hidden = [])
  * @method static bool isEmpty()
  * @method static \Illuminate\Log\Context\Repository dehydrating(callable $callback)
  * @method static \Illuminate\Log\Context\Repository hydrated(callable $callback)

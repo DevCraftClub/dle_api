@@ -11,7 +11,9 @@ use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\MarkdownConverter;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
+use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Generator\CombGenerator;
+use Ramsey\Uuid\Rfc4122\FieldsInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
 use Symfony\Component\Uid\Ulid;
@@ -379,6 +381,10 @@ class Str
             $needles = (array) $needles;
         }
 
+        if (is_null($haystack)) {
+            return false;
+        }
+
         foreach ($needles as $needle) {
             if ((string) $needle !== '' && str_ends_with($haystack, $needle)) {
                 return true;
@@ -494,7 +500,7 @@ class Str
             // If the given value is an exact match we can of course return true right
             // from the beginning. Otherwise, we will translate asterisks and do an
             // actual pattern match against the two strings to see if they match.
-            if ($pattern === $value) {
+            if ($pattern === '*' || $pattern === $value) {
                 return true;
             }
 
@@ -509,7 +515,7 @@ class Str
             // pattern such as "library/*", making any string check convenient.
             $pattern = str_replace('\*', '.*', $pattern);
 
-            if (preg_match('#^'.$pattern.'\z#'.($ignoreCase ? 'iu' : 'u'), $value) === 1) {
+            if (preg_match('#^'.$pattern.'\z#'.($ignoreCase ? 'isu' : 'su'), $value) === 1) {
                 return true;
             }
         }
@@ -600,15 +606,42 @@ class Str
      * Determine if a given value is a valid UUID.
      *
      * @param  mixed  $value
+     * @param  int<0, 8>|'max'|null  $version
      * @return bool
      */
-    public static function isUuid($value)
+    public static function isUuid($value, $version = null)
     {
         if (! is_string($value)) {
             return false;
         }
 
-        return preg_match('/^[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}$/D', $value) > 0;
+        if ($version === null) {
+            return preg_match('/^[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}$/D', $value) > 0;
+        }
+
+        $factory = new UuidFactory;
+
+        try {
+            $factoryUuid = $factory->fromString($value);
+        } catch (InvalidUuidStringException $ex) {
+            return false;
+        }
+
+        $fields = $factoryUuid->getFields();
+
+        if (! ($fields instanceof FieldsInterface)) {
+            return false;
+        }
+
+        if ($version === 0 || $version === 'nil') {
+            return $fields->isNil();
+        }
+
+        if ($version === 'max') {
+            return $fields->isMax();
+        }
+
+        return $fields->getVersion() === $version;
     }
 
     /**
@@ -973,6 +1006,18 @@ class Str
         $lastWord = array_pop($parts);
 
         return implode('', $parts).self::plural($lastWord, $count);
+    }
+
+    /**
+     * Pluralize the last word of an English, Pascal caps case string.
+     *
+     * @param  string  $value
+     * @param  int|array|\Countable  $count
+     * @return string
+     */
+    public static function pluralPascal($value, $count = 2)
+    {
+        return static::pluralStudly($value, $count);
     }
 
     /**
@@ -1382,8 +1427,8 @@ class Str
         $parts = explode(' ', $value);
 
         $parts = count($parts) > 1
-            ? array_map([static::class, 'title'], $parts)
-            : array_map([static::class, 'title'], static::ucsplit(implode('_', $parts)));
+            ? array_map(static::title(...), $parts)
+            : array_map(static::title(...), static::ucsplit(implode('_', $parts)));
 
         $collapsed = static::replace(['-', '_', ' '], '_', implode('_', $parts));
 
@@ -1588,6 +1633,10 @@ class Str
             $needles = [$needles];
         }
 
+        if (is_null($haystack)) {
+            return false;
+        }
+
         foreach ($needles as $needle) {
             if ((string) $needle !== '' && str_starts_with($haystack, $needle)) {
                 return true;
@@ -1616,6 +1665,17 @@ class Str
         $studlyWords = array_map(fn ($word) => static::ucfirst($word), $words);
 
         return static::$studlyCache[$key] = implode($studlyWords);
+    }
+
+    /**
+     * Convert a value to Pascal case.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public static function pascal($value)
+    {
+        return static::studly($value);
     }
 
     /**

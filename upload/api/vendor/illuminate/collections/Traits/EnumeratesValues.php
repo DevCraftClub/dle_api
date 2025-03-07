@@ -37,6 +37,7 @@ use function Illuminate\Support\enum_value;
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $flatMap
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $groupBy
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $keyBy
+ * @property-read HigherOrderCollectionProxy<TKey, TValue> $last
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $map
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $max
  * @property-read HigherOrderCollectionProxy<TKey, TValue> $min
@@ -84,6 +85,7 @@ trait EnumeratesValues
         'flatMap',
         'groupBy',
         'keyBy',
+        'last',
         'map',
         'max',
         'min',
@@ -412,7 +414,7 @@ trait EnumeratesValues
     {
         $groups = $this->mapToDictionary($callback);
 
-        return $groups->map([$this, 'make']);
+        return $groups->map($this->make(...));
     }
 
     /**
@@ -457,7 +459,7 @@ trait EnumeratesValues
         $callback = $this->valueRetriever($callback);
 
         return $this->map(fn ($value) => $callback($value))
-            ->filter(fn ($value) => ! is_null($value))
+            ->reject(fn ($value) => is_null($value))
             ->reduce(fn ($result, $value) => is_null($result) || $value < $result ? $value : $result);
     }
 
@@ -471,7 +473,7 @@ trait EnumeratesValues
     {
         $callback = $this->valueRetriever($callback);
 
-        return $this->filter(fn ($value) => ! is_null($value))->reduce(function ($result, $item) use ($callback) {
+        return $this->reject(fn ($value) => is_null($value))->reduce(function ($result, $item) use ($callback) {
             $value = $callback($item);
 
             return is_null($result) || $value > $result ? $value : $result;
@@ -502,20 +504,11 @@ trait EnumeratesValues
      */
     public function partition($key, $operator = null, $value = null)
     {
-        $passed = [];
-        $failed = [];
-
         $callback = func_num_args() === 1
                 ? $this->valueRetriever($key)
                 : $this->operatorForWhere(...func_get_args());
 
-        foreach ($this as $key => $item) {
-            if ($callback($item, $key)) {
-                $passed[$key] = $item;
-            } else {
-                $failed[$key] = $item;
-            }
-        }
+        [$passed, $failed] = Arr::partition($this->getIterator(), $callback);
 
         return new static([new static($passed), new static($failed)]);
     }
