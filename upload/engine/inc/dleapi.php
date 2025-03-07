@@ -22,8 +22,12 @@ global $db, $config, $dle_login_hash, $_TIME;
 $version = [
 	'name'      => 'DLE-API',
 	'descr'     => 'Неофициальное API',
-	'version'   => '173.0.38',
+	'version'   => '180.0.39',
 	'changelog' => [
+		'180.0.39' => [
+			'[FIX] Исправление вывода множества записей при запросе метода GET',
+			'[UPDATE] Обновлены зависимости'
+		],
 		'173.0.38' => [
 			'[FIX] Исправлена мелкие проблемы с маршутизацией',
 			'[UPDATE] Изменён класс работы с базой данных на <code><pre>illuminate/database</pre></code>',

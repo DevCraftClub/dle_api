@@ -136,7 +136,7 @@ class CrudController {
 
 		$getData = new CacheSystem($this->table, $sql);
 		if (check_response($getData->get())) {
-			$data = $this->db::selectOne($sql, []);
+			$data = $this->db::select($sql, []);
 			$getData->setData($data);
 			$data = $getData->create();
 		} else {

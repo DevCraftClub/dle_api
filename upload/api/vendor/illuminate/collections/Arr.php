@@ -931,6 +931,44 @@ class Arr
     }
 
     /**
+     * Filter the array using the negation of the given callback.
+     *
+     * @param  array  $array
+     * @param  callable  $callback
+     * @return array
+     */
+    public static function reject($array, callable $callback)
+    {
+        return static::where($array, fn ($value, $key) => ! $callback($value, $key));
+    }
+
+    /**
+     * Partition the array into two arrays using the given callback.
+     *
+     * @template TKey of array-key
+     * @template TValue of mixed
+     *
+     * @param  iterable<TKey, TValue>  $array
+     * @param  callable(TValue, TKey): bool  $callback
+     * @return array<int<0, 1>, array<TKey, TValue>>
+     */
+    public static function partition($array, callable $callback)
+    {
+        $passed = [];
+        $failed = [];
+
+        foreach ($array as $key => $item) {
+            if ($callback($item, $key)) {
+                $passed[$key] = $item;
+            } else {
+                $failed[$key] = $item;
+            }
+        }
+
+        return [$passed, $failed];
+    }
+
+    /**
      * Filter items where the value is not null.
      *
      * @param  array  $array
