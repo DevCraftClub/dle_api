@@ -1,3 +1,4 @@
+<<<<<<< New base: Update README.md
 <?php declare(strict_types=1);
 
 /**
@@ -17,3 +18,25 @@ trait GeneratorAwareTrait
         return $this;
     }
 }
+|||||||
+=======
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi;
+
+trait GeneratorAwareTrait
+{
+    protected ?Generator $generator = null;
+
+    public function setGenerator(Generator $generator)
+    {
+        $this->generator = $generator;
+
+        return $this;
+    }
+}
+>>>>>>> Current commit: Начало обновления до api v2

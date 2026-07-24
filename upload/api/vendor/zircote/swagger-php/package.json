@@ -1,3 +1,4 @@
+<<<<<<< New base: Update README.md
 {
   "name": "swagger-php-tools",
   "version": "1.0.0",
@@ -9,3 +10,19 @@
     "@redocly/cli": "^2.37.0"
   }
 }
+|||||||
+=======
+{
+  "name": "swagger-php-tools",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "scripts": {
+    "spectral": "spectral",
+    "redocly": "redocly"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^2.5.1",
+    "@stoplight/spectral-cli": "^6.15.0"
+  }
+}
+>>>>>>> Current commit: Начало обновления до api v2

@@ -1,3 +1,4 @@
+<<<<<<< New base: Update README.md
 <?php
 
 declare(strict_types=1);
@@ -65,3 +66,61 @@ final class KeyRequestsPage extends AbstractPage {
 	}
 
 }
+|||||||
+=======
+<?php
+
+declare(strict_types=1);
+
+namespace DevCraft\Modules\DleApi\Pages;
+
+use DevCraft\Core\Application;
+use DevCraft\Core\Abstracts\AbstractPage;
+use DevCraft\Modules\DleApi\Models\ApiAccessLevel;
+use DevCraft\Modules\DleApi\Models\ApiKeyRequest;
+use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
+use DevCraft\Modules\DleApi\Repositories\ApiKeyRequestRepository;
+
+/**
+ * Заявки пользователей на API-ключ.
+ */
+final class KeyRequestsPage extends AbstractPage {
+
+	public function handle(): array {
+		$this->addBreadcrumb(__('Заявки на ключ'));
+
+		/** @var ApiKeyRequestRepository $repo */
+		$repo = Application::instance()->database()->repository(ApiKeyRequest::class);
+		/** @var ApiAccessLevelRepository $levels */
+		$levels = Application::instance()->database()->repository(ApiAccessLevel::class);
+
+		$levelNames = [];
+		foreach($levels->all() as $lvl) {
+			$levelNames[$lvl->id()] = $lvl->name;
+		}
+
+		$rows = [];
+		foreach($repo->all() as $req) {
+			$rows[] = [
+				'id'               => $req->id(),
+				'user_id'          => $req->user_id,
+				'access_level_id'  => $req->access_level_id,
+				'level_name'       => $levelNames[$req->access_level_id] ?? ('#' . $req->access_level_id),
+				'status'           => $req->status,
+				'message'          => $req->message,
+				'decided_by'       => $req->decided_by,
+				'created'          => $req->createdAt()->format('Y-m-d H:i'),
+			];
+		}
+
+		return [
+			'view' => 'dleapi/key_requests.twig',
+			'data' => [
+				'page_title' => __('Заявки на ключ'),
+				'requests'   => $rows,
+			],
+		];
+	}
+
+}
+>>>>>>> Current commit: Начало обновления до api v2

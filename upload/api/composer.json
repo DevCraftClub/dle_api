@@ -1,11 +1,18 @@
 {
+<<<<<<< New base: Update README.md
 	"name": "devcraftclub/dle-api",
 	"description": "Неофициальное REST API для DataLife Engine",
 	"license": "AGPL-3.0-or-later",
+||||||| Common ancestor
+=======
+	"name": "devcraftclub/dle-api",
+	"description": "Неофициальное REST API для DataLife Engine",
+>>>>>>> Current commit: Начало обновления до api v2
 	"require": {
 		"ext-json": "*",
 		"ext-pdo": "*",
 		"ext-simplexml": "*",
+<<<<<<< New base: Update README.md
 		"league/oauth2-server": "^9.0",
 		"monolog/monolog": "^3.8",
 		"php-di/php-di": "^7.0",
@@ -39,6 +46,36 @@
 		"openapi": [
 			"@php vendor/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"
 		]
+||||||| Common ancestor
+		"php-di/php-di": "*",
+		"slim/psr7": "*",
+		"illuminate/database": "*"
+=======
+		"league/oauth2-server": "^9.0",
+		"monolog/monolog": "^3.8",
+		"php-di/php-di": "^7.0",
+		"slim/psr7": "^1.7",
+		"slim/slim": "^4.14",
+		"zircote/swagger-php": "^5.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"DleApi\\": "src/",
+			"JetBrains\\PhpStorm\\": "src/Support/PhpStorm/"
+		},
+		"classmap": [
+			"sdk/DcApi.php"
+		],
+		"files": [
+			"src/Fluent/DcDatabase.php",
+			"src/Fluent/functions.php"
+		]
+	},
+	"scripts": {
+		"openapi": [
+			"@php vendor/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"
+		]
+>>>>>>> Current commit: Начало обновления до api v2
 	},
 	"config": {
 		"platform": {

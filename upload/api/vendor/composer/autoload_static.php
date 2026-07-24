@@ -8,11 +8,23 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+<<<<<<< New base: Update README.md
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
+||||||| Common ancestor
+        '662a729f963d39afe703c9d9b7ab4a8c' => __DIR__ . '/..' . '/symfony/polyfill-php83/bootstrap.php',
+        '23f09fe3194f8c2f70923f90d6702129' => __DIR__ . '/..' . '/illuminate/collections/functions.php',
+        '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
+        '2203a247e6fda86070a5e4e07aed533a' => __DIR__ . '/..' . '/symfony/clock/Resources/now.php',
+        'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
+        'f625ee536139dfb962a398b200bdb2bd' => __DIR__ . '/..' . '/illuminate/support/functions.php',
+        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
+=======
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+>>>>>>> Current commit: Начало обновления до api v2
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'b33e3d135e5d9e47d845c576147bda89' => __DIR__ . '/..' . '/php-di/php-di/src/functions.php',
@@ -23,6 +35,7 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
     public static $prefixLengthsPsr4 = array (
         'S' =>
         array (
+<<<<<<< New base: Update README.md
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
             'Symfony\\Polyfill\\Intl\\Grapheme\\' => 31,
@@ -33,14 +46,36 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Console\\' => 26,
+||||||| Common ancestor
+            'voku\\' => 5,
+        ),
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Php83\\' => 23,
+            'Symfony\\Polyfill\\Php80\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Contracts\\Translation\\' => 30,
+            'Symfony\\Component\\Translation\\' => 30,
+            'Symfony\\Component\\Clock\\' => 24,
+=======
+            'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Component\\Yaml\\' => 23,
+            'Symfony\\Component\\Finder\\' => 25,
+>>>>>>> Current commit: Начало обновления до api v2
             'Slim\\Psr7\\' => 10,
             'Slim\\' => 5,
         ),
+<<<<<<< New base: Update README.md
         'R' =>
         array (
             'Radebatz\\TypeInfoExtras\\' => 24,
         ),
         'P' =>
+||||||| Common ancestor
+        'P' => 
+=======
+        'P' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Server\\' => 16,
@@ -48,14 +83,30 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
             'Psr\\Clock\\' => 10,
+<<<<<<< New base: Update README.md
             'PhpParser\\' => 10,
             'PHPStan\\PhpDocParser\\' => 21,
         ),
         'O' =>
         array (
             'OpenApi\\' => 8,
+||||||| Common ancestor
+=======
+            'PhpParser\\' => 10,
+            'PHPStan\\PhpDocParser\\' => 21,
+>>>>>>> Current commit: Начало обновления до api v2
+        ),
+<<<<<<< New base: Update README.md
+        'M' =>
+||||||| Common ancestor
+        'M' => 
+=======
+        'O' =>
+        array (
+            'OpenApi\\' => 8,
         ),
         'M' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
             'Monolog\\' => 8,
         ),
@@ -67,11 +118,17 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
             'Lcobucci\\JWT\\' => 13,
             'Laravel\\SerializableClosure\\' => 28,
         ),
+<<<<<<< New base: Update README.md
         'J' =>
         array (
             'JetBrains\\PhpStorm\\' => 19,
         ),
         'I' =>
+||||||| Common ancestor
+        'I' => 
+=======
+        'I' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
             'Invoker\\' => 8,
         ),
@@ -86,6 +143,7 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
             'Defuse\\Crypto\\' => 14,
             'DI\\' => 3,
         ),
+<<<<<<< New base: Update README.md
     );
 
     public static $prefixDirsPsr4 = array (
@@ -98,17 +156,68 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
         'Symfony\\Polyfill\\Intl\\Grapheme\\' =>
+||||||| Common ancestor
+        'C' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme',
+            'Carbon\\Doctrine\\' => 16,
+            'Carbon\\' => 7,
         ),
+        'B' => 
+        array (
+            'Brick\\Math\\' => 11,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'voku\\' => 
+=======
+    );
+
+    public static $prefixDirsPsr4 = array (
         'Symfony\\Polyfill\\Ctype\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
+<<<<<<< New base: Update README.md
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
+=======
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+>>>>>>> Current commit: Начало обновления до api v2
         ),
-        'Symfony\\Contracts\\Service\\' =>
+<<<<<<< New base: Update README.md
+        'Symfony\\Polyfill\\Ctype\\' =>
+||||||| Common ancestor
+        'Symfony\\Polyfill\\Php83\\' => 
+=======
+        'Symfony\\Component\\Yaml\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
-            0 => __DIR__ . '/..' . '/symfony/service-contracts',
+<<<<<<< New base: Update README.md
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php83',
+=======
+            0 => __DIR__ . '/..' . '/symfony/yaml',
+>>>>>>> Current commit: Начало обновления до api v2
         ),
+<<<<<<< New base: Update README.md
+        'Symfony\\Contracts\\Service\\' =>
+||||||| Common ancestor
+        'Symfony\\Polyfill\\Php80\\' => 
+=======
+        'Symfony\\Component\\Finder\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
+        array (
+<<<<<<< New base: Update README.md
+            0 => __DIR__ . '/..' . '/symfony/service-contracts',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+=======
+            0 => __DIR__ . '/..' . '/symfony/finder',
+>>>>>>> Current commit: Начало обновления до api v2
+        ),
+<<<<<<< New base: Update README.md
         'Symfony\\Component\\Yaml\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
@@ -130,6 +239,27 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
         'Slim\\Psr7\\' =>
+||||||| Common ancestor
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Contracts\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
+        ),
+        'Symfony\\Component\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation',
+        ),
+        'Symfony\\Component\\Clock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/clock',
+        ),
+        'Slim\\Psr7\\' => 
+=======
+        'Slim\\Psr7\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
             0 => __DIR__ . '/..' . '/slim/psr7/src',
         ),
@@ -137,11 +267,21 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
+<<<<<<< New base: Update README.md
         'Radebatz\\TypeInfoExtras\\' =>
         array (
             0 => __DIR__ . '/..' . '/radebatz/type-info-extras/src',
         ),
         'Psr\\Log\\' =>
+||||||| Common ancestor
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
+        'Psr\\Log\\' => 
+=======
+        'Psr\\Log\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
         ),
@@ -204,24 +344,83 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
         array (
             0 => __DIR__ . '/..' . '/laravel/serializable-closure/src',
         ),
+<<<<<<< New base: Update README.md
         'JetBrains\\PhpStorm\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/src/Support/PhpStorm',
-        ),
+||||||| Common ancestor
+        'Doctrine\\Inflector\\' => 
+=======
         'Invoker\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
+<<<<<<< New base: Update README.md
+            0 => __DIR__ . '/../..' . '/src/Support/PhpStorm',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
+=======
             0 => __DIR__ . '/..' . '/php-di/invoker/src',
+>>>>>>> Current commit: Начало обновления до api v2
         ),
+<<<<<<< New base: Update README.md
+        'Invoker\\' =>
+||||||| Common ancestor
+        'DI\\' => 
+=======
         'Fig\\Http\\Message\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
+<<<<<<< New base: Update README.md
+            0 => __DIR__ . '/..' . '/php-di/invoker/src',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/php-di/php-di/src',
+=======
             0 => __DIR__ . '/..' . '/fig/http-message-util/src',
+>>>>>>> Current commit: Начало обновления до api v2
         ),
+<<<<<<< New base: Update README.md
+        'Fig\\Http\\Message\\' =>
+||||||| Common ancestor
+        'Carbon\\Doctrine\\' => 
+=======
         'FastRoute\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
         array (
+<<<<<<< New base: Update README.md
+            0 => __DIR__ . '/..' . '/fig/http-message-util/src',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
+=======
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
         'DleApi\\' =>
         array (
+            0 => __DIR__ . '/../..' . '/src',
+>>>>>>> Current commit: Начало обновления до api v2
+        ),
+<<<<<<< New base: Update README.md
+        'FastRoute\\' =>
+||||||| Common ancestor
+        'Carbon\\' => 
+=======
+        'Defuse\\Crypto\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
+        array (
+<<<<<<< New base: Update README.md
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+=======
+            0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
+>>>>>>> Current commit: Начало обновления до api v2
+        ),
+<<<<<<< New base: Update README.md
+        'DleApi\\' =>
+||||||| Common ancestor
+        'Brick\\Math\\' => 
+=======
+        'DI\\' =>
+>>>>>>> Current commit: Начало обновления до api v2
+        array (
+<<<<<<< New base: Update README.md
             0 => __DIR__ . '/../..' . '/src',
         ),
         'Defuse\\Crypto\\' =>
@@ -231,13 +430,38 @@ class ComposerStaticInita605d6639370e7e4b9025ac25f5fe7b8
         'DI\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-di/php-di/src',
+||||||| Common ancestor
+            0 => __DIR__ . '/..' . '/brick/math/src',
+=======
+            0 => __DIR__ . '/..' . '/php-di/php-di/src',
+>>>>>>> Current commit: Начало обновления до api v2
         ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+<<<<<<< New base: Update README.md
         'DcApi' => __DIR__ . '/../..' . '/sdk/DcApi.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
+||||||| Common ancestor
+        'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
+        'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
+        'DateInvalidOperationException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidOperationException.php',
+        'DateInvalidTimeZoneException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidTimeZoneException.php',
+        'DateMalformedIntervalStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedIntervalStringException.php',
+        'DateMalformedPeriodStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedPeriodStringException.php',
+        'DateMalformedStringException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateMalformedStringException.php',
+        'DateObjectError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateObjectError.php',
+        'DateRangeError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateRangeError.php',
+        'Override' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/Override.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+=======
+        'DcApi' => __DIR__ . '/../..' . '/sdk/DcApi.php',
+>>>>>>> Current commit: Начало обновления до api v2
     );
 
     public static function getInitializer(ClassLoader $loader)

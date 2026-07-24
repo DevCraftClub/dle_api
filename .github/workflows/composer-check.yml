@@ -1,3 +1,4 @@
+<<<<<<< New base: Update README.md
 name: Composer check
 
 on:
@@ -38,3 +39,46 @@ jobs:
         run: |
           find . -name '*.php' -not -path './vendor/*' -print0 \
             | xargs -0 -n1 php -l
+|||||||
+=======
+name: Composer check
+
+on:
+  pull_request:
+    paths:
+      - 'upload/api/composer.json'
+      - 'upload/api/composer.lock'
+      - 'upload/api/**/*.php'
+      - '.github/workflows/composer-check.yml'
+  push:
+    paths:
+      - 'upload/api/composer.json'
+      - 'upload/api/composer.lock'
+
+jobs:
+  composer:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: upload/api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: json, pdo, simplexml
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --no-check-publish --strict
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: PHP syntax smoke
+        run: |
+          find . -name '*.php' -not -path './vendor/*' -print0 \
+            | xargs -0 -n1 php -l
+>>>>>>> Current commit: Начало обновления до api v2
