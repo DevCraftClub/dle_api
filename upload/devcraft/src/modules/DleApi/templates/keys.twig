@@ -1,0 +1,149 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="cell-md-8">
+			<div class="panel">
+				<div class="panel-title">{{ 'Список API-ключей'|trans }}</div>
+				<div class="panel-content">
+					<table class="table striped table-border mt-2" id="dleapi-keys-table">
+						<thead>
+						<tr>
+							<th>#</th>
+							<th>{{ 'Ключ'|trans }}</th>
+							<th>{{ 'Уровень'|trans }}</th>
+							<th>{{ 'Активен'|trans }}</th>
+							<th>{{ 'User ID'|trans }}</th>
+							<th>{{ 'Действия'|trans }}</th>
+						</tr>
+						</thead>
+						<tbody id="dleapi-keys-tbody">
+						{% for key in keys %}
+							<tr data-key-id="{{ key.id }}">
+								<td>{{ key.id }}</td>
+								<td><code>{{ key.api }}</code></td>
+								<td data-level-id="{{ key.access_level_id }}">{{ key.access_level_id ?: '—' }}</td>
+								<td>{{ key.active ? ('Да'|trans) : ('Нет'|trans) }}</td>
+								<td>{{ key.user_id }}</td>
+								<td>
+									<button type="button" class="button small"
+											data-dleapi-edit-key="{{ key.id }}">
+										{{ 'Права'|trans }}
+									</button>
+									<button type="button" class="button small"
+											data-dleapi-toggle-key="{{ key.id }}"
+											data-active="{{ key.active ? 0 : 1 }}">
+										{{ key.active ? ('Отключить'|trans) : ('Включить'|trans) }}
+									</button>
+									<button type="button" class="button alert small"
+											data-dleapi-delete-key="{{ key.id }}">
+										{{ 'Удалить'|trans }}
+									</button>
+								</td>
+							</tr>
+						{% else %}
+							<tr class="dleapi-keys-empty">
+								<td colspan="6">{{ 'Ключей пока нет'|trans }}</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="cell-md-4">
+			<div class="panel">
+				<div class="panel-title" id="dleapi-key-form-title"
+					 data-label-create="{{ 'Создать ключ'|trans|e('html_attr') }}">{{ 'Создать ключ'|trans }}</div>
+				<div class="panel-content">
+					<form id="dleapi-create-key-form" method="post" action="#">
+						<input type="hidden" name="id" id="dleapi-key-id" value="">
+						<div class="form-group">
+							<label>{{ 'Пользователь'|trans }}</label>
+							<select name="user_id" class="metro-input" required>
+								{% for user in users %}
+									<option value="{{ user.id }}" {% if user.id == 0 %}selected{% endif %}>{{ user.label }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-group">
+							<label>{{ 'Уровень доступа'|trans }}</label>
+							<select name="access_level_id" class="metro-input" id="dleapi-key-level">
+								<option value="0">{{ '— вручную / без уровня —'|trans }}</option>
+								{% for level in levels %}
+									<option value="{{ level.id }}">{{ level.name }}</option>
+								{% endfor %}
+							</select>
+							<small class="text-muted">{{ 'При выборе уровня флаги own_only/cheater берутся из уровня. Без уровня — матрица scopes ниже.'|trans }}</small>
+						</div>
+						<div class="d-flex flex-justify-between flex-align-center">
+							<button type="submit" class="button primary" id="dleapi-key-submit"
+									data-label-create="{{ 'Создать'|trans|e('html_attr') }}"
+									data-label-save="{{ 'Сохранить'|trans|e('html_attr') }}">{{ 'Создать'|trans }}</button>
+							<button type="button" class="button" id="dleapi-key-cancel-edit" hidden>{{ 'Отмена'|trans }}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mt-2">
+		<div class="cell-12">
+			<div class="panel" id="dleapi-scopes-panel">
+				<div class="panel-title">{{ 'Права доступа к таблицам (если уровень не задан или для legacy-ключей)'|trans }}</div>
+				<div class="panel-content">
+					<p class="text-small text-muted mb-2">
+						{{ 'Чтение — просмотр; Запись — создание; Правка — изменение; Удаление — удаление. При уровне с cheater матрица игнорируется.'|trans }}
+					</p>
+					<div class="table-container" style="max-height: 420px; overflow: auto;">
+						<table class="table striped table-border table-sm" id="dleapi-scopes-table">
+							<thead>
+							<tr>
+								<th>{{ 'Таблица'|trans }}</th>
+								<th class="text-center">
+									{{ 'Чтение'|trans }}
+									<input type="checkbox" data-dleapi-scope-all="read" title="{{ 'Включить все'|trans }}">
+								</th>
+								<th class="text-center">
+									{{ 'Запись'|trans }}
+									<input type="checkbox" data-dleapi-scope-all="write" title="{{ 'Включить все'|trans }}">
+								</th>
+								<th class="text-center">
+									{{ 'Правка'|trans }}
+									<input type="checkbox" data-dleapi-scope-all="edit" title="{{ 'Включить все'|trans }}">
+								</th>
+								<th class="text-center">
+									{{ 'Удаление'|trans }}
+									<input type="checkbox" data-dleapi-scope-all="delete" title="{{ 'Включить все'|trans }}">
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							{% for table in scope_tables %}
+								<tr data-scope-table="{{ table }}">
+									<td><code>{{ table }}</code></td>
+									<td class="text-center">
+										<input type="checkbox" data-scope-flag="read" data-table="{{ table }}" value="1">
+									</td>
+									<td class="text-center">
+										<input type="checkbox" data-scope-flag="write" data-table="{{ table }}" value="1">
+									</td>
+									<td class="text-center">
+										<input type="checkbox" data-scope-flag="edit" data-table="{{ table }}" value="1">
+									</td>
+									<td class="text-center">
+										<input type="checkbox" data-scope-flag="delete" data-table="{{ table }}" value="1">
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="5">{{ 'Список таблиц SchemaRegistry пуст'|trans }}</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

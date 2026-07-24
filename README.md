@@ -1,45 +1,90 @@
-[![GitHub issues](https://img.shields.io/github/issues/Gokujo/dle_api.svg?style=flat-square)](https://github.com/Gokujo/dle_api/issues)
-[![GitHub forks](https://img.shields.io/github/forks/Gokujo/dle_api.svg?style=flat-square)](https://github.com/Gokujo/dle_api/network)
-[![GitHub license](https://img.shields.io/github/license/Gokujo/dle_api.svg?style=flat-square)](https://github.com/Gokujo/dle_api/blob/master/LICENSE)
-
-![DLE-17.3](https://img.shields.io/badge/DLE-17.3-green.svg?style=flat-square)
-![MySQL-5.7](https://img.shields.io/badge/MySQL-5.5.6-red.svg?style=flat-square)
-![PHP-8.3](https://img.shields.io/badge/PHP-8.3-red.svg?style=flat-square)
-
-![Версия_релиза](https://img.shields.io/github/manifest-json/v/Gokujo/dle_api?filename=manifest.json&style=flat-square)
-![Версия_релиза](https://img.shields.io/badge/Version-BETA-orange.svg?style=flat-square)
+[![DLE-20.0](https://img.shields.io/badge/DLE-20.0-green.svg?style=flat-square)](https://dle-news.ru/)
+[![PHP-8.3](https://img.shields.io/badge/PHP-8.3-red.svg?style=flat-square)](https://www.php.net/)
+[![DevCraft-Admin](https://img.shields.io/badge/DevCraft%20Admin-%E2%89%A5200.4.0-blue.svg?style=flat-square)](https://readme.devcraft.club/dev/devcraft_admin/install/)
+![Version](https://img.shields.io/badge/Version-200.1.0-orange.svg?style=flat-square)
 
 # DLE API
-Модификация для админпанели и глобальные функции для моих разработок
-Совместимость проверенна на DLE-версиях 17.3. Для корректной работы требуется минимальная версия MySQL 5.5.6 или MariaDB 10.0, поскольку используются Foreign Key, которые требуют наличие InnoDB.
 
-Для установки достаточно скачать [релиз](https://github.com/Gokujo/dle_api/releases/latest).
-Документация к API находится на сервере [POSTMAN](https://documenter.getpostman.com/view/7856564/2s93CLsZ6p). На данный момент она не полная и пополняется медленно, но верно.
-Релизы выше только для версий DLE 16 и выше.
+Неофициальное REST API для DataLife Engine **20.0**.
 
-Чтобы пополнить описания к полям - делаем форк репозитория и редактируем файл в папке apidata **DLE-API.postman_collection.json**. Изменяем и делаем пуш риквест.
+Единственная HTTP-поверхность: **`/api/v2`** — CycleORM (DevCraft), OAuth2 **Bearer**, Fluent, xfields, uploads.
 
+In-process SDK: глобальный **`DcApi`** (после enable плагина; не legacy `DLE_API`).
 
-# Инструкция
-Скачайте релиз. У вас три варианта для установки:
-1. **При помощи bat-Скрипта. Для пользователей Windows**
-Для этого устанавливаем [7Zip](https://www.7-zip.org/download.html).
-После установки запускаем скрипт install_archive.bat.
-После завершения установки - загружаем install.zip в менеджер плагинов.
+Документация: [readme.devcraft.club/dev/dle_api/](https://readme.devcraft.club/dev/dle_api/install/)  
+OpenAPI: [`apidata/openapi.yaml`](apidata/openapi.yaml)
 
-1. **Упаковать самому**
-Любым архиватором запаковать всё содержимое в папке **upload**, причём так, чтобы в корне архива был файл **install.xml** и папка **engine**.
-Затем устанавливаем архив через менеджер плагинов.
+## Требования
 
-1. **Просто залить**
-Залейте папку **engine** в корень сайта и установите плагин через менеджер плагинов.
+| Компонент | Версия |
+|-----------|--------|
+| DLE | ≥ 20.0 |
+| PHP | ≥ 8.3 |
+| DevCraft Admin | ≥ 200.4.0 |
 
+## Установка
 
-## Обновление
-Заменить все файлы из папки **upload**, кроме **install.xml**.
+1. Установите DevCraft Admin.
+2. Упакуйте `upload/` и установите через менеджер плагинов DLE (`install.xml` инъецирует SDK в `engine/init.php` и admin init).
+3. В `api/`: `composer install`.
+4. Админка **DLE API** — ключ + OAuth-клиент.
 
+## Редирект `/api` → `/api/v2`
+
+**Apache** (`api/.htaccess`): `/api` и `/api/v1` → `/api/v2` (308).
+
+**nginx** (фрагмент `server`):
+
+```nginx
+location = /api {
+    return 308 /api/v2/;
+}
+location /api/v1 {
+    rewrite ^/api/v1/?(.*)$ /api/v2/$1 permanent;
+}
+location /api/v2/ {
+    try_files $uri /api/v2/index.php?$query_string;
+}
+```
+
+## Auth (HTTP)
+
+`Authorization: Bearer <access_token>`  
+Токен: `POST /api/v2/oauth/token` (`grant_type=client_credentials` или `password` с username/password пользователя DLE).
+
+## SDK (`DcApi`)
+
+```php
+// после enable плагина bootstrap уже подключён; или вручную:
+require_once DLEPlugins::Check(ROOT_DIR . '/api/sdk/bootstrap.php');
+
+$post = DcApi::prepareNewPost()
+    ->withTitle('Заголовок')
+    ->withCategory([12, 15])
+    ->create();
+
+$post->id();
+$post->schema();
+
+DcApi::modifyXfield('post')->upsert('myfield', [
+    'name' => 'myfield',
+    'description' => 'Test',
+    'type' => 'text',
+])->save();
+```
+
+Фабрики: `prepare`, `prepareNewPost|User|Plugin|Usergroup`, `startConversation`, `prepareStaticPage`, `prepareFile`, `modifyXfield`.
+
+Низкоуровневый Fluent: `api/src/Fluent/bootstrap.php` → `prepare('post')->…->create()`.
+
+Схемы таблиц: `api/src/Schema/`. Xfields: `GET/POST /api/v2/xfields/{post|user}/…`.
+
+## OpenAPI
+
+```bash
+cd upload/api && php composer.phar openapi
+```
 
 ## Удаление
-Удаляем **из корня** сайта папку **api**, a так-же из папки **engine/inc** файл **dleapi.php** и из **engine/skins/images** файл **dleapi.png**.
 
-Удаляем плагин из менеджера плагинов
+Плагин в менеджере; каталоги `api/`, `devcraft/src/modules/DleApi/`, `engine/inc/dleapi.php`.
