@@ -1,3 +1,4 @@
+<<<<<<< New base: Update README.md
 <div class="container-fluid">
 	<div class="row mb-3">
 		<div class="cell-12">
@@ -205,3 +206,205 @@
 		</div>
 	</div>
 </div>
+|||||||
+=======
+<div class="container-fluid">
+	<div class="row mb-3">
+		<div class="cell-12">
+			<div class="panel">
+				<div class="panel-title">{{ 'Эндпоинты Authorization Server'|trans }}</div>
+				<div class="panel-content">
+					<p class="text-small text-muted mb-2">{{ 'Скопируйте URL для интеграции внешних OAuth-клиентов (DLE = IdP).'|trans }}</p>
+					{% for key, url in endpoints %}
+						<div class="form-group mb-2">
+							<label>{{ key }}</label>
+							<div class="d-flex flex-align-center">
+								<input type="text" id="dleapi-ep-{{ key }}" class="metro-input flex-fill" readonly value="{{ url }}">
+								<button type="button" class="button small ml-2" data-dleapi-copy-target="dleapi-ep-{{ key }}">{{ 'Копировать'|trans }}</button>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="cell-md-8">
+			<div id="dleapi-oauth-secret-banner" class="remark warning mb-4" hidden>
+				<p class="mb-2">
+					<strong>{{ 'Сохраните client_secret сейчас'|trans }}</strong>
+					— {{ 'он показывается один раз и больше не будет доступен.'|trans }}
+				</p>
+				<div class="form-group mb-2">
+					<label for="dleapi-oauth-new-client-id">client_id</label>
+					<div class="d-flex flex-align-center">
+						<input type="text" id="dleapi-oauth-new-client-id" class="metro-input flex-fill"
+							   readonly autocomplete="off">
+						<button type="button" class="button small ml-2"
+								data-dleapi-copy-target="dleapi-oauth-new-client-id">
+							{{ 'Копировать'|trans }}
+						</button>
+					</div>
+				</div>
+				<div class="form-group mb-2">
+					<label for="dleapi-oauth-new-client-secret">client_secret</label>
+					<div class="d-flex flex-align-center">
+						<input type="text" id="dleapi-oauth-new-client-secret" class="metro-input flex-fill"
+							   readonly autocomplete="off">
+						<button type="button" class="button small ml-2"
+								data-dleapi-copy-target="dleapi-oauth-new-client-secret">
+							{{ 'Копировать'|trans }}
+						</button>
+					</div>
+				</div>
+				<button type="button" class="button small" id="dleapi-oauth-secret-dismiss">
+					{{ 'Скрыть'|trans }}
+				</button>
+			</div>
+			<div class="panel">
+				<div class="panel-title">{{ 'OAuth-клиенты'|trans }}</div>
+				<div class="panel-content">
+					<table class="table striped table-border mt-2" data-role="table">
+						<thead>
+						<tr>
+							<th>#</th>
+							<th>{{ 'Имя'|trans }}</th>
+							<th>client_id</th>
+							<th>{{ 'API-ключ'|trans }}</th>
+							<th>{{ 'Активен'|trans }}</th>
+							<th>{{ 'Действия'|trans }}</th>
+						</tr>
+						</thead>
+						<tbody id="dleapi-oauth-tbody">
+						{% for client in clients %}
+							<tr data-oauth-id="{{ client.id }}">
+								<td>{{ client.id }}</td>
+								<td>{{ client.name }}</td>
+								<td><code>{{ client.client_id }}</code></td>
+								<td><code>{{ client.apiKeyPreview|default('—') }}</code></td>
+								<td>{{ client.active ? 'Да'|trans : 'Нет'|trans }}</td>
+								<td>
+									<button type="button" class="button small"
+											data-dleapi-edit-oauth="{{ client.id }}">
+										{{ 'Изменить'|trans }}
+									</button>
+									<button type="button" class="button alert small"
+											data-dleapi-delete-oauth="{{ client.id }}">
+										{{ 'Удалить'|trans }}
+									</button>
+								</td>
+							</tr>
+						{% else %}
+							<tr class="dleapi-oauth-empty">
+								<td colspan="6">{{ 'Клиентов пока нет'|trans }}</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="cell-md-4">
+			<div class="panel">
+				<div class="panel-title" id="dleapi-oauth-form-title"
+					 data-label-create="{{ 'Создать клиент'|trans|e('html_attr') }}">{{ 'Создать клиент'|trans }}</div>
+				<div class="panel-content">
+					<div class="remark info mb-3 text-small" id="dleapi-oauth-form-help"
+						 data-help-create="{{ 'OAuth-клиент выдаёт access_token для вызовов /api/v2. Права запросов берёт из выбранного API-ключа (scopes). После создания сохраните client_id и client_secret — секрет больше не показывается.'|trans|e('html_attr') }}"
+						 data-help-edit="{{ 'Редактирование: название, API-ключ, Redirect URI, grant types и активность. client_id не меняется; секрет — только через «Пересоздать client_secret».'|trans|e('html_attr') }}">
+						{{ 'OAuth-клиент выдаёт access_token для вызовов /api/v2. Права запросов берёт из выбранного API-ключа (scopes). После создания сохраните client_id и client_secret — секрет больше не показывается.'|trans }}
+					</div>
+					<form id="dleapi-create-oauth-form" method="post" action="#">
+						<input type="hidden" name="id" id="dleapi-oauth-id" value="">
+						<div class="form-group" id="dleapi-oauth-client-id-group" hidden>
+							<label>client_id</label>
+							<input type="text" id="dleapi-oauth-client-id-view" class="metro-input" readonly>
+							<small class="text-muted">
+								{{ 'Идентификатор клиента не меняется. Секрет можно перевыпустить кнопкой ниже — старый сразу перестанет работать.'|trans }}
+							</small>
+						</div>
+						<div class="form-group" id="dleapi-oauth-regen-group" hidden>
+							<button type="button" class="button warning" id="dleapi-oauth-regen-secret">
+								{{ 'Пересоздать client_secret'|trans }}
+							</button>
+							<small class="text-muted d-block mt-1">
+								{{ 'Новый секрет покажется один раз над таблицей. Обновите его во всех приложениях, которые используют этого клиента.'|trans }}
+							</small>
+						</div>
+						<div class="form-group">
+							<label>{{ 'Название'|trans }}</label>
+							<input type="text" name="name" class="metro-input"
+								   placeholder="{{ 'Напр. Mobile app, CI, Postman'|trans }}">
+							<small class="text-muted">
+								{{ 'Только для списка в админке. На выдачу токенов не влияет. Если пусто — подставится client_id.'|trans }}
+							</small>
+						</div>
+						<div class="form-group">
+							<label>{{ 'API-ключ'|trans }} <span class="fg-red">*</span></label>
+							<select name="api_key_id" class="metro-input" required>
+								<option value="">{{ '— выберите —'|trans }}</option>
+								{% for key in api_keys %}
+									<option value="{{ key.id }}">#{{ key.id }} — {{ key.api }}</option>
+								{% endfor %}
+							</select>
+							<small class="text-muted">
+								{{ 'Обязательно. Определяет, к каким таблицам и с какими правами (read/write/delete) сможет обращаться Bearer-токен этого клиента. Ключ создаётся на вкладке «Ключи».'|trans }}
+							</small>
+						</div>
+						<div class="form-group">
+							<label>{{ 'Redirect URI'|trans }}</label>
+							<input type="url" name="redirect_uri" class="metro-input" placeholder="https://…/callback">
+							<small class="text-muted">
+								{{ 'Ссылка http(s). Нужна для grant authorization_code. Должна точно совпадать с redirect_uri при /oauth/authorize и обмене кода. Для password / client_credentials можно оставить пустым.'|trans }}
+							</small>
+						</div>
+						<div class="form-group">
+							<label>{{ 'Grant types'|trans }} <span class="fg-red">*</span></label>
+							<div id="dleapi-oauth-grants">
+								<label class="d-block">
+									<input type="checkbox" name="grant_types[]" value="client_credentials" checked>
+									<code>client_credentials</code>
+									— {{ 'сервер-сервер без пользователя'|trans }}
+								</label>
+								<label class="d-block">
+									<input type="checkbox" name="grant_types[]" value="password" checked>
+									<code>password</code>
+									— {{ 'логин/пароль пользователя DLE'|trans }}
+								</label>
+								<label class="d-block">
+									<input type="checkbox" name="grant_types[]" value="authorization_code" checked>
+									<code>authorization_code</code>
+									— {{ 'браузерный OAuth-код (нужен Redirect URI)'|trans }}
+								</label>
+								<label class="d-block">
+									<input type="checkbox" name="grant_types[]" value="refresh_token" checked>
+									<code>refresh_token</code>
+									— {{ 'обновление access_token'|trans }}
+								</label>
+							</div>
+							<small class="text-muted">
+								{{ 'Какие способы получения токена разрешены этому клиенту. Хотя бы один обязателен.'|trans }}
+							</small>
+						</div>
+						<div class="form-group" id="dleapi-oauth-active-group" hidden>
+							<label>
+								<input type="checkbox" name="active" value="1" checked>
+								{{ 'Активен'|trans }}
+							</label>
+							<small class="text-muted d-block">
+								{{ 'Неактивный клиент не сможет получать новые токены.'|trans }}
+							</small>
+						</div>
+						<div class="d-flex flex-align-center">
+							<button type="submit" class="button primary" id="dleapi-oauth-submit"
+									data-label-create="{{ 'Создать'|trans|e('html_attr') }}"
+									data-label-save="{{ 'Сохранить'|trans|e('html_attr') }}">{{ 'Создать'|trans }}</button>
+							<button type="button" class="button ml-2" id="dleapi-oauth-cancel-edit" hidden>{{ 'Отмена'|trans }}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+>>>>>>> Current commit: Начало обновления до api v2

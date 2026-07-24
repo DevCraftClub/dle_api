@@ -4,7 +4,13 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< New base: Update README.md
     "content-hash": "b5f3db24d578b0fc9fa88a0765277894",
+||||||| Common ancestor
+    "content-hash": "8bc581b6a35f7c16c93d85e8e89c1a3c",
+=======
+    "content-hash": "f77bc5231b459a8fb6eba681627802b7",
+>>>>>>> Current commit: Начало обновления до api v2
     "packages": [
         {
             "name": "defuse/php-encryption",
@@ -21,6 +27,7 @@
                 "shasum": ""
             },
             "require": {
+<<<<<<< New base: Update README.md
                 "ext-openssl": "*",
                 "paragonie/random_compat": ">= 2",
                 "php": ">=5.6.0"
@@ -31,6 +38,130 @@
             },
             "bin": [
                 "bin/generate-defuse-key"
+||||||| Common ancestor
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^10.1",
+                "vimeo/psalm": "6.8.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Math\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Arbitrary-precision arithmetic library",
+            "keywords": [
+                "Arbitrary-precision",
+                "BigInteger",
+                "BigRational",
+                "arithmetic",
+                "bigdecimal",
+                "bignum",
+                "bignumber",
+                "brick",
+                "decimal",
+                "integer",
+                "math",
+                "mathematics",
+                "rational"
+            ],
+            "support": {
+                "issues": "https://github.com/brick/math/issues",
+                "source": "https://github.com/brick/math/tree/0.12.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-28T13:11:00+00:00"
+        },
+        {
+            "name": "carbonphp/carbon-doctrine-types",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CarbonPHP/carbon-doctrine-types.git",
+                "reference": "18ba5ddfec8976260ead6e866180bd5d2f71aa1d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon-doctrine-types/zipball/18ba5ddfec8976260ead6e866180bd5d2f71aa1d",
+                "reference": "18ba5ddfec8976260ead6e866180bd5d2f71aa1d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "conflict": {
+                "doctrine/dbal": "<4.0.0 || >=5.0.0"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^4.0.0",
+                "nesbot/carbon": "^2.71.0 || ^3.0.0",
+                "phpunit/phpunit": "^10.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Carbon\\Doctrine\\": "src/Carbon/Doctrine/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "KyleKatarn",
+                    "email": "kylekatarnls@gmail.com"
+                }
+            ],
+            "description": "Types to use Carbon in Doctrine",
+            "keywords": [
+                "carbon",
+                "date",
+                "datetime",
+                "doctrine",
+                "time"
+            ],
+            "support": {
+                "issues": "https://github.com/CarbonPHP/carbon-doctrine-types/issues",
+                "source": "https://github.com/CarbonPHP/carbon-doctrine-types/tree/3.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/kylekatarnls",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/Carbon",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/nesbot/carbon",
+                    "type": "tidelift"
+                }
+=======
+                "ext-openssl": "*",
+                "paragonie/random_compat": ">= 2",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5|^6|^7|^8|^9|^10",
+                "yoast/phpunit-polyfills": "^2.0.0"
+            },
+            "bin": [
+                "bin/generate-defuse-key"
+>>>>>>> Current commit: Начало обновления до api v2
             ],
             "type": "library",
             "autoload": {
@@ -130,17 +261,41 @@
             "time": "2020-11-24T22:02:12+00:00"
         },
         {
+<<<<<<< New base: Update README.md
             "name": "laravel/serializable-closure",
             "version": "v2.0.15",
+||||||| Common ancestor
+            "name": "illuminate/collections",
+            "version": "v12.1.1",
+=======
+            "name": "laravel/serializable-closure",
+            "version": "v2.0.13",
+>>>>>>> Current commit: Начало обновления до api v2
             "source": {
                 "type": "git",
+<<<<<<< New base: Update README.md
                 "url": "https://github.com/laravel/serializable-closure.git",
                 "reference": "dccd8bcb851bb03fcc005df650b708b57cc52661"
+||||||| Common ancestor
+                "url": "https://github.com/illuminate/collections.git",
+                "reference": "9720323b3b9c88732b459feacdfcf87b8770a5b7"
+=======
+                "url": "https://github.com/laravel/serializable-closure.git",
+                "reference": "b566ee0dd251f3c4078bed003a7ce015f5ea6dce"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "dist": {
                 "type": "zip",
+<<<<<<< New base: Update README.md
                 "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/dccd8bcb851bb03fcc005df650b708b57cc52661",
                 "reference": "dccd8bcb851bb03fcc005df650b708b57cc52661",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/illuminate/collections/zipball/9720323b3b9c88732b459feacdfcf87b8770a5b7",
+                "reference": "9720323b3b9c88732b459feacdfcf87b8770a5b7",
+=======
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/b566ee0dd251f3c4078bed003a7ce015f5ea6dce",
+                "reference": "b566ee0dd251f3c4078bed003a7ce015f5ea6dce",
+>>>>>>> Current commit: Начало обновления до api v2
                 "shasum": ""
             },
             "require": {
@@ -188,7 +343,13 @@
                 "issues": "https://github.com/laravel/serializable-closure/issues",
                 "source": "https://github.com/laravel/serializable-closure"
             },
+<<<<<<< New base: Update README.md
             "time": "2026-07-21T16:49:22+00:00"
+||||||| Common ancestor
+            "time": "2025-03-04T21:55:59+00:00"
+=======
+            "time": "2026-04-16T14:03:50+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
         },
         {
             "name": "lcobucci/jwt",
@@ -248,6 +409,7 @@
                 "jwt"
             ],
             "support": {
+<<<<<<< New base: Update README.md
                 "issues": "https://github.com/lcobucci/jwt/issues",
                 "source": "https://github.com/lcobucci/jwt/tree/5.6.0"
             },
@@ -276,7 +438,31 @@
                 "url": "https://api.github.com/repos/thephpleague/event/zipball/ec38ff7ea10cad7d99a79ac937fbcffb9334c210",
                 "reference": "ec38ff7ea10cad7d99a79ac937fbcffb9334c210",
                 "shasum": ""
+||||||| Common ancestor
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
             },
+            "time": "2025-02-19T19:08:33+00:00"
+        },
+        {
+            "name": "illuminate/container",
+            "version": "v12.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/container.git",
+                "reference": "2f99ed909d7439d5298b85e2f51d3965aa77e5a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/container/zipball/2f99ed909d7439d5298b85e2f51d3965aa77e5a9",
+                "reference": "2f99ed909d7439d5298b85e2f51d3965aa77e5a9",
+                "shasum": ""
+=======
+                "issues": "https://github.com/lcobucci/jwt/issues",
+                "source": "https://github.com/lcobucci/jwt/tree/5.6.0"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+<<<<<<< New base: Update README.md
             "require": {
                 "php": ">=7.2.0",
                 "psr/event-dispatcher": "^1.0"
@@ -305,11 +491,52 @@
                 "MIT"
             ],
             "authors": [
+||||||| Common ancestor
+            "require": {
+                "illuminate/contracts": "^12.0",
+                "php": "^8.2",
+                "psr/container": "^1.1.1|^2.0.1"
+            },
+            "provide": {
+                "psr/container-implementation": "1.1|2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Container\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+=======
+            "funding": [
+>>>>>>> Current commit: Начало обновления до api v2
                 {
+<<<<<<< New base: Update README.md
                     "name": "Frank de Jonge",
                     "email": "info@frenky.net"
+||||||| Common ancestor
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+=======
+                    "url": "https://github.com/lcobucci",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/lcobucci",
+                    "type": "patreon"
+>>>>>>> Current commit: Начало обновления до api v2
                 }
             ],
+<<<<<<< New base: Update README.md
             "description": "Event package",
             "keywords": [
                 "emitter",
@@ -321,22 +548,58 @@
                 "source": "https://github.com/thephpleague/event/tree/3.0.3"
             },
             "time": "2024-09-04T16:06:53+00:00"
+||||||| Common ancestor
+            "description": "The Illuminate Container package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2025-02-17T16:39:31+00:00"
+=======
+            "time": "2025-10-17T11:30:53+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
         },
         {
+<<<<<<< New base: Update README.md
             "name": "league/oauth2-server",
             "version": "9.4.1",
+||||||| Common ancestor
+            "name": "illuminate/contracts",
+            "version": "v12.1.1",
+=======
+            "name": "league/event",
+            "version": "3.0.3",
+>>>>>>> Current commit: Начало обновления до api v2
             "source": {
                 "type": "git",
+<<<<<<< New base: Update README.md
                 "url": "https://github.com/thephpleague/oauth2-server.git",
                 "reference": "9d2f6fc0a0b5aa1bb02506971d3a4ecff2c6526c"
+||||||| Common ancestor
+                "url": "https://github.com/illuminate/contracts.git",
+                "reference": "31561bda13936ddef88eaa22241a53965e001727"
+=======
+                "url": "https://github.com/thephpleague/event.git",
+                "reference": "ec38ff7ea10cad7d99a79ac937fbcffb9334c210"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "dist": {
                 "type": "zip",
+<<<<<<< New base: Update README.md
                 "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/9d2f6fc0a0b5aa1bb02506971d3a4ecff2c6526c",
                 "reference": "9d2f6fc0a0b5aa1bb02506971d3a4ecff2c6526c",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/31561bda13936ddef88eaa22241a53965e001727",
+                "reference": "31561bda13936ddef88eaa22241a53965e001727",
+=======
+                "url": "https://api.github.com/repos/thephpleague/event/zipball/ec38ff7ea10cad7d99a79ac937fbcffb9334c210",
+                "reference": "ec38ff7ea10cad7d99a79ac937fbcffb9334c210",
+>>>>>>> Current commit: Начало обновления до api v2
                 "shasum": ""
             },
             "require": {
+<<<<<<< New base: Update README.md
                 "defuse/php-encryption": "^2.4",
                 "ext-json": "*",
                 "ext-openssl": "*",
@@ -347,10 +610,40 @@
                 "psr/clock": "^1.0",
                 "psr/http-message": "^2.0",
                 "psr/http-server-middleware": "^1.0"
+||||||| Common ancestor
+                "php": "^8.2",
+                "psr/container": "^1.1.1|^2.0.1",
+                "psr/simple-cache": "^1.0|^2.0|^3.0"
+=======
+                "php": ">=7.2.0",
+                "psr/event-dispatcher": "^1.0"
             },
+            "provide": {
+                "psr/event-dispatcher-implementation": "1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.16",
+                "phpstan/phpstan": "^0.12.45",
+                "phpunit/phpunit": "^8.5"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+<<<<<<< New base: Update README.md
             "replace": {
                 "league/oauth2server": "*",
                 "lncd/oauth2": "*"
+||||||| Common ancestor
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+=======
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "require-dev": {
                 "laminas/laminas-diactoros": "^3.8",
@@ -369,7 +662,13 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
+<<<<<<< New base: Update README.md
                     "League\\OAuth2\\Server\\": "src/"
+||||||| Common ancestor
+                    "Illuminate\\Contracts\\": ""
+=======
+                    "League\\Event\\": "src/"
+>>>>>>> Current commit: Начало обновления до api v2
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -378,6 +677,7 @@
             ],
             "authors": [
                 {
+<<<<<<< New base: Update README.md
                     "name": "Alex Bilbie",
                     "email": "hello@alexbilbie.com",
                     "homepage": "http://www.alexbilbie.com",
@@ -388,8 +688,16 @@
                     "email": "andrew@noexceptions.io",
                     "homepage": "https://www.noexceptions.io",
                     "role": "Developer"
+||||||| Common ancestor
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+=======
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+>>>>>>> Current commit: Начало обновления до api v2
                 }
             ],
+<<<<<<< New base: Update README.md
             "description": "A lightweight and powerful OAuth 2.0 authorization and resource server library with support for all the core specification grants. This library will allow you to secure your API with OAuth and allow your applications users to approve apps that want to access their data from your API.",
             "homepage": "https://oauth2.thephpleague.com/",
             "keywords": [
@@ -407,10 +715,30 @@
                 "secure",
                 "server"
             ],
+||||||| Common ancestor
+            "description": "The Illuminate Contracts package.",
+            "homepage": "https://laravel.com",
+=======
+            "description": "Event package",
+            "keywords": [
+                "emitter",
+                "event",
+                "listener"
+            ],
+>>>>>>> Current commit: Начало обновления до api v2
             "support": {
+<<<<<<< New base: Update README.md
                 "issues": "https://github.com/thephpleague/oauth2-server/issues",
                 "source": "https://github.com/thephpleague/oauth2-server/tree/9.4.1"
+||||||| Common ancestor
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+=======
+                "issues": "https://github.com/thephpleague/event/issues",
+                "source": "https://github.com/thephpleague/event/tree/3.0.3"
+>>>>>>> Current commit: Начало обновления до api v2
             },
+<<<<<<< New base: Update README.md
             "funding": [
                 {
                     "url": "https://github.com/sephster",
@@ -418,29 +746,82 @@
                 }
             ],
             "time": "2026-06-25T15:24:07+00:00"
+||||||| Common ancestor
+            "time": "2025-03-04T15:55:02+00:00"
+=======
+            "time": "2024-09-04T16:06:53+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
         },
         {
+<<<<<<< New base: Update README.md
             "name": "league/uri",
             "version": "7.8.1",
+||||||| Common ancestor
+            "name": "illuminate/database",
+            "version": "v12.1.1",
+=======
+            "name": "league/oauth2-server",
+            "version": "9.4.1",
+>>>>>>> Current commit: Начало обновления до api v2
             "source": {
                 "type": "git",
+<<<<<<< New base: Update README.md
                 "url": "https://github.com/thephpleague/uri.git",
                 "reference": "08cf38e3924d4f56238125547b5720496fac8fd4"
+||||||| Common ancestor
+                "url": "https://github.com/illuminate/database.git",
+                "reference": "0b64394ddfb2cdf67dc00166dc634f8c2f70eec8"
+=======
+                "url": "https://github.com/thephpleague/oauth2-server.git",
+                "reference": "9d2f6fc0a0b5aa1bb02506971d3a4ecff2c6526c"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "dist": {
                 "type": "zip",
+<<<<<<< New base: Update README.md
                 "url": "https://api.github.com/repos/thephpleague/uri/zipball/08cf38e3924d4f56238125547b5720496fac8fd4",
                 "reference": "08cf38e3924d4f56238125547b5720496fac8fd4",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/illuminate/database/zipball/0b64394ddfb2cdf67dc00166dc634f8c2f70eec8",
+                "reference": "0b64394ddfb2cdf67dc00166dc634f8c2f70eec8",
+=======
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/9d2f6fc0a0b5aa1bb02506971d3a4ecff2c6526c",
+                "reference": "9d2f6fc0a0b5aa1bb02506971d3a4ecff2c6526c",
+>>>>>>> Current commit: Начало обновления до api v2
                 "shasum": ""
             },
             "require": {
+<<<<<<< New base: Update README.md
                 "league/uri-interfaces": "^7.8.1",
                 "php": "^8.1",
                 "psr/http-factory": "^1"
             },
             "conflict": {
                 "league/uri-schemes": "^1.0"
+||||||| Common ancestor
+                "brick/math": "^0.11|^0.12",
+                "ext-pdo": "*",
+                "illuminate/collections": "^12.0",
+                "illuminate/container": "^12.0",
+                "illuminate/contracts": "^12.0",
+                "illuminate/macroable": "^12.0",
+                "illuminate/support": "^12.0",
+                "laravel/serializable-closure": "^1.3|^2.0",
+                "php": "^8.2"
+=======
+                "defuse/php-encryption": "^2.4",
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "lcobucci/jwt": "^5.6",
+                "league/event": "^3.0",
+                "league/uri": "^7.8",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "psr/clock": "^1.0",
+                "psr/http-message": "^2.0",
+                "psr/http-server-middleware": "^1.0"
+>>>>>>> Current commit: Начало обновления до api v2
             },
+<<<<<<< New base: Update README.md
             "suggest": {
                 "ext-bcmath": "to improve IPV4 host parsing",
                 "ext-dom": "to convert the URI into an HTML anchor tag",
@@ -454,16 +835,59 @@
                 "php-64bit": "to improve IPV4 host parsing",
                 "rowbot/url": "to handle URLs using the WHATWG URL Living Standard specification",
                 "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
+||||||| Common ancestor
+            "suggest": {
+                "ext-filter": "Required to use the Postgres database driver.",
+                "fakerphp/faker": "Required to use the eloquent factory builder (^1.24).",
+                "illuminate/console": "Required to use the database commands (^12.0).",
+                "illuminate/events": "Required to use the observers with Eloquent (^12.0).",
+                "illuminate/filesystem": "Required to use the migrations (^12.0).",
+                "illuminate/pagination": "Required to paginate the result set (^12.0).",
+                "symfony/finder": "Required to use Eloquent model factories (^7.2)."
+=======
+            "replace": {
+                "league/oauth2server": "*",
+                "lncd/oauth2": "*"
+>>>>>>> Current commit: Начало обновления до api v2
             },
+<<<<<<< New base: Update README.md
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "7.x-dev"
                 }
+||||||| Common ancestor
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+=======
+            "require-dev": {
+                "laminas/laminas-diactoros": "^3.8",
+                "paragonie/random_compat": "^9.99.100",
+                "php-parallel-lint/php-parallel-lint": "^1.4",
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan": "^2.1.38",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0.12",
+                "phpstan/phpstan-strict-rules": "^2.0",
+                "phpunit/phpunit": "^11.5.50",
+                "roave/security-advisories": "dev-master",
+                "slevomat/coding-standard": "^8.27.1",
+                "squizlabs/php_codesniffer": "^4.0"
+>>>>>>> Current commit: Начало обновления до api v2
             },
+            "type": "library",
             "autoload": {
                 "psr-4": {
+<<<<<<< New base: Update README.md
                     "League\\Uri\\": ""
+||||||| Common ancestor
+                    "Illuminate\\Database\\": ""
+=======
+                    "League\\OAuth2\\Server\\": "src/"
+>>>>>>> Current commit: Начало обновления до api v2
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -472,14 +896,39 @@
             ],
             "authors": [
                 {
+<<<<<<< New base: Update README.md
                     "name": "Ignace Nyamagana Butera",
                     "email": "nyamsprod@gmail.com",
                     "homepage": "https://nyamsprod.com"
+||||||| Common ancestor
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+=======
+                    "name": "Alex Bilbie",
+                    "email": "hello@alexbilbie.com",
+                    "homepage": "http://www.alexbilbie.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Andy Millington",
+                    "email": "andrew@noexceptions.io",
+                    "homepage": "https://www.noexceptions.io",
+                    "role": "Developer"
+>>>>>>> Current commit: Начало обновления до api v2
                 }
             ],
+<<<<<<< New base: Update README.md
             "description": "URI manipulation library",
             "homepage": "https://uri.thephpleague.com",
+||||||| Common ancestor
+            "description": "The Illuminate Database package.",
+            "homepage": "https://laravel.com",
+=======
+            "description": "A lightweight and powerful OAuth 2.0 authorization and resource server library with support for all the core specification grants. This library will allow you to secure your API with OAuth and allow your applications users to approve apps that want to access their data from your API.",
+            "homepage": "https://oauth2.thephpleague.com/",
+>>>>>>> Current commit: Начало обновления до api v2
             "keywords": [
+<<<<<<< New base: Update README.md
                 "URN",
                 "data-uri",
                 "file-uri",
@@ -502,8 +951,29 @@
                 "uri-template",
                 "url",
                 "ws"
+||||||| Common ancestor
+                "database",
+                "laravel",
+                "orm",
+                "sql"
+=======
+                "Authentication",
+                "api",
+                "auth",
+                "authorisation",
+                "authorization",
+                "oauth",
+                "oauth 2",
+                "oauth 2.0",
+                "oauth2",
+                "protect",
+                "resource",
+                "secure",
+                "server"
+>>>>>>> Current commit: Начало обновления до api v2
             ],
             "support": {
+<<<<<<< New base: Update README.md
                 "docs": "https://uri.thephpleague.com",
                 "forum": "https://thephpleague.slack.com",
                 "issues": "https://github.com/thephpleague/uri-src/issues",
@@ -554,18 +1024,60 @@
                 "psr-4": {
                     "League\\Uri\\": ""
                 }
+||||||| Common ancestor
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
             },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
+            "time": "2025-02-28T16:48:36+00:00"
+        },
+        {
+            "name": "illuminate/macroable",
+            "version": "v12.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/macroable.git",
+                "reference": "e862e5648ee34004fa56046b746f490dfa86c613"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/macroable/zipball/e862e5648ee34004fa56046b746f490dfa86c613",
+                "reference": "e862e5648ee34004fa56046b746f490dfa86c613",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Support\\": ""
+                }
+=======
+                "issues": "https://github.com/thephpleague/oauth2-server/issues",
+                "source": "https://github.com/thephpleague/oauth2-server/tree/9.4.1"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "funding": [
                 {
+<<<<<<< New base: Update README.md
                     "name": "Ignace Nyamagana Butera",
                     "email": "nyamsprod@gmail.com",
                     "homepage": "https://nyamsprod.com"
+||||||| Common ancestor
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+=======
+                    "url": "https://github.com/sephster",
+                    "type": "github"
+>>>>>>> Current commit: Начало обновления до api v2
                 }
             ],
+<<<<<<< New base: Update README.md
             "description": "Common tools for parsing and resolving RFC3987/RFC3986 URI",
             "homepage": "https://uri.thephpleague.com",
             "keywords": [
@@ -600,29 +1112,488 @@
                 }
             ],
             "time": "2026-03-08T20:05:35+00:00"
+||||||| Common ancestor
+            "description": "The Illuminate Macroable package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2024-07-23T16:31:01+00:00"
+=======
+            "time": "2026-06-25T15:24:07+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
         },
         {
+<<<<<<< New base: Update README.md
             "name": "monolog/monolog",
             "version": "3.10.0",
+||||||| Common ancestor
+            "name": "illuminate/support",
+            "version": "v12.1.1",
+=======
+            "name": "league/uri",
+            "version": "7.8.1",
+>>>>>>> Current commit: Начало обновления до api v2
             "source": {
                 "type": "git",
+<<<<<<< New base: Update README.md
                 "url": "https://github.com/Seldaek/monolog.git",
                 "reference": "b321dd6749f0bf7189444158a3ce785cc16d69b0"
+||||||| Common ancestor
+                "url": "https://github.com/illuminate/support.git",
+                "reference": "285b2c5003ae96b1092cf5dd441584f4e9a4cc57"
+=======
+                "url": "https://github.com/thephpleague/uri.git",
+                "reference": "08cf38e3924d4f56238125547b5720496fac8fd4"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "dist": {
                 "type": "zip",
+<<<<<<< New base: Update README.md
                 "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b321dd6749f0bf7189444158a3ce785cc16d69b0",
                 "reference": "b321dd6749f0bf7189444158a3ce785cc16d69b0",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/illuminate/support/zipball/285b2c5003ae96b1092cf5dd441584f4e9a4cc57",
+                "reference": "285b2c5003ae96b1092cf5dd441584f4e9a4cc57",
+=======
+                "url": "https://api.github.com/repos/thephpleague/uri/zipball/08cf38e3924d4f56238125547b5720496fac8fd4",
+                "reference": "08cf38e3924d4f56238125547b5720496fac8fd4",
+>>>>>>> Current commit: Начало обновления до api v2
                 "shasum": ""
             },
             "require": {
+<<<<<<< New base: Update README.md
                 "php": ">=8.1",
                 "psr/log": "^2.0 || ^3.0"
+||||||| Common ancestor
+                "doctrine/inflector": "^2.0",
+                "ext-ctype": "*",
+                "ext-filter": "*",
+                "ext-mbstring": "*",
+                "illuminate/collections": "^12.0",
+                "illuminate/conditionable": "^12.0",
+                "illuminate/contracts": "^12.0",
+                "illuminate/macroable": "^12.0",
+                "nesbot/carbon": "^3.8.4",
+                "php": "^8.2",
+                "voku/portable-ascii": "^2.0.2"
+=======
+                "league/uri-interfaces": "^7.8.1",
+                "php": "^8.1",
+                "psr/http-factory": "^1"
+>>>>>>> Current commit: Начало обновления до api v2
             },
+<<<<<<< New base: Update README.md
             "provide": {
                 "psr/log-implementation": "3.0.0"
             },
             "require-dev": {
+                "aws/aws-sdk-php": "^3.0",
+                "doctrine/couchdb": "~1.0@dev",
+                "elasticsearch/elasticsearch": "^7 || ^8",
+                "ext-json": "*",
+                "graylog2/gelf-php": "^1.4.2 || ^2.0",
+                "guzzlehttp/guzzle": "^7.4.5",
+                "guzzlehttp/psr7": "^2.2",
+                "mongodb/mongodb": "^1.8 || ^2.0",
+                "php-amqplib/php-amqplib": "~2.4 || ^3",
+                "php-console/php-console": "^3.1.8",
+                "phpstan/phpstan": "^2",
+                "phpstan/phpstan-deprecation-rules": "^2",
+                "phpstan/phpstan-strict-rules": "^2",
+                "phpunit/phpunit": "^10.5.17 || ^11.0.7",
+                "predis/predis": "^1.1 || ^2",
+                "rollbar/rollbar": "^4.0",
+                "ruflin/elastica": "^7 || ^8",
+                "symfony/mailer": "^5.4 || ^6",
+                "symfony/mime": "^5.4 || ^6"
+||||||| Common ancestor
+            "conflict": {
+                "tightenco/collect": "<5.5.33"
+            },
+            "replace": {
+                "spatie/once": "*"
+=======
+            "conflict": {
+                "league/uri-schemes": "^1.0"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "suggest": {
+<<<<<<< New base: Update README.md
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+                "ext-openssl": "Required to send log messages using SSL",
+                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+||||||| Common ancestor
+                "illuminate/filesystem": "Required to use the Composer class (^12.0).",
+                "laravel/serializable-closure": "Required to use the once function (^1.3|^2.0).",
+                "league/commonmark": "Required to use Str::markdown() and Stringable::markdown() (^2.6).",
+                "league/uri": "Required to use the Uri class (^7.5.1).",
+                "ramsey/uuid": "Required to use Str::uuid() (^4.7).",
+                "symfony/process": "Required to use the Composer class (^7.2).",
+                "symfony/uid": "Required to use Str::ulid() (^7.2).",
+                "symfony/var-dumper": "Required to use the dd function (^7.2).",
+                "vlucas/phpdotenv": "Required to use the Env class and env helper (^5.6.1)."
+=======
+                "ext-bcmath": "to improve IPV4 host parsing",
+                "ext-dom": "to convert the URI into an HTML anchor tag",
+                "ext-fileinfo": "to create Data URI from file contennts",
+                "ext-gmp": "to improve IPV4 host parsing",
+                "ext-intl": "to handle IDN host with the best performance",
+                "ext-uri": "to use the PHP native URI class",
+                "jeremykendall/php-domain-parser": "to further parse the URI host and resolve its Public Suffix and Top Level Domain",
+                "league/uri-components": "to provide additional tools to manipulate URI objects components",
+                "league/uri-polyfill": "to backport the PHP URI extension for older versions of PHP",
+                "php-64bit": "to improve IPV4 host parsing",
+                "rowbot/url": "to handle URLs using the WHATWG URL Living Standard specification",
+                "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+<<<<<<< New base: Update README.md
+                    "dev-main": "3.x-dev"
+||||||| Common ancestor
+                    "dev-master": "12.x-dev"
+=======
+                    "dev-master": "7.x-dev"
+>>>>>>> Current commit: Начало обновления до api v2
+                }
+            },
+            "autoload": {
+                "psr-4": {
+<<<<<<< New base: Update README.md
+                    "Monolog\\": "src/Monolog"
+||||||| Common ancestor
+                    "Illuminate\\Support\\": ""
+=======
+                    "League\\Uri\\": ""
+>>>>>>> Current commit: Начало обновления до api v2
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+<<<<<<< New base: Update README.md
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https://seld.be"
+||||||| Common ancestor
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+=======
+                    "name": "Ignace Nyamagana Butera",
+                    "email": "nyamsprod@gmail.com",
+                    "homepage": "https://nyamsprod.com"
+>>>>>>> Current commit: Начало обновления до api v2
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "https://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+||||||| Common ancestor
+            "description": "The Illuminate Support package.",
+            "homepage": "https://laravel.com",
+=======
+            "description": "URI manipulation library",
+            "homepage": "https://uri.thephpleague.com",
+            "keywords": [
+                "URN",
+                "data-uri",
+                "file-uri",
+                "ftp",
+                "hostname",
+                "http",
+                "https",
+                "middleware",
+                "parse_str",
+                "parse_url",
+                "psr-7",
+                "query-string",
+                "querystring",
+                "rfc2141",
+                "rfc3986",
+                "rfc3987",
+                "rfc6570",
+                "rfc8141",
+                "uri",
+                "uri-template",
+                "url",
+                "ws"
+            ],
+>>>>>>> Current commit: Начало обновления до api v2
+            "support": {
+<<<<<<< New base: Update README.md
+                "issues": "https://github.com/Seldaek/monolog/issues",
+                "source": "https://github.com/Seldaek/monolog/tree/3.10.0"
+||||||| Common ancestor
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2025-02-28T16:50:42+00:00"
+        },
+        {
+            "name": "laravel/serializable-closure",
+            "version": "v2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/serializable-closure.git",
+                "reference": "f379c13663245f7aa4512a7869f62eb14095f23f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/f379c13663245f7aa4512a7869f62eb14095f23f",
+                "reference": "f379c13663245f7aa4512a7869f62eb14095f23f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "nesbot/carbon": "^2.67|^3.0",
+                "pestphp/pest": "^2.36|^3.0",
+                "phpstan/phpstan": "^2.0",
+                "symfony/var-dumper": "^6.2.0|^7.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\SerializableClosure\\": "src/"
+                }
+=======
+                "docs": "https://uri.thephpleague.com",
+                "forum": "https://thephpleague.slack.com",
+                "issues": "https://github.com/thephpleague/uri-src/issues",
+                "source": "https://github.com/thephpleague/uri/tree/7.8.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/nyamsprod",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-15T20:22:25+00:00"
+        },
+        {
+            "name": "league/uri-interfaces",
+            "version": "7.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/uri-interfaces.git",
+                "reference": "85d5c77c5d6d3af6c54db4a78246364908f3c928"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/85d5c77c5d6d3af6c54db4a78246364908f3c928",
+                "reference": "85d5c77c5d6d3af6c54db4a78246364908f3c928",
+                "shasum": ""
+            },
+            "require": {
+                "ext-filter": "*",
+                "php": "^8.1",
+                "psr/http-message": "^1.1 || ^2.0"
+            },
+            "suggest": {
+                "ext-bcmath": "to improve IPV4 host parsing",
+                "ext-gmp": "to improve IPV4 host parsing",
+                "ext-intl": "to handle IDN host with the best performance",
+                "php-64bit": "to improve IPV4 host parsing",
+                "rowbot/url": "to handle URLs using the WHATWG URL Living Standard specification",
+                "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Uri\\": ""
+                }
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "funding": [
+                {
+<<<<<<< New base: Update README.md
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+||||||| Common ancestor
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Nuno Maduro",
+                    "email": "nuno@laravel.com"
+=======
+                    "name": "Ignace Nyamagana Butera",
+                    "email": "nyamsprod@gmail.com",
+                    "homepage": "https://nyamsprod.com"
+>>>>>>> Current commit: Начало обновления до api v2
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "time": "2026-01-02T08:56:05+00:00"
+||||||| Common ancestor
+            "description": "Laravel Serializable Closure provides an easy and secure way to serialize closures in PHP.",
+            "keywords": [
+                "closure",
+                "laravel",
+                "serializable"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/serializable-closure/issues",
+                "source": "https://github.com/laravel/serializable-closure"
+            },
+            "time": "2025-02-11T15:03:05+00:00"
+=======
+            "description": "Common tools for parsing and resolving RFC3987/RFC3986 URI",
+            "homepage": "https://uri.thephpleague.com",
+            "keywords": [
+                "data-uri",
+                "file-uri",
+                "ftp",
+                "hostname",
+                "http",
+                "https",
+                "parse_str",
+                "parse_url",
+                "psr-7",
+                "query-string",
+                "querystring",
+                "rfc3986",
+                "rfc3987",
+                "rfc6570",
+                "uri",
+                "url",
+                "ws"
+            ],
+            "support": {
+                "docs": "https://uri.thephpleague.com",
+                "forum": "https://thephpleague.slack.com",
+                "issues": "https://github.com/thephpleague/uri-src/issues",
+                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.8.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/nyamsprod",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-08T20:05:35+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
+        },
+        {
+<<<<<<< New base: Update README.md
+            "name": "nikic/fast-route",
+            "version": "1.3.1",
+||||||| Common ancestor
+            "name": "monolog/monolog",
+            "version": "3.8.1",
+=======
+            "name": "monolog/monolog",
+            "version": "3.10.0",
+>>>>>>> Current commit: Начало обновления до api v2
+            "source": {
+                "type": "git",
+<<<<<<< New base: Update README.md
+                "url": "https://github.com/nikic/FastRoute.git",
+                "reference": "7476684f39bb9124b3be69ed3d84b66723920298"
+||||||| Common ancestor
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4"
+=======
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "b321dd6749f0bf7189444158a3ce785cc16d69b0"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "dist": {
+                "type": "zip",
+<<<<<<< New base: Update README.md
+                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/7476684f39bb9124b3be69ed3d84b66723920298",
+                "reference": "7476684f39bb9124b3be69ed3d84b66723920298",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
+                "reference": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
+=======
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b321dd6749f0bf7189444158a3ce785cc16d69b0",
+                "reference": "b321dd6749f0bf7189444158a3ce785cc16d69b0",
+>>>>>>> Current commit: Начало обновления до api v2
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+<<<<<<< New base: Update README.md
+                "phpunit/phpunit": "^4.8.35|~5.7"
+||||||| Common ancestor
+                "aws/aws-sdk-php": "^3.0",
+                "doctrine/couchdb": "~1.0@dev",
+                "elasticsearch/elasticsearch": "^7 || ^8",
+                "ext-json": "*",
+                "graylog2/gelf-php": "^1.4.2 || ^2.0",
+                "guzzlehttp/guzzle": "^7.4.5",
+                "guzzlehttp/psr7": "^2.2",
+                "mongodb/mongodb": "^1.8",
+                "php-amqplib/php-amqplib": "~2.4 || ^3",
+                "php-console/php-console": "^3.1.8",
+                "phpstan/phpstan": "^2",
+                "phpstan/phpstan-deprecation-rules": "^2",
+                "phpstan/phpstan-strict-rules": "^2",
+                "phpunit/phpunit": "^10.5.17 || ^11.0.7",
+                "predis/predis": "^1.1 || ^2",
+                "rollbar/rollbar": "^4.0",
+                "ruflin/elastica": "^7 || ^8",
+                "symfony/mailer": "^5.4 || ^6",
+                "symfony/mime": "^5.4 || ^6"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+                "ext-openssl": "Required to send log messages using SSL",
+                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+=======
                 "aws/aws-sdk-php": "^3.0",
                 "doctrine/couchdb": "~1.0@dev",
                 "elasticsearch/elasticsearch": "^7 || ^8",
@@ -658,40 +1629,59 @@
                 "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
                 "rollbar/rollbar": "Allow sending log messages to Rollbar",
                 "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "3.x-dev"
-                }
-            },
             "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
                 "psr-4": {
-                    "Monolog\\": "src/Monolog"
+                    "FastRoute\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be",
-                    "homepage": "https://seld.be"
+                    "name": "Nikita Popov",
+                    "email": "nikic@php.net"
                 }
             ],
-            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
-            "homepage": "https://github.com/Seldaek/monolog",
+            "description": "Fast request router for PHP",
             "keywords": [
-                "log",
-                "logging",
-                "psr-3"
+                "router",
+                "routing"
             ],
             "support": {
+<<<<<<< New base: Update README.md
+                "issues": "https://github.com/nikic/FastRoute/issues",
+                "source": "https://github.com/nikic/FastRoute/tree/1.3.1"
+||||||| Common ancestor
+                "issues": "https://github.com/Seldaek/monolog/issues",
+                "source": "https://github.com/Seldaek/monolog/tree/3.8.1"
+=======
                 "issues": "https://github.com/Seldaek/monolog/issues",
                 "source": "https://github.com/Seldaek/monolog/tree/3.10.0"
+>>>>>>> Current commit: Начало обновления до api v2
             },
+<<<<<<< New base: Update README.md
+            "time": "2026-07-09T19:38:47+00:00"
+||||||| Common ancestor
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-12-05T17:15:07+00:00"
+=======
             "funding": [
                 {
                     "url": "https://github.com/Seldaek",
@@ -703,22 +1693,63 @@
                 }
             ],
             "time": "2026-01-02T08:56:05+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
         },
         {
+<<<<<<< New base: Update README.md
+            "name": "nikic/php-parser",
+            "version": "v5.8.0",
+||||||| Common ancestor
+            "name": "nesbot/carbon",
+            "version": "3.8.6",
+=======
             "name": "nikic/fast-route",
             "version": "1.3.1",
+>>>>>>> Current commit: Начало обновления до api v2
             "source": {
                 "type": "git",
+<<<<<<< New base: Update README.md
+                "url": "https://github.com/nikic/PHP-Parser.git",
+                "reference": "044a6a392ff8ad0d61f14370a5fbbd0a0107152f"
+||||||| Common ancestor
+                "url": "https://github.com/CarbonPHP/carbon.git",
+                "reference": "ff2f20cf83bd4d503720632ce8a426dc747bf7fd"
+=======
                 "url": "https://github.com/nikic/FastRoute.git",
                 "reference": "7476684f39bb9124b3be69ed3d84b66723920298"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "dist": {
                 "type": "zip",
+<<<<<<< New base: Update README.md
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/044a6a392ff8ad0d61f14370a5fbbd0a0107152f",
+                "reference": "044a6a392ff8ad0d61f14370a5fbbd0a0107152f",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/ff2f20cf83bd4d503720632ce8a426dc747bf7fd",
+                "reference": "ff2f20cf83bd4d503720632ce8a426dc747bf7fd",
+=======
                 "url": "https://api.github.com/repos/nikic/FastRoute/zipball/7476684f39bb9124b3be69ed3d84b66723920298",
                 "reference": "7476684f39bb9124b3be69ed3d84b66723920298",
+>>>>>>> Current commit: Начало обновления до api v2
                 "shasum": ""
             },
             "require": {
+<<<<<<< New base: Update README.md
+                "ext-json": "*",
+                "ext-tokenizer": "*",
+                "php": ">=7.4"
+||||||| Common ancestor
+                "carbonphp/carbon-doctrine-types": "<100.0",
+                "ext-json": "*",
+                "php": "^8.1",
+                "psr/clock": "^1.0",
+                "symfony/clock": "^6.3 || ^7.0",
+                "symfony/polyfill-mbstring": "^1.0",
+                "symfony/translation": "^4.4.18 || ^5.2.1|| ^6.0 || ^7.0"
+            },
+            "provide": {
+                "psr/clock-implementation": "1.0"
+=======
                 "php": ">=5.4.0"
             },
             "require-dev": {
@@ -772,6 +1803,7 @@
                 "ext-json": "*",
                 "ext-tokenizer": "*",
                 "php": ">=7.4"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "require-dev": {
                 "ircmaxell/php-yacc": "^0.0.7",
@@ -1459,6 +2491,7 @@
             "time": "2024-09-11T13:17:53+00:00"
         },
         {
+<<<<<<< New base: Update README.md
             "name": "radebatz/type-info-extras",
             "version": "1.0.7",
             "source": {
@@ -1521,6 +2554,60 @@
             "time": "2026-03-06T22:40:29+00:00"
         },
         {
+||||||| Common ancestor
+            "name": "psr/simple-cache",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/simple-cache.git",
+                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\SimpleCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for simple caching",
+            "keywords": [
+                "cache",
+                "caching",
+                "psr",
+                "psr-16",
+                "simple-cache"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
+            },
+            "time": "2021-10-29T13:26:27+00:00"
+        },
+        {
+=======
+>>>>>>> Current commit: Начало обновления до api v2
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "source": {
@@ -1760,6 +2847,7 @@
             "time": "2026-05-22T08:00:12+00:00"
         },
         {
+<<<<<<< New base: Update README.md
             "name": "symfony/console",
             "version": "v7.4.16",
             "source": {
@@ -1858,6 +2946,83 @@
             "time": "2026-07-31T12:37:14+00:00"
         },
         {
+||||||| Common ancestor
+            "name": "symfony/clock",
+            "version": "v7.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/clock.git",
+                "reference": "b81435fbd6648ea425d1ee96a2d8e68f4ceacd24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/clock/zipball/b81435fbd6648ea425d1ee96a2d8e68f4ceacd24",
+                "reference": "b81435fbd6648ea425d1ee96a2d8e68f4ceacd24",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "psr/clock": "^1.0",
+                "symfony/polyfill-php83": "^1.28"
+            },
+            "provide": {
+                "psr/clock-implementation": "1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Resources/now.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Component\\Clock\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Decouples applications from the system clock",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "clock",
+                "psr20",
+                "time"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/clock/tree/v7.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-25T14:21:43+00:00"
+        },
+        {
+=======
+>>>>>>> Current commit: Начало обновления до api v2
             "name": "symfony/deprecation-contracts",
             "version": "v3.7.1",
             "source": {
@@ -1918,6 +3083,7 @@
                     "type": "github"
                 },
                 {
+<<<<<<< New base: Update README.md
                     "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
@@ -2066,202 +3232,28 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
+||||||| Common ancestor
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-10T16:19:22+00:00"
-        },
-        {
-            "name": "symfony/polyfill-intl-grapheme",
-            "version": "v1.41.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "bb899c1db0aa8127dc3afe8cda4a67eb24915f8d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/bb899c1db0aa8127dc3afe8cda4a67eb24915f8d",
-                "reference": "bb899c1db0aa8127dc3afe8cda4a67eb24915f8d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "suggest": {
-                "ext-intl": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "thanks": {
-                    "url": "https://github.com/symfony/polyfill",
-                    "name": "symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill for intl's grapheme_* functions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "grapheme",
-                "intl",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.41.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2026-07-28T08:25:59+00:00"
-        },
-        {
-            "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.38.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/2d446c214bdbe5b71bde5011b060a05fece3ae6b",
-                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2"
-            },
-            "suggest": {
-                "ext-intl": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "thanks": {
-                    "url": "https://github.com/symfony/polyfill",
-                    "name": "symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
-                },
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill for intl's Normalizer class and related functions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "intl",
-                "normalizer",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.38.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2026-05-25T13:48:31+00:00"
+            "time": "2024-09-25T14:20:29+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.38.2",
+            "version": "v1.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6"
+                "reference": "85181ba99b2345b0ef10ce42ecac37612d9fd341"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
-                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/85181ba99b2345b0ef10ce42ecac37612d9fd341",
+                "reference": "85181ba99b2345b0ef10ce42ecac37612d9fd341",
                 "shasum": ""
             },
             "require": {
-                "ext-iconv": "*",
                 "php": ">=7.2"
             },
             "provide": {
@@ -2309,7 +3301,180 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.2"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.31.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+=======
+                    "url": "https://github.com/nicolas-grekas",
+>>>>>>> Current commit: Начало обновления до api v2
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "time": "2026-04-10T16:19:22+00:00"
+||||||| Common ancestor
+            "time": "2024-09-09T11:45:10+00:00"
+=======
+            "time": "2026-06-05T06:23:12+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
+        },
+        {
+<<<<<<< New base: Update README.md
+            "name": "symfony/polyfill-intl-grapheme",
+            "version": "v1.41.0",
+||||||| Common ancestor
+            "name": "symfony/polyfill-php80",
+            "version": "v1.31.0",
+=======
+            "name": "symfony/finder",
+            "version": "v7.4.14",
+>>>>>>> Current commit: Начало обновления до api v2
+            "source": {
+                "type": "git",
+<<<<<<< New base: Update README.md
+                "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
+                "reference": "bb899c1db0aa8127dc3afe8cda4a67eb24915f8d"
+||||||| Common ancestor
+                "url": "https://github.com/symfony/polyfill-php80.git",
+                "reference": "60328e362d4c2c802a54fcbf04f9d3fb892b4cf8"
+=======
+                "url": "https://github.com/symfony/finder.git",
+                "reference": "13b38720174286f55d1761152b575a8d1436fc25"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "dist": {
+                "type": "zip",
+<<<<<<< New base: Update README.md
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/bb899c1db0aa8127dc3afe8cda4a67eb24915f8d",
+                "reference": "bb899c1db0aa8127dc3afe8cda4a67eb24915f8d",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/60328e362d4c2c802a54fcbf04f9d3fb892b4cf8",
+                "reference": "60328e362d4c2c802a54fcbf04f9d3fb892b4cf8",
+=======
+                "url": "https://api.github.com/repos/symfony/finder/zipball/13b38720174286f55d1761152b575a8d1436fc25",
+                "reference": "13b38720174286f55d1761152b575a8d1436fc25",
+>>>>>>> Current commit: Начало обновления до api v2
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+<<<<<<< New base: Update README.md
+            "suggest": {
+                "ext-intl": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+||||||| Common ancestor
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+=======
+            "require-dev": {
+                "symfony/filesystem": "^6.4|^7.0|^8.0"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+<<<<<<< New base: Update README.md
+                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
+                }
+||||||| Common ancestor
+                    "Symfony\\Polyfill\\Php80\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+=======
+                    "Symfony\\Component\\Finder\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+<<<<<<< New base: Update README.md
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+||||||| Common ancestor
+                    "name": "Ion Bazan",
+                    "email": "ion.bazan@gmail.com"
+                },
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+=======
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+>>>>>>> Current commit: Начало обновления до api v2
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "description": "Symfony polyfill for intl's grapheme_* functions",
+||||||| Common ancestor
+            "description": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
+=======
+            "description": "Finds files and directories via an intuitive fluent interface",
+>>>>>>> Current commit: Начало обновления до api v2
+            "homepage": "https://symfony.com",
+<<<<<<< New base: Update README.md
+            "keywords": [
+                "compatibility",
+                "grapheme",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+||||||| Common ancestor
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+=======
+>>>>>>> Current commit: Начало обновления до api v2
+            "support": {
+<<<<<<< New base: Update README.md
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.41.0"
+||||||| Common ancestor
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.31.0"
+=======
+                "source": "https://github.com/symfony/finder/tree/v7.4.14"
+>>>>>>> Current commit: Начало обновления до api v2
             },
             "funding": [
                 {
@@ -2321,6 +3486,357 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "time": "2026-07-28T08:25:59+00:00"
+||||||| Common ancestor
+            "time": "2024-09-09T11:45:10+00:00"
+=======
+            "time": "2026-06-27T08:31:18+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
+        },
+        {
+<<<<<<< New base: Update README.md
+            "name": "symfony/polyfill-intl-normalizer",
+            "version": "v1.38.0",
+||||||| Common ancestor
+            "name": "symfony/polyfill-php83",
+            "version": "v1.31.0",
+=======
+            "name": "symfony/polyfill-ctype",
+            "version": "v1.37.0",
+>>>>>>> Current commit: Начало обновления до api v2
+            "source": {
+                "type": "git",
+<<<<<<< New base: Update README.md
+                "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
+                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b"
+||||||| Common ancestor
+                "url": "https://github.com/symfony/polyfill-php83.git",
+                "reference": "2fb86d65e2d424369ad2905e83b236a8805ba491"
+=======
+                "url": "https://github.com/symfony/polyfill-ctype.git",
+                "reference": "141046a8f9477948ff284fa65be2095baafb94f2"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "dist": {
+                "type": "zip",
+<<<<<<< New base: Update README.md
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/2d446c214bdbe5b71bde5011b060a05fece3ae6b",
+                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/symfony/polyfill-php83/zipball/2fb86d65e2d424369ad2905e83b236a8805ba491",
+                "reference": "2fb86d65e2d424369ad2905e83b236a8805ba491",
+=======
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/141046a8f9477948ff284fa65be2095baafb94f2",
+                "reference": "141046a8f9477948ff284fa65be2095baafb94f2",
+>>>>>>> Current commit: Начало обновления до api v2
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+<<<<<<< New base: Update README.md
+            "suggest": {
+                "ext-intl": "For best performance"
+            },
+||||||| Common ancestor
+=======
+            "provide": {
+                "ext-ctype": "*"
+            },
+            "suggest": {
+                "ext-ctype": "For best performance"
+            },
+>>>>>>> Current commit: Начало обновления до api v2
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+<<<<<<< New base: Update README.md
+                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+||||||| Common ancestor
+                    "Symfony\\Polyfill\\Php83\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+=======
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                }
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gert de Pagter",
+                    "email": "BackEndTea@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "description": "Symfony polyfill for intl's Normalizer class and related functions",
+||||||| Common ancestor
+            "description": "Symfony polyfill backporting some PHP 8.3+ features to lower PHP versions",
+=======
+            "description": "Symfony polyfill for ctype functions",
+>>>>>>> Current commit: Начало обновления до api v2
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+<<<<<<< New base: Update README.md
+                "intl",
+                "normalizer",
+||||||| Common ancestor
+=======
+                "ctype",
+>>>>>>> Current commit: Начало обновления до api v2
+                "polyfill",
+                "portable"
+            ],
+            "support": {
+<<<<<<< New base: Update README.md
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.38.0"
+||||||| Common ancestor
+                "source": "https://github.com/symfony/polyfill-php83/tree/v1.31.0"
+=======
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.37.0"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "time": "2026-05-25T13:48:31+00:00"
+||||||| Common ancestor
+            "time": "2024-09-09T11:45:10+00:00"
+=======
+            "time": "2026-04-10T16:19:22+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
+        },
+        {
+<<<<<<< New base: Update README.md
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.38.2",
+||||||| Common ancestor
+            "name": "symfony/translation",
+            "version": "v7.2.4",
+=======
+            "name": "symfony/yaml",
+            "version": "v7.4.14",
+>>>>>>> Current commit: Начало обновления до api v2
+            "source": {
+                "type": "git",
+<<<<<<< New base: Update README.md
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6"
+||||||| Common ancestor
+                "url": "https://github.com/symfony/translation.git",
+                "reference": "283856e6981286cc0d800b53bd5703e8e363f05a"
+=======
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "f8f328665ace2370d1e10645b807ba1646dc7dcc"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "dist": {
+                "type": "zip",
+<<<<<<< New base: Update README.md
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+                "reference": "d3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/symfony/translation/zipball/283856e6981286cc0d800b53bd5703e8e363f05a",
+                "reference": "283856e6981286cc0d800b53bd5703e8e363f05a",
+=======
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/f8f328665ace2370d1e10645b807ba1646dc7dcc",
+                "reference": "f8f328665ace2370d1e10645b807ba1646dc7dcc",
+>>>>>>> Current commit: Начало обновления до api v2
+                "shasum": ""
+            },
+            "require": {
+<<<<<<< New base: Update README.md
+                "ext-iconv": "*",
+                "php": ">=7.2"
+            },
+            "provide": {
+                "ext-mbstring": "*"
+||||||| Common ancestor
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/translation-contracts": "^2.5|^3.0"
+            },
+            "conflict": {
+                "symfony/config": "<6.4",
+                "symfony/console": "<6.4",
+                "symfony/dependency-injection": "<6.4",
+                "symfony/http-client-contracts": "<2.5",
+                "symfony/http-kernel": "<6.4",
+                "symfony/service-contracts": "<2.5",
+                "symfony/twig-bundle": "<6.4",
+                "symfony/yaml": "<6.4"
+            },
+            "provide": {
+                "symfony/translation-implementation": "2.3|3.0"
+=======
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/polyfill-ctype": "^1.8"
+            },
+            "conflict": {
+                "symfony/console": "<6.4"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+<<<<<<< New base: Update README.md
+            "suggest": {
+                "ext-mbstring": "For best performance"
+||||||| Common ancestor
+            "require-dev": {
+                "nikic/php-parser": "^4.18|^5.0",
+                "psr/log": "^1|^2|^3",
+                "symfony/config": "^6.4|^7.0",
+                "symfony/console": "^6.4|^7.0",
+                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/finder": "^6.4|^7.0",
+                "symfony/http-client-contracts": "^2.5|^3.0",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/intl": "^6.4|^7.0",
+                "symfony/polyfill-intl-icu": "^1.21",
+                "symfony/routing": "^6.4|^7.0",
+                "symfony/service-contracts": "^2.5|^3",
+                "symfony/yaml": "^6.4|^7.0"
+=======
+            "require-dev": {
+                "symfony/console": "^6.4|^7.0|^8.0"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "bin": [
+                "Resources/bin/yaml-lint"
+            ],
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+<<<<<<< New base: Update README.md
+                "files": [
+                    "bootstrap.php"
+                ],
+||||||| Common ancestor
+                "files": [
+                    "Resources/functions.php"
+                ],
+=======
+>>>>>>> Current commit: Начало обновления до api v2
+                "psr-4": {
+<<<<<<< New base: Update README.md
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                }
+||||||| Common ancestor
+                    "Symfony\\Component\\Translation\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+=======
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "description": "Symfony polyfill for the Mbstring extension",
+||||||| Common ancestor
+            "description": "Provides tools to internationalize your application",
+=======
+            "description": "Loads and dumps YAML files",
+>>>>>>> Current commit: Начало обновления до api v2
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+<<<<<<< New base: Update README.md
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.38.2"
+||||||| Common ancestor
+                "source": "https://github.com/symfony/translation/tree/v7.2.4"
+=======
+                "source": "https://github.com/symfony/yaml/tree/v7.4.14"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+<<<<<<< New base: Update README.md
                     "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
@@ -2405,61 +3921,46 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/nicolas-grekas",
-                    "type": "github"
-                },
-                {
+||||||| Common ancestor
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-16T09:55:08+00:00"
+            "time": "2025-02-13T10:27:23+00:00"
         },
         {
-            "name": "symfony/string",
-            "version": "v7.4.15",
+            "name": "symfony/translation-contracts",
+            "version": "v3.5.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/string.git",
-                "reference": "e394af32256bf9e7bf80849d95e589167c10097b"
+                "url": "https://github.com/symfony/translation-contracts.git",
+                "reference": "4667ff3bd513750603a09c8dedbea942487fb07c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/e394af32256bf9e7bf80849d95e589167c10097b",
-                "reference": "e394af32256bf9e7bf80849d95e589167c10097b",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/4667ff3bd513750603a09c8dedbea942487fb07c",
+                "reference": "4667ff3bd513750603a09c8dedbea942487fb07c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.2",
-                "symfony/deprecation-contracts": "^2.5|^3.0",
-                "symfony/polyfill-ctype": "~1.8",
-                "symfony/polyfill-intl-grapheme": "~1.33",
-                "symfony/polyfill-intl-normalizer": "~1.0",
-                "symfony/polyfill-mbstring": "~1.0"
-            },
-            "conflict": {
-                "symfony/translation-contracts": "<2.5"
-            },
-            "require-dev": {
-                "symfony/emoji": "^7.1|^8.0",
-                "symfony/http-client": "^6.4|^7.0|^8.0",
-                "symfony/intl": "^6.4|^7.0|^8.0",
-                "symfony/translation-contracts": "^2.5|^3.0",
-                "symfony/var-exporter": "^6.4|^7.0|^8.0"
+                "php": ">=8.1"
             },
             "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/contracts",
+                    "name": "symfony/contracts"
+                },
+                "branch-alias": {
+                    "dev-main": "3.5-dev"
+                }
+            },
             "autoload": {
-                "files": [
-                    "Resources/functions.php"
-                ],
                 "psr-4": {
-                    "Symfony\\Component\\String\\": ""
+                    "Symfony\\Contracts\\Translation\\": ""
                 },
                 "exclude-from-classmap": [
-                    "/Tests/"
+                    "/Test/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2476,18 +3977,18 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Provides an object-oriented API to strings and deals with bytes, UTF-8 code points and grapheme clusters in a unified way",
+            "description": "Generic abstractions related to translation",
             "homepage": "https://symfony.com",
             "keywords": [
-                "grapheme",
-                "i18n",
-                "string",
-                "unicode",
-                "utf-8",
-                "utf8"
+                "abstractions",
+                "contracts",
+                "decoupling",
+                "interfaces",
+                "interoperability",
+                "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v7.4.15"
+                "source": "https://github.com/symfony/translation-contracts/tree/v3.5.1"
             },
             "funding": [
                 {
@@ -2496,7 +3997,242 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+=======
+                    "url": "https://github.com/nicolas-grekas",
+>>>>>>> Current commit: Начало обновления до api v2
                     "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "time": "2026-06-16T09:55:08+00:00"
+||||||| Common ancestor
+            "time": "2024-09-25T14:20:29+00:00"
+=======
+            "time": "2026-06-08T20:24:16+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
+        },
+        {
+<<<<<<< New base: Update README.md
+            "name": "symfony/string",
+            "version": "v7.4.15",
+||||||| Common ancestor
+            "name": "voku/portable-ascii",
+            "version": "2.0.3",
+=======
+            "name": "zircote/swagger-php",
+            "version": "5.8.3",
+>>>>>>> Current commit: Начало обновления до api v2
+            "source": {
+                "type": "git",
+<<<<<<< New base: Update README.md
+                "url": "https://github.com/symfony/string.git",
+                "reference": "e394af32256bf9e7bf80849d95e589167c10097b"
+||||||| Common ancestor
+                "url": "https://github.com/voku/portable-ascii.git",
+                "reference": "b1d923f88091c6bf09699efcd7c8a1b1bfd7351d"
+=======
+                "url": "https://github.com/zircote/swagger-php.git",
+                "reference": "098223019f764a16715f64089a58606096719c98"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "dist": {
+                "type": "zip",
+<<<<<<< New base: Update README.md
+                "url": "https://api.github.com/repos/symfony/string/zipball/e394af32256bf9e7bf80849d95e589167c10097b",
+                "reference": "e394af32256bf9e7bf80849d95e589167c10097b",
+||||||| Common ancestor
+                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/b1d923f88091c6bf09699efcd7c8a1b1bfd7351d",
+                "reference": "b1d923f88091c6bf09699efcd7c8a1b1bfd7351d",
+=======
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/098223019f764a16715f64089a58606096719c98",
+                "reference": "098223019f764a16715f64089a58606096719c98",
+>>>>>>> Current commit: Начало обновления до api v2
+                "shasum": ""
+            },
+            "require": {
+<<<<<<< New base: Update README.md
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3.0",
+                "symfony/polyfill-ctype": "~1.8",
+                "symfony/polyfill-intl-grapheme": "~1.33",
+                "symfony/polyfill-intl-normalizer": "~1.0",
+                "symfony/polyfill-mbstring": "~1.0"
+||||||| Common ancestor
+                "php": ">=7.0.0"
+=======
+                "ext-json": "*",
+                "nikic/php-parser": "^4.19 || ^5.0",
+                "php": ">=7.4",
+                "phpstan/phpdoc-parser": "^2.0",
+                "psr/log": "^1.1 || ^2.0 || ^3.0",
+                "symfony/deprecation-contracts": "^2 || ^3",
+                "symfony/finder": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "symfony/yaml": "^5.4 || ^6.0 || ^7.0 || ^8.0"
+            },
+            "conflict": {
+                "symfony/process": ">=6, <6.4.14"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+<<<<<<< New base: Update README.md
+            "conflict": {
+                "symfony/translation-contracts": "<2.5"
+||||||| Common ancestor
+            "require-dev": {
+                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
+=======
+            "require-dev": {
+                "composer/package-versions-deprecated": "^1.11",
+                "doctrine/annotations": "^2.0",
+                "friendsofphp/php-cs-fixer": "^3.62.0",
+                "phpstan/phpstan": "^1.6 || ^2.0",
+                "phpunit/phpunit": "^9.0",
+                "rector/rector": "^1.0 || ^2.3.1",
+                "vimeo/psalm": "^4.30 || ^5.0"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+<<<<<<< New base: Update README.md
+            "require-dev": {
+                "symfony/emoji": "^7.1|^8.0",
+                "symfony/http-client": "^6.4|^7.0|^8.0",
+                "symfony/intl": "^6.4|^7.0|^8.0",
+                "symfony/translation-contracts": "^2.5|^3.0",
+                "symfony/var-exporter": "^6.4|^7.0|^8.0"
+||||||| Common ancestor
+            "suggest": {
+                "ext-intl": "Use Intl for transliterator_transliterate() support"
+=======
+            "suggest": {
+                "doctrine/annotations": "^2.0",
+                "radebatz/type-info-extras": "^1.0.2"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "bin": [
+                "bin/openapi"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "Resources/functions.php"
+                ],
+                "psr-4": {
+<<<<<<< New base: Update README.md
+                    "Symfony\\Component\\String\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+||||||| Common ancestor
+                    "voku\\": "src/voku/"
+                }
+=======
+                    "OpenApi\\": "src"
+                }
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+<<<<<<< New base: Update README.md
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+||||||| Common ancestor
+                    "name": "Lars Moelleken",
+                    "homepage": "https://www.moelleken.org/"
+=======
+                    "name": "Robert Allen",
+                    "email": "zircote@gmail.com"
+                },
+                {
+                    "name": "Bob Fanger",
+                    "email": "bfanger@gmail.com",
+                    "homepage": "https://bfanger.nl"
+                },
+                {
+                    "name": "Martin Rademacher",
+                    "email": "mano@radebatz.net",
+                    "homepage": "https://radebatz.net"
+>>>>>>> Current commit: Начало обновления до api v2
+                }
+            ],
+<<<<<<< New base: Update README.md
+            "description": "Provides an object-oriented API to strings and deals with bytes, UTF-8 code points and grapheme clusters in a unified way",
+            "homepage": "https://symfony.com",
+||||||| Common ancestor
+            "description": "Portable ASCII library - performance optimized (ascii) string functions for php.",
+            "homepage": "https://github.com/voku/portable-ascii",
+=======
+            "description": "Generate interactive documentation for your RESTful API using PHP attributes (preferred) or PHPDoc annotations",
+            "homepage": "https://github.com/zircote/swagger-php",
+>>>>>>> Current commit: Начало обновления до api v2
+            "keywords": [
+<<<<<<< New base: Update README.md
+                "grapheme",
+                "i18n",
+                "string",
+                "unicode",
+                "utf-8",
+                "utf8"
+||||||| Common ancestor
+                "ascii",
+                "clean",
+                "php"
+=======
+                "api",
+                "json",
+                "rest",
+                "service discovery"
+>>>>>>> Current commit: Начало обновления до api v2
+            ],
+            "support": {
+<<<<<<< New base: Update README.md
+                "source": "https://github.com/symfony/string/tree/v7.4.15"
+||||||| Common ancestor
+                "issues": "https://github.com/voku/portable-ascii/issues",
+                "source": "https://github.com/voku/portable-ascii/tree/2.0.3"
+=======
+                "issues": "https://github.com/zircote/swagger-php/issues",
+                "source": "https://github.com/zircote/swagger-php/tree/5.8.3"
+>>>>>>> Current commit: Начало обновления до api v2
+            },
+            "funding": [
+                {
+<<<<<<< New base: Update README.md
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+||||||| Common ancestor
+                    "url": "https://www.paypal.me/moelleken",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/voku",
+=======
+                    "url": "https://github.com/zircote",
+>>>>>>> Current commit: Начало обновления до api v2
+                    "type": "github"
+<<<<<<< New base: Update README.md
                 },
                 {
                     "url": "https://github.com/nicolas-grekas",
@@ -4923,9 +6659,30 @@
                 {
                     "url": "https://github.com/theseer",
                     "type": "github"
+||||||| Common ancestor
+                },
+                {
+                    "url": "https://opencollective.com/portable-ascii",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/voku",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/voku/portable-ascii",
+                    "type": "tidelift"
+=======
+>>>>>>> Current commit: Начало обновления до api v2
                 }
             ],
+<<<<<<< New base: Update README.md
             "time": "2025-12-08T11:19:18+00:00"
+||||||| Common ancestor
+            "time": "2024-11-21T01:49:47+00:00"
+=======
+            "time": "2026-03-02T00:47:18+00:00"
+>>>>>>> Current commit: Начало обновления до api v2
         }
     ],
     "aliases": [],
