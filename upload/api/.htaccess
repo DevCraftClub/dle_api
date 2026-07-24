@@ -1,4 +1,11 @@
 RewriteEngine On
+
+# /api и /api/v1 → /api/v2
+RewriteRule ^v1(?:/(.*))?$ /api/v2/$1 [R=308,L,QSA]
+RewriteRule ^$ /api/v2/ [R=308,L,QSA]
+
+RewriteRule ^v2/(.*)$ v2/index.php [QSA,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
