@@ -1,69 +1,3 @@
-<<<<<<< New base: Update README.md
-<?php declare(strict_types=1);
-
-/**
- * @license Apache 2.0
- */
-
-namespace OpenApi\Annotations;
-
-use OpenApi\Undefined;
-
-/**
- * @Annotation
- */
-class Property extends Schema
-{
-    /**
-     * The key into Schema->properties array.
-     *
-     * @var string
-     */
-    public $property = Undefined::UNDEFINED;
-
-    /**
-     * @var Encoding
-     */
-    public $encoding = Undefined::UNDEFINED;
-
-    /**
-     * @inheritdoc
-     */
-    public static $_parents = [
-        AdditionalProperties::class,
-        Schema::class,
-        JsonContent::class,
-        XmlContent::class,
-        Property::class,
-        Items::class,
-    ];
-
-    /**
-     * @inheritdoc
-     */
-    public static $_nested = [
-        Discriminator::class => 'discriminator',
-        Items::class => 'items',
-        Property::class => ['properties', 'property'],
-        ExternalDocumentation::class => 'externalDocs',
-        Examples::class => ['examples', 'example'],
-        Xml::class => 'xml',
-        AdditionalProperties::class => 'additionalProperties',
-        Encoding::class => 'encoding',
-        Attachable::class => ['attachables'],
-    ];
-
-    public function jsonSerialize(): \stdClass
-    {
-        $data = parent::jsonSerialize();
-
-        unset($data->encoding);
-
-        return $data;
-    }
-}
-|||||||
-=======
 <?php declare(strict_types=1);
 
 /**
@@ -130,4 +64,3 @@ class Property extends Schema
         return $data;
     }
 }
->>>>>>> Current commit: Начало обновления до api v2

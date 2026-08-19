@@ -33,7 +33,7 @@ final class TablePresenter extends AbstractTablePresenter {
 		parent::__construct($tableName);
 	}
 
-	protected function table(): string {
+	public function table(): string {
 		return $this->tableName;
 	}
 }

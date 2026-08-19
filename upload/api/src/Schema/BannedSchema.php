@@ -97,7 +97,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `banned` (DLE install.php).
+ * Схема таблицы `banned`.
  */
 #[OA\Schema(schema: 'Banned')]
 final class BannedSchema extends AbstractTableSchema {

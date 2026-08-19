@@ -65,7 +65,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `post_extras_cats` (DLE install.php).
+ * Схема таблицы `post_extras_cats`.
  */
 #[OA\Schema(schema: 'PostExtrasCats')]
 final class PostExtrasCatsSchema extends AbstractTableSchema {

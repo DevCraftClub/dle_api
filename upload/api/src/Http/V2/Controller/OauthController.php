@@ -270,6 +270,12 @@ final class OauthController {
 		if($clientId === '' || $redirect === '') {
 			return JsonResponder::error('invalid_request', __('Нужны client_id и redirect_uri'), 400);
 		}
+
+		$authErr = $this->tokens->validateAuthorizeRequest($clientId, $redirect);
+		if($authErr !== null) {
+			return JsonResponder::error($authErr['error'], $authErr['message'], 400);
+		}
+
 		if($userId < 1) {
 			$return = (string) $request->getUri();
 			if(session_status() === PHP_SESSION_ACTIVE || @session_start()) {

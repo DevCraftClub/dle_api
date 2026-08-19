@@ -1,4 +1,3 @@
-<<<<<<< New base: Update README.md
 <?php
 
 declare(strict_types=1);
@@ -59,8 +58,8 @@ HTML;
 		$cfg['email_request_subject'] = (string) ($cfg['email_request_subject'] ?? self::defaultRequestSubject());
 		$cfg['email_approve_subject'] = (string) ($cfg['email_approve_subject'] ?? self::defaultApproveSubject());
 		$cfg['email_deny_subject']    = (string) ($cfg['email_deny_subject'] ?? self::defaultDenySubject());
-		$cfg['email_request_body']    = (string) ($cfg['email_request_body'] ?? self::defaultRequestEmailTemplate());
-		$cfg['email_decision_body']   = (string) ($cfg['email_decision_body'] ?? self::defaultDecisionEmailTemplate());
+		$cfg['email_request_body']    = self::decodeHtmlBody((string) ($cfg['email_request_body'] ?? self::defaultRequestEmailTemplate()));
+		$cfg['email_decision_body']   = self::decodeHtmlBody((string) ($cfg['email_decision_body'] ?? self::defaultDecisionEmailTemplate()));
 
 		return $cfg;
 	}
@@ -88,10 +87,10 @@ HTML;
 		);
 
 		if(isset($request['template']) && $request['template'] !== '') {
-			$cfg['email_request_body'] = (string) $request['template'];
+			$cfg['email_request_body'] = self::decodeHtmlBody((string) $request['template']);
 		}
 		if(isset($decision['template']) && $decision['template'] !== '') {
-			$cfg['email_decision_body'] = (string) $decision['template'];
+			$cfg['email_decision_body'] = self::decodeHtmlBody((string) $decision['template']);
 		}
 
 		return $cfg;
@@ -128,6 +127,7 @@ HTML;
 	 * @param array<string, string> $vars
 	 */
 	public function notifyRequest(array $userIds, array $vars): void {
+		$vars = $this->enrichVars($vars);
 		$cfg = self::applyEditorDefaults(DleApiConfig::all());
 		try {
 			if(!empty($cfg['notify_request_email'])) {
@@ -151,6 +151,7 @@ HTML;
 	 * @param array<string, string> $vars
 	 */
 	public function notifyDecision(int $userId, bool $approved, array $vars): void {
+		$vars = $this->enrichVars($vars);
 		$cfg = self::applyEditorDefaults(DleApiConfig::all());
 		try {
 			if(!empty($cfg['notify_decision_email'])) {
@@ -193,9 +194,9 @@ HTML;
 		}
 		$site = rtrim((string) ($config['http_home_url'] ?? '/'), '/');
 		$vars = [
-			'{%site_url%}' => $site,
-			'{%api_key%}'  => (string) ($vars['{%api_key%}'] ?? ''),
-		] + $vars;
+			        '{%site_url%}' => $site,
+			        '{%api_key%}'  => (string) ($vars['{%api_key%}'] ?? ''),
+		        ] + $vars;
 
 		$mail = new \dle_mail($config, !empty($row['use_html']));
 		$body = $this->apply($row['template'], $vars);
@@ -206,8 +207,8 @@ HTML;
 				continue;
 			}
 			$mail->send((string) $u['email'], $subj, $this->apply($body, [
-				'{%username%}' => (string) ($u['name'] ?? ''),
-			] + $vars));
+				                                                             '{%username%}' => (string) ($u['name'] ?? ''),
+			                                                             ] + $vars));
 		}
 	}
 
@@ -293,6 +294,33 @@ HTML;
 		return str_replace(array_keys($vars), array_values($vars), $tpl);
 	}
 
+	/**
+	 * @param array<string, string> $vars
+	 * @return array<string, string>
+	 */
+	private function enrichVars(array $vars): array {
+		if(($vars['{%username%}'] ?? '') !== '') {
+			return $vars;
+		}
+
+		$userId = (int) ($vars['{%user_id%}'] ?? 0);
+		if($userId < 1) {
+			return $vars;
+		}
+
+		$table = (defined('USERPREFIX') ? USERPREFIX : 'dle') . '_users';
+		$row   = Application::instance()->database()->query(
+			'SELECT name FROM ' . $table . ' WHERE user_id = :id',
+			['id' => $userId],
+		)->fetchAll();
+		$name = trim((string) ($row[0]['name'] ?? ''));
+		if($name !== '') {
+			$vars['{%username%}'] = $name;
+		}
+
+		return $vars;
+	}
+
 	private static function upsertEmailTemplate(string $name, string $template, bool $useHtml): void {
 		global $db;
 
@@ -317,115 +345,11 @@ HTML;
 		);
 	}
 
-}
-|||||||
-=======
-<?php
-
-declare(strict_types=1);
-
-namespace DevCraft\Modules\DleApi\Services;
-
-use DLEPlugins;
-
-/**
- * Email (шаблоны _email) и PM (settings) для заявок на ключ.
- */
-final class KeyNotifyDelivery {
-
 	/**
-	 * @param list<int> $userIds
-	 * @param array<string, string> $vars
+	 * Декодирует HTML-сущности для отображения в ACE.
 	 */
-	public function notifyRequest(array $userIds, array $vars): void {
-		$cfg = DleApiConfig::all();
-		if(!empty($cfg['notify_request_email'])) {
-			$this->sendEmailTemplate('dleapi_key_request', $userIds, $vars);
-		}
-		if(!empty($cfg['notify_request_pm'])) {
-			$this->sendPm(
-				$userIds,
-				(string) ($cfg['pm_request_subject'] ?? __('Заявка на API-ключ')),
-				(string) ($cfg['pm_request_body'] ?? ''),
-				$vars,
-			);
-		}
-	}
-
-	/**
-	 * @param array<string, string> $vars
-	 */
-	public function notifyDecision(int $userId, bool $approved, array $vars): void {
-		$cfg = DleApiConfig::all();
-		if(!empty($cfg['notify_decision_email'])) {
-			$this->sendEmailTemplate('dleapi_key_decision', [$userId], $vars);
-		}
-		if(!empty($cfg['notify_decision_pm'])) {
-			$subj = $approved
-				? (string) ($cfg['pm_approve_subject'] ?? __('API-ключ одобрен'))
-				: (string) ($cfg['pm_deny_subject'] ?? __('API-ключ отклонён'));
-			$body = $approved
-				? (string) ($cfg['pm_approve_body'] ?? '')
-				: (string) ($cfg['pm_deny_body'] ?? '');
-			$this->sendPm([$userId], $subj, $body, $vars);
-		}
-	}
-
-	/**
-	 * @param list<int> $userIds
-	 * @param array<string, string> $vars
-	 */
-	private function sendEmailTemplate(string $name, array $userIds, array $vars): void {
-		global $db, $config;
-
-		$row = $db->super_query("SELECT * FROM " . PREFIX . "_email WHERE name='" . $db->safesql($name) . "' LIMIT 1");
-		if(empty($row['template'])) {
-			return;
-		}
-		if(!class_exists('dle_mail', false)) {
-			require_once DLEPlugins::Check(ENGINE_DIR . '/classes/mail.class.php');
-		}
-		$mail = new \dle_mail($config, !empty($row['use_html']));
-		$body = $this->apply($row['template'], $vars);
-		$subj = $this->apply((string) ($vars['{%subject%}'] ?? __('DLE API')), $vars);
-		foreach($userIds as $uid) {
-			$u = $db->super_query('SELECT email, name FROM ' . USERPREFIX . '_users WHERE user_id=' . (int) $uid);
-			if(empty($u['email'])) {
-				continue;
-			}
-			$mail->send((string) $u['email'], $subj, $this->apply($body, [
-				'{%username%}' => (string) ($u['name'] ?? ''),
-			] + $vars));
-		}
-	}
-
-	/**
-	 * @param list<int> $userIds
-	 * @param array<string, string> $vars
-	 */
-	private function sendPm(array $userIds, string $subject, string $body, array $vars): void {
-		global $db;
-		if(!function_exists('send_pm_to_user') && class_exists('dle_api', false) === false) {
-			// fallback через api.class если доступен
-		}
-		require_once DLEPlugins::Check(ENGINE_DIR . '/api/api.class.php');
-		$api = new \dle_api();
-		$subj = $this->apply($subject, $vars);
-		$text = $this->apply($body, $vars);
-		foreach($userIds as $uid) {
-			if($uid < 1) {
-				continue;
-			}
-			$api->send_pm_to_user($uid, $subj, $text, 1);
-		}
-	}
-
-	/**
-	 * @param array<string, string> $vars
-	 */
-	private function apply(string $tpl, array $vars): string {
-		return str_replace(array_keys($vars), array_values($vars), $tpl);
+	private static function decodeHtmlBody(string $value): string {
+		return htmlspecialchars_decode($value, ENT_QUOTES|ENT_HTML5);
 	}
 
 }
->>>>>>> Current commit: Начало обновления до api v2

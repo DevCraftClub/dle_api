@@ -6,104 +6,39 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: .35rem;
+		width: 100%;
 	}
 
 	.dleapi-placeholder-list .text-small {
 		width: 100%;
 	}
+
+	.code_editor_area {
+		border: 1px solid #cccccc;
+	}
 </style>
 
+{% include 'core/includes/ui/templateIncludes/code_editor_scripts.twig' %}
 {% if pm_wysiwyg and pm_editor_script %}
-<script src="{{ dle_home }}public/js/jquery3.js"></script>
-<script src="{{ dle_home }}public/editor/tiny_mce/tinymce.min.js"></script>
+	{% include 'core/includes/ui/templateIncludes/tinymce_editor_scripts.twig' %}
+{% endif %}
 <script>
-	var dle_root = '{{ dle_home|e('js') }}';
-	var dle_login_hash = '{{ dle_login_hash|e('js') }}';
-	var dle_skin = '{{ dle_skin|e('js') }}';
-	window.DLEPasteSafeText = window.DLEPasteSafeText || function (args) { return args; };
-</script>
-<script>
-(function () {
-	var inited = false;
-	var editorScript = function () {
-		{{ pm_editor_script|raw }}
-	};
-
-	function initPmEditors() {
-		if (inited || typeof tinymce === 'undefined') {
-			return;
-		}
-		var nodes = document.querySelectorAll('textarea.ajaxwysiwygeditor.dc-dleapi-editor');
-		if (!nodes.length) {
-			return;
-		}
-		var visible = false;
-		for (var i = 0; i < nodes.length; i++) {
-			if (nodes[i].offsetParent !== null || nodes[i].getClientRects().length) {
-				visible = true;
-				break;
+	(function () {
+		function refreshPlaceholders() {
+			if (window.DleApiAdminSettings && typeof window.DleApiAdminSettings.renderPlaceholderLists === 'function') {
+				window.DleApiAdminSettings.renderPlaceholderLists();
 			}
 		}
-		if (!visible) {
-			return;
-		}
-		inited = true;
-		if (window.jQuery) {
-			jQuery(function () { editorScript(); });
-		} else {
-			editorScript();
-		}
-	}
 
-	function bindTabInit() {
 		var tabs = document.getElementById('settings-tabs');
 		if (tabs) {
-			tabs.addEventListener('tab-open', function () {
-				if (window.DleApiAdminSettings && typeof window.DleApiAdminSettings.renderPlaceholderLists === 'function') {
-					window.DleApiAdminSettings.renderPlaceholderLists();
-				}
-				setTimeout(initPmEditors, 50);
-			});
+			tabs.addEventListener('tab-open', refreshPlaceholders);
 		}
 		document.addEventListener('click', function (e) {
 			var t = e.target;
-			if (!t || !t.closest) {
-				return;
-			}
-			if (t.closest('#settings-tabs')) {
-				if (window.DleApiAdminSettings && typeof window.DleApiAdminSettings.renderPlaceholderLists === 'function') {
-					window.DleApiAdminSettings.renderPlaceholderLists();
-				}
-				setTimeout(initPmEditors, 80);
+			if (t && t.closest && t.closest('#settings-tabs')) {
+				refreshPlaceholders();
 			}
 		});
-		var form = document.querySelector('form.dc-settings-form, form[data-role="validator"], #page-content form');
-		if (form) {
-			form.addEventListener('submit', function () {
-				if (typeof tinymce !== 'undefined' && tinymce.triggerSave) {
-					tinymce.triggerSave();
-				}
-			});
-		}
-	}
-
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', function () {
-			if (window.DleApiAdminSettings && typeof window.DleApiAdminSettings.renderPlaceholderLists === 'function') {
-				window.DleApiAdminSettings.renderPlaceholderLists();
-				window.DleApiAdminSettings.bindPlaceholderClicks();
-			}
-			bindTabInit();
-			setTimeout(initPmEditors, 200);
-		});
-	} else {
-		if (window.DleApiAdminSettings && typeof window.DleApiAdminSettings.renderPlaceholderLists === 'function') {
-			window.DleApiAdminSettings.renderPlaceholderLists();
-			window.DleApiAdminSettings.bindPlaceholderClicks();
-		}
-		bindTabInit();
-		setTimeout(initPmEditors, 200);
-	}
-})();
+	})();
 </script>
-{% endif %}

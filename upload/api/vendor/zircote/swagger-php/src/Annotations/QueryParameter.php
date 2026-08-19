@@ -1,29 +1,3 @@
-<<<<<<< New base: Update README.md
-<?php declare(strict_types=1);
-
-/**
- * @license Apache 2.0
- */
-
-namespace OpenApi\Annotations;
-
-use OpenApi\Annotations as OA;
-
-/**
- * A <code>@OA\Request</code> query parameter.
- *
- * @Annotation
- */
-class QueryParameter extends Parameter
-{
-    /**
-     * @var string
-     *             This takes 'query' as the default location
-     */
-    public $in = 'query';
-}
-|||||||
-=======
 <?php declare(strict_types=1);
 
 /**
@@ -47,4 +21,3 @@ class QueryParameter extends Parameter
      */
     public $in = 'query';
 }
->>>>>>> Current commit: Начало обновления до api v2

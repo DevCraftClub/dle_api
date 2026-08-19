@@ -121,7 +121,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `vote` (DLE install.php).
+ * Схема таблицы `vote`.
  */
 #[OA\Schema(schema: 'Vote')]
 final class VoteSchema extends AbstractTableSchema {

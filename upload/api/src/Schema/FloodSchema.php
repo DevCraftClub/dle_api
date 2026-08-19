@@ -73,7 +73,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `flood` (DLE install.php).
+ * Схема таблицы `flood`.
  */
 #[OA\Schema(schema: 'Flood')]
 final class FloodSchema extends AbstractTableSchema {

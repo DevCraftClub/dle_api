@@ -1,25 +1,13 @@
 <?php return array(
     'root' => array(
-<<<<<<< New base: Update README.md
         'name' => 'devcraftclub/dle-api',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'a48cb8a0aaba8d8c9b9a1f8e06eabe230516bb1e',
-||||||| Common ancestor
-        'name' => '__root__',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => 'f1296cee73f9b85f6d52023037f63296b8ec6a42',
-=======
-        'name' => 'devcraftclub/dle-api',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '81c1df45c96f62810b299efae4455b7b2d0d1943',
->>>>>>> Current commit: Начало обновления до api v2
+        'reference' => 'd7f4ecd2888d256096b14d6b3a91fdc000fead76',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'defuse/php-encryption' => array(
@@ -31,22 +19,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-<<<<<<< New base: Update README.md
         'devcraftclub/dle-api' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'a48cb8a0aaba8d8c9b9a1f8e06eabe230516bb1e',
-||||||| Common ancestor
-        'carbonphp/carbon-doctrine-types' => array(
-            'pretty_version' => '3.2.0',
-            'version' => '3.2.0.0',
-            'reference' => '18ba5ddfec8976260ead6e866180bd5d2f71aa1d',
-=======
-        'devcraftclub/dle-api' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '81c1df45c96f62810b299efae4455b7b2d0d1943',
->>>>>>> Current commit: Начало обновления до api v2
+            'reference' => 'd7f4ecd2888d256096b14d6b3a91fdc000fead76',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -61,22 +37,37 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-<<<<<<< New base: Update README.md
+        'guzzlehttp/guzzle' => array(
+            'pretty_version' => '8.0.2',
+            'version' => '8.0.2.0',
+            'reference' => 'd1cbca76970939a9c2ced55b1e25ea26f34fc773',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../guzzlehttp/guzzle',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'guzzlehttp/promises' => array(
+            'pretty_version' => '3.0.1',
+            'version' => '3.0.1.0',
+            'reference' => '64f38b87fa7d371853804161bfc701c9bc2cc00a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../guzzlehttp/promises',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'guzzlehttp/psr7' => array(
+            'pretty_version' => '3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => 'b094ded77ee97a6027ad6cf0e8c7b9f88381814c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../guzzlehttp/psr7',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'laravel/serializable-closure' => array(
             'pretty_version' => 'v2.0.15',
             'version' => '2.0.15.0',
             'reference' => 'dccd8bcb851bb03fcc005df650b708b57cc52661',
-||||||| Common ancestor
-        'illuminate/collections' => array(
-            'pretty_version' => 'v12.1.1',
-            'version' => '12.1.1.0',
-            'reference' => '9720323b3b9c88732b459feacdfcf87b8770a5b7',
-=======
-        'laravel/serializable-closure' => array(
-            'pretty_version' => 'v2.0.13',
-            'version' => '2.0.13.0',
-            'reference' => 'b566ee0dd251f3c4078bed003a7ce015f5ea6dce',
->>>>>>> Current commit: Начало обновления до api v2
             'type' => 'library',
             'install_path' => __DIR__ . '/../laravel/serializable-closure',
             'aliases' => array(),
@@ -148,6 +139,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'myclabs/deep-copy' => array(
+            'pretty_version' => '1.14.0',
+            'version' => '1.14.0.0',
+            'reference' => '8680aa248f8e07bc8fb43f56f0f5fc77a0c96aae',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../myclabs/deep-copy',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'nikic/fast-route' => array(
             'pretty_version' => '1.3.1',
             'version' => '1.3.1.0',
@@ -175,6 +175,24 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'phar-io/manifest' => array(
+            'pretty_version' => '2.0.4',
+            'version' => '2.0.4.0',
+            'reference' => '54750ef60c58e43759730615a392c31c80e23176',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phar-io/manifest',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'phar-io/version' => array(
+            'pretty_version' => '3.2.1',
+            'version' => '3.2.1.0',
+            'reference' => '4f7fd7836c6f332bb2933569e566a0d6c4cbed74',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phar-io/version',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'php-di/invoker' => array(
             'pretty_version' => '2.3.7',
             'version' => '2.3.7.0',
@@ -201,6 +219,60 @@
             'install_path' => __DIR__ . '/../phpstan/phpdoc-parser',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'phpunit/php-code-coverage' => array(
+            'pretty_version' => '12.5.7',
+            'version' => '12.5.7.0',
+            'reference' => '186dab580576598076de6818596d12b61801880e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpunit/php-code-coverage',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'phpunit/php-file-iterator' => array(
+            'pretty_version' => '6.0.1',
+            'version' => '6.0.1.0',
+            'reference' => '3d1cd096ef6bea4bf2762ba586e35dbd317cbfd5',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpunit/php-file-iterator',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'phpunit/php-invoker' => array(
+            'pretty_version' => '6.0.0',
+            'version' => '6.0.0.0',
+            'reference' => '12b54e689b07a25a9b41e57736dfab6ec9ae5406',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpunit/php-invoker',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'phpunit/php-text-template' => array(
+            'pretty_version' => '5.0.0',
+            'version' => '5.0.0.0',
+            'reference' => 'e1367a453f0eda562eedb4f659e13aa900d66c53',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpunit/php-text-template',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'phpunit/php-timer' => array(
+            'pretty_version' => '8.0.0',
+            'version' => '8.0.0.0',
+            'reference' => 'f258ce36aa457f3aa3339f9ed4c81fc66dc8c2cc',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpunit/php-timer',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'phpunit/phpunit' => array(
+            'pretty_version' => '12.5.33',
+            'version' => '12.5.33.0',
+            'reference' => 'b98e028a26c5c5ba7e4a54be96ccf35f2914d184',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpunit/phpunit',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'psr/clock' => array(
             'pretty_version' => '1.0.0',
@@ -241,6 +313,21 @@
                 0 => '1.0',
             ),
         ),
+        'psr/http-client' => array(
+            'pretty_version' => '1.0.3',
+            'version' => '1.0.3.0',
+            'reference' => 'bb5906edc1c324c9a05aa0873d40117941e5fa90',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-client',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'psr/http-client-implementation' => array(
+            'dev_requirement' => true,
+            'provided' => array(
+                0 => '1.0',
+            ),
+        ),
         'psr/http-factory' => array(
             'pretty_version' => '1.1.0',
             'version' => '1.1.0.0',
@@ -253,7 +340,8 @@
         'psr/http-factory-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '^1.0',
+                0 => '1.1',
+                1 => '^1.0',
             ),
         ),
         'psr/http-message' => array(
@@ -268,7 +356,8 @@
         'psr/http-message-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '^1.0 || ^2.0',
+                0 => '2.0',
+                1 => '^1.0 || ^2.0',
             ),
         ),
         'psr/http-server-handler' => array(
@@ -301,32 +390,9 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0|3.0',
-                1 => '3.0.0',
+                0 => '3.0.0',
             ),
         ),
-<<<<<<< New base: Update README.md
-        'radebatz/type-info-extras' => array(
-            'pretty_version' => '1.0.7',
-            'version' => '1.0.7.0',
-            'reference' => '95a524a74a61648b44e355cb33d38db4b17ef5ce',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../radebatz/type-info-extras',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-||||||| Common ancestor
-        'psr/simple-cache' => array(
-            'pretty_version' => '3.0.0',
-            'version' => '3.0.0.0',
-            'reference' => '764e0b3939f5ca87cb904f570ef9be2d78a07865',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../psr/simple-cache',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-=======
->>>>>>> Current commit: Начало обновления до api v2
         'ralouphie/getallheaders' => array(
             'pretty_version' => '3.0.3',
             'version' => '3.0.3.0',
@@ -335,6 +401,123 @@
             'install_path' => __DIR__ . '/../ralouphie/getallheaders',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'sebastian/cli-parser' => array(
+            'pretty_version' => '4.2.1',
+            'version' => '4.2.1.0',
+            'reference' => '7d05781b13f7dec9043a629a21d086ed74582a15',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/cli-parser',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/comparator' => array(
+            'pretty_version' => '7.1.8',
+            'version' => '7.1.8.0',
+            'reference' => '7c65c1e79836812819705b473a90c12399542485',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/comparator',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/complexity' => array(
+            'pretty_version' => '5.0.0',
+            'version' => '5.0.0.0',
+            'reference' => 'bad4316aba5303d0221f43f8cee37eb58d384bbb',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/complexity',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/diff' => array(
+            'pretty_version' => '7.0.0',
+            'version' => '7.0.0.0',
+            'reference' => '7ab1ea946c012266ca32390913653d844ecd085f',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/diff',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/environment' => array(
+            'pretty_version' => '8.1.2',
+            'version' => '8.1.2.0',
+            'reference' => '9d32c685773823b1983e256ae4ecd48a10d6e439',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/environment',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/exporter' => array(
+            'pretty_version' => '7.0.3',
+            'version' => '7.0.3.0',
+            'reference' => 'c5e21b5de653ce0a769fb36f5cdfcb5e7a32cf23',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/exporter',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/global-state' => array(
+            'pretty_version' => '8.0.3',
+            'version' => '8.0.3.0',
+            'reference' => 'b164d3274d6537ab462591c5755f76a8f5b1aae9',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/global-state',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/lines-of-code' => array(
+            'pretty_version' => '4.0.1',
+            'version' => '4.0.1.0',
+            'reference' => 'd543b8ef219dcd8da262cbb958639a96bedba10e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/lines-of-code',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/object-enumerator' => array(
+            'pretty_version' => '7.0.0',
+            'version' => '7.0.0.0',
+            'reference' => '1effe8e9b8e068e9ae228e542d5d11b5d16db894',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/object-enumerator',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/object-reflector' => array(
+            'pretty_version' => '5.0.0',
+            'version' => '5.0.0.0',
+            'reference' => '4bfa827c969c98be1e527abd576533293c634f6a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/object-reflector',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/recursion-context' => array(
+            'pretty_version' => '7.0.1',
+            'version' => '7.0.1.0',
+            'reference' => '0b01998a7d5b1f122911a66bebcb8d46f0c82d8c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/recursion-context',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/type' => array(
+            'pretty_version' => '6.0.4',
+            'version' => '6.0.4.0',
+            'reference' => '82ff822c2edc46724be9f7411d3163021f602773',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/type',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'sebastian/version' => array(
+            'pretty_version' => '6.0.0',
+            'version' => '6.0.0.0',
+            'reference' => '3e6ccf7657d4f0a59200564b08cead899313b53c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sebastian/version',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'slim/psr7' => array(
             'pretty_version' => '1.8.0',
@@ -354,34 +537,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-<<<<<<< New base: Update README.md
-        'symfony/console' => array(
-            'pretty_version' => 'v7.4.16',
-            'version' => '7.4.16.0',
-            'reference' => 'f4c69c9aed03abf933b294257d618bdd9b30a06d',
+        'staabm/side-effects-detector' => array(
+            'pretty_version' => '1.0.5',
+            'version' => '1.0.5.0',
+            'reference' => 'd8334211a140ce329c13726d4a715adbddd0a163',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/console',
+            'install_path' => __DIR__ . '/../staabm/side-effects-detector',
             'aliases' => array(),
-            'dev_requirement' => false,
+            'dev_requirement' => true,
         ),
-||||||| Common ancestor
-        'spatie/once' => array(
-            'dev_requirement' => false,
-            'replaced' => array(
-                0 => '*',
-            ),
-        ),
-        'symfony/clock' => array(
-            'pretty_version' => 'v7.2.0',
-            'version' => '7.2.0.0',
-            'reference' => 'b81435fbd6648ea425d1ee96a2d8e68f4ceacd24',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/clock',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-=======
->>>>>>> Current commit: Начало обновления до api v2
         'symfony/deprecation-contracts' => array(
             'pretty_version' => 'v3.7.1',
             'version' => '3.7.1.0',
@@ -391,7 +555,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-<<<<<<< New base: Update README.md
         'symfony/finder' => array(
             'pretty_version' => 'v7.4.14',
             'version' => '7.4.14.0',
@@ -407,134 +570,26 @@
             'reference' => '141046a8f9477948ff284fa65be2095baafb94f2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-ctype',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'symfony/polyfill-intl-grapheme' => array(
-            'pretty_version' => 'v1.41.0',
-            'version' => '1.41.0.0',
-            'reference' => 'bb899c1db0aa8127dc3afe8cda4a67eb24915f8d',
-||||||| Common ancestor
-        'symfony/polyfill-mbstring' => array(
-            'pretty_version' => 'v1.31.0',
-            'version' => '1.31.0.0',
-            'reference' => '85181ba99b2345b0ef10ce42ecac37612d9fd341',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/polyfill-mbstring',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'symfony/polyfill-php80' => array(
-            'pretty_version' => 'v1.31.0',
-            'version' => '1.31.0.0',
-            'reference' => '60328e362d4c2c802a54fcbf04f9d3fb892b4cf8',
+            'pretty_version' => 'v1.37.0',
+            'version' => '1.37.0.0',
+            'reference' => 'dfb55726c3a76ea3b6459fcfda1ec2d80a682411',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/polyfill-php80',
             'aliases' => array(),
-            'dev_requirement' => false,
+            'dev_requirement' => true,
         ),
-        'symfony/polyfill-php83' => array(
-            'pretty_version' => 'v1.31.0',
-            'version' => '1.31.0.0',
-            'reference' => '2fb86d65e2d424369ad2905e83b236a8805ba491',
-=======
-        'symfony/finder' => array(
-            'pretty_version' => 'v7.4.14',
-            'version' => '7.4.14.0',
-            'reference' => '13b38720174286f55d1761152b575a8d1436fc25',
->>>>>>> Current commit: Начало обновления до api v2
+        'symfony/polyfill-php82' => array(
+            'pretty_version' => 'v1.38.1',
+            'version' => '1.38.1.0',
+            'reference' => '002dc0cfe5fd4ed6033d48f27d4f19a486c4b04b',
             'type' => 'library',
-<<<<<<< New base: Update README.md
-            'install_path' => __DIR__ . '/../symfony/polyfill-intl-grapheme',
-||||||| Common ancestor
-            'install_path' => __DIR__ . '/../symfony/polyfill-php83',
-=======
-            'install_path' => __DIR__ . '/../symfony/finder',
->>>>>>> Current commit: Начало обновления до api v2
+            'install_path' => __DIR__ . '/../symfony/polyfill-php82',
             'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-<<<<<<< New base: Update README.md
-        'symfony/polyfill-intl-normalizer' => array(
-            'pretty_version' => 'v1.38.0',
-            'version' => '1.38.0.0',
-            'reference' => '2d446c214bdbe5b71bde5011b060a05fece3ae6b',
-||||||| Common ancestor
-        'symfony/translation' => array(
-            'pretty_version' => 'v7.2.4',
-            'version' => '7.2.4.0',
-            'reference' => '283856e6981286cc0d800b53bd5703e8e363f05a',
-=======
-        'symfony/polyfill-ctype' => array(
-            'pretty_version' => 'v1.37.0',
-            'version' => '1.37.0.0',
-            'reference' => '141046a8f9477948ff284fa65be2095baafb94f2',
->>>>>>> Current commit: Начало обновления до api v2
-            'type' => 'library',
-<<<<<<< New base: Update README.md
-            'install_path' => __DIR__ . '/../symfony/polyfill-intl-normalizer',
-||||||| Common ancestor
-            'install_path' => __DIR__ . '/../symfony/translation',
-=======
-            'install_path' => __DIR__ . '/../symfony/polyfill-ctype',
->>>>>>> Current commit: Начало обновления до api v2
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-<<<<<<< New base: Update README.md
-        'symfony/polyfill-mbstring' => array(
-            'pretty_version' => 'v1.38.2',
-            'version' => '1.38.2.0',
-            'reference' => 'd3d318bad5e7a1bfbd026009c8bfb8d8f99ae6b6',
-||||||| Common ancestor
-        'symfony/translation-contracts' => array(
-            'pretty_version' => 'v3.5.1',
-            'version' => '3.5.1.0',
-            'reference' => '4667ff3bd513750603a09c8dedbea942487fb07c',
-=======
-        'symfony/yaml' => array(
-            'pretty_version' => 'v7.4.14',
-            'version' => '7.4.14.0',
-            'reference' => 'f8f328665ace2370d1e10645b807ba1646dc7dcc',
->>>>>>> Current commit: Начало обновления до api v2
-            'type' => 'library',
-<<<<<<< New base: Update README.md
-            'install_path' => __DIR__ . '/../symfony/polyfill-mbstring',
-||||||| Common ancestor
-            'install_path' => __DIR__ . '/../symfony/translation-contracts',
-=======
-            'install_path' => __DIR__ . '/../symfony/yaml',
->>>>>>> Current commit: Начало обновления до api v2
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-<<<<<<< New base: Update README.md
-        'symfony/service-contracts' => array(
-            'pretty_version' => 'v3.7.1',
-            'version' => '3.7.1.0',
-            'reference' => 'c0a284bab1ed8aa0417e3d69250ab437739563a0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/service-contracts',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'symfony/string' => array(
-            'pretty_version' => 'v7.4.15',
-            'version' => '7.4.15.0',
-            'reference' => 'e394af32256bf9e7bf80849d95e589167c10097b',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/string',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'symfony/type-info' => array(
-            'pretty_version' => 'v7.4.9',
-            'version' => '7.4.9.0',
-            'reference' => 'cafeedbf157b890e94ac5b83eaed85595106d5d6',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../symfony/type-info',
-            'aliases' => array(),
-            'dev_requirement' => false,
+            'dev_requirement' => true,
         ),
         'symfony/yaml' => array(
             'pretty_version' => 'v7.4.15',
@@ -545,27 +600,19 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'zircote/swagger-php' => array(
-            'pretty_version' => '6.6.0',
-            'version' => '6.6.0.0',
-            'reference' => 'cc81abcfffec8b2f993db64013ea3b49679341c9',
-||||||| Common ancestor
-        'symfony/translation-implementation' => array(
-            'dev_requirement' => false,
-            'provided' => array(
-                0 => '2.3|3.0',
-            ),
+        'theseer/tokenizer' => array(
+            'pretty_version' => '2.0.1',
+            'version' => '2.0.1.0',
+            'reference' => '7989e43bf381af0eac72e4f0ca5bcbfa81658be4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../theseer/tokenizer',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
-        'voku/portable-ascii' => array(
-            'pretty_version' => '2.0.3',
-            'version' => '2.0.3.0',
-            'reference' => 'b1d923f88091c6bf09699efcd7c8a1b1bfd7351d',
-=======
         'zircote/swagger-php' => array(
             'pretty_version' => '5.8.3',
             'version' => '5.8.3.0',
             'reference' => '098223019f764a16715f64089a58606096719c98',
->>>>>>> Current commit: Начало обновления до api v2
             'type' => 'library',
             'install_path' => __DIR__ . '/../zircote/swagger-php',
             'aliases' => array(),

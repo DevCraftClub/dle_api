@@ -81,7 +81,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `twofactor` (DLE install.php).
+ * Схема таблицы `twofactor`.
  */
 #[OA\Schema(schema: 'Twofactor')]
 final class TwofactorSchema extends AbstractTableSchema {

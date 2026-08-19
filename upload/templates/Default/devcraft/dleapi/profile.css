@@ -1,0 +1,93 @@
+.dleapi-profile-key {
+  max-width: 760px;
+  margin: 1rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid #d8dee9;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.dleapi-profile-key__title {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+}
+
+.dleapi-profile-key__state {
+  display: flex;
+  gap: 1.75rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.dleapi-profile-key__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .9rem;
+}
+
+.dleapi-profile-key__icon {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d8dee9;
+  border-radius: 12px;
+  font-size: 1.6rem;
+  background: #f8fafc;
+}
+
+.dleapi-profile-key__body {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.dleapi-profile-key__status {
+  margin: 0 0 .75rem;
+  font-weight: 600;
+}
+
+.dleapi-profile-key__meta {
+  display: grid;
+  gap: .5rem;
+}
+
+.dleapi-profile-key__meta-row {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dleapi-profile-key__label {
+  min-width: 110px;
+  font-size: .92rem;
+  opacity: .75;
+}
+
+.dleapi-profile-key__value {
+  flex: 1 1 auto;
+}
+
+.dleapi-profile-key__value input {
+  width: 100%;
+}
+
+.dleapi-profile-key__masked {
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.dleapi-profile-key__actions {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.dleapi-profile-key__notice {
+  margin-top: .75rem;
+  font-size: .92rem;
+  opacity: .8;
+}

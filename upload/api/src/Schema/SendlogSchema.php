@@ -73,7 +73,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `sendlog` (DLE install.php).
+ * Схема таблицы `sendlog`.
  */
 #[OA\Schema(schema: 'Sendlog')]
 final class SendlogSchema extends AbstractTableSchema {
