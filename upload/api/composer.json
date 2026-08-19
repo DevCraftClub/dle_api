@@ -37,7 +37,7 @@
 	},
 	"scripts": {
 		"openapi": [
-			"@php vendor/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"
+			"@php vendor/zircote/swagger-php/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"
 		]
 	},
 	"config": {
