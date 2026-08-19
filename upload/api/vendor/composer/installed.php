@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'devcraftclub/dle-api',
-        'pretty_version' => 'dev-dev/200.1.0',
-        'version' => 'dev-dev/200.1.0',
-        'reference' => 'df2e3843a142efbc8ae5b3725f03f4aec1d2902d',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'bd9dd38cabded2ed0897f8869deae4cf18f2c39d',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -20,9 +20,9 @@
             'dev_requirement' => false,
         ),
         'devcraftclub/dle-api' => array(
-            'pretty_version' => 'dev-dev/200.1.0',
-            'version' => 'dev-dev/200.1.0',
-            'reference' => 'df2e3843a142efbc8ae5b3725f03f4aec1d2902d',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'bd9dd38cabded2ed0897f8869deae4cf18f2c39d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
