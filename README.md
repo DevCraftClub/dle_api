@@ -8,10 +8,11 @@
 Неофициальное REST API для DataLife Engine **20.0**.
 
 HTTP-поверхность: **`/api/v2`** — Slim 4, OAuth2 Authorization Server (league/oauth2-server 9), Fluent Schema ORM, OpenAPI.
-In-process SDK: глобальный **`DcApi`** (после enable плагина; не legacy `DLE_API`).
 
-Документация: [readme.devcraft.club/dev/dle_api/](https://readme.devcraft.club/dev/dle_api/install/)
-OpenAPI: [`apidata/openapi.yaml`](apidata/openapi.yaml)
+In-process SDK: глобальный **`DcApi`**.
+
+- Документация: [readme.devcraft.club/dev/dle_api/](https://readme.devcraft.club/dev/dle_api/install/)
+- OpenAPI: [`apidata/openapi.yaml`](apidata/openapi.yaml)
 
 ## Требования
 
