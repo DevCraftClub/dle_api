@@ -1,7 +1,7 @@
 {
 	"name": "devcraftclub/dle-api",
 	"description": "Неофициальное REST API для DataLife Engine",
-	"license": "GPL-3.0-only",
+	"license": "AGPL-3.0-or-later",
 	"require": {
 		"ext-json": "*",
 		"ext-pdo": "*",

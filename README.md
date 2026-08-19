@@ -188,4 +188,4 @@ CI: workflow `openapi.yml` запускается автоматически п�
 
 ## Лицензия
 
-GNU General Public License v3 — см. [LICENSE](LICENSE).
+GNU Affero General Public License v3 or later — см. [LICENSE](LICENSE).
