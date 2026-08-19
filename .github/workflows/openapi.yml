@@ -3,12 +3,12 @@ name: OpenAPI generate
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
+    branches: [ main, master ]
     paths:
-      - 'upload/api/src/**/*.php'
-      - 'upload/api/composer.json'
-      - 'upload/api/composer.lock'
-      - '.github/workflows/openapi.yml'
+    - 'upload/api/src/**/*.php'
+    - 'upload/api/composer.json'
+    - 'upload/api/composer.lock'
+    - '.github/workflows/openapi.yml'
 
 permissions:
   contents: write
@@ -22,31 +22,31 @@ jobs:
         working-directory: upload/api
 
     steps:
-      - uses: actions/checkout@v7
+    - uses: actions/checkout@v7
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: json, pdo, simplexml
-          coverage: none
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: json, pdo, simplexml
+        coverage: none
 
-      - name: Install dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist --no-progress
+    - name: Install dependencies
+      run: composer install --no-dev --no-interaction --prefer-dist --no-progress
 
-      - name: Generate openapi.yaml
-        run: composer openapi
+    - name: Generate openapi.yaml
+      run: composer openapi
 
-      - name: Open PR if spec changed
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore(openapi): regenerate openapi.yaml'
-          branch: chore/openapi-update
-          delete-branch: true
-          title: 'chore(openapi): regenerate openapi.yaml'
-          body: |
-            Автоматическая регенерация `apidata/openapi.yaml` из PHP-атрибутов.
+    - name: Open PR if spec changed
+      uses: peter-evans/create-pull-request@v8
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'chore(openapi): regenerate openapi.yaml'
+        branch: chore/openapi-update
+        delete-branch: true
+        title: 'chore(openapi): regenerate openapi.yaml'
+        body: |
+          Автоматическая регенерация `apidata/openapi.yaml` из PHP-атрибутов.
 
-            Триггер: `${{ github.event_name }}`
-          labels: documentation
+          Триггер: `${{ github.event_name }}`
+        labels: documentation
