@@ -7,23 +7,23 @@
 namespace OpenApi\Attributes;
 
 use OpenApi\Annotations as OA;
-use OpenApi\Generator;
+use OpenApi\Undefined;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class PathItem extends OA\PathItem
 {
     /**
      * @param string|class-string|object|null $ref
-     * @param Server[]|null                   $servers
-     * @param Parameter[]|null                $parameters
+     * @param list<Server>|null               $servers
+     * @param list<Parameter>|null            $parameters
      * @param array<string,mixed>|null        $x
-     * @param Attachable[]|null               $attachables
+     * @param list<Attachable>|null           $attachables
      */
     public function __construct(
         ?string $path = null,
         string|object|null $ref = null,
-        ?string $summary = Generator::UNDEFINED,
-        ?string $description = Generator::UNDEFINED,
+        ?string $summary = Undefined::UNDEFINED,
+        ?string $description = Undefined::UNDEFINED,
         ?Get $get = null,
         ?Put $put = null,
         ?Post $post = null,
@@ -35,17 +35,18 @@ class PathItem extends OA\PathItem
         ?Query $query = null,
         ?array $servers = null,
         ?array $parameters = null,
-        // annotation
+
+        // abstract annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
         parent::__construct([
-            'path' => $path ?? Generator::UNDEFINED,
-            'ref' => $ref ?? Generator::UNDEFINED,
+            'path' => $path ?? Undefined::UNDEFINED,
+            'ref' => $ref ?? Undefined::UNDEFINED,
             'summary' => $summary,
             'description' => $description,
-            'x' => $x ?? Generator::UNDEFINED,
-            'attachables' => $attachables ?? Generator::UNDEFINED,
+            'x' => $x ?? Undefined::UNDEFINED,
+            'attachables' => $attachables ?? Undefined::UNDEFINED,
             'value' => $this->combine($get, $put, $post, $delete, $options, $head, $patch, $trace, $query, $servers, $parameters),
         ]);
     }
