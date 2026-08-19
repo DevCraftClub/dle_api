@@ -5,37 +5,38 @@
 
 # DLE API
 
-Неофициальное REST API для DataLife Engine **20.0**.
+ Неофициальное REST API для DataLife Engine **20.0**. Предоставляет HTTP-поверхность (`/api/v2`) и in-process SDK (`DcApi`) для интеграции с внешними сервисами и фронтенд-приложениями.
 
-HTTP-поверхность: **`/api/v2`** — Slim 4, OAuth2 Authorization Server (league/oauth2-server 9), Fluent Schema ORM, OpenAPI.
+ ## Требования
 
-In-process SDK: глобальный **`DcApi`**.
+ | Компонент | Версия |
+ |-----------|--------|
+ | DLE | 20.0 |
+ | PHP | ≥ 8.3 |
+ | DevCraft Admin Panel | ≥ 200.4.0 |
 
-- Документация: [readme.devcraft.club/dev/dle_api/](https://readme.devcraft.club/dev/dle_api/install/)
-- OpenAPI: [`apidata/openapi.yaml`](apidata/openapi.yaml)
+ ## Возможности
 
-## Требования
+ - **OAuth 2.0** — Authorization Code + PKCE, Client Credentials, Refresh Token, Revoke, Discovery
+ - **CRUD** — универсальный доступ к таблицам DLE через `/table/{name}`
+ - **Xfields** — чтение и запись дополнительных полей (`news`, `user`, `static`)
+ - **Загрузка файлов** — `POST /upload` с валидацией типа и размера
+ - **Посты** — листинг и получение публикаций с фильтрацией
+ - **In-process SDK** — глобальный `DcApi` для использования внутри DLE-модулей
+ - **OpenAPI** — спецификация генерируется из PHP-атрибутов (CI workflow)
+ - **Интеграционные тесты** — PHPUnit + Guzzle, покрытие всех эндпоинтов
 
-| Компонент      | Версия    |
-| -------------- | --------- |
-| DLE            | ≥ 20.0    |
-| PHP            | ≥ 8.3     |
-| DevCraft Admin | ≥ 200.4.0 |
+ ## Документация
 
-## Эндпоинты `/api/v2`
+ | Раздел | Ссылка |
+ |--------|--------|
+ | Установка | [readme.devcraft.club/…/install](https://readme.devcraft.club/dev/dle/dle_api/200.1.0/install) |
+ | Начало работы | [readme.devcraft.club/…/getting_started](https://readme.devcraft.club/dev/dle/dle_api/200.1.0/getting_started) |
+ | Миграция v1 → v2 | [readme.devcraft.club/…/guides/migrate-v1-v2](https://readme.devcraft.club/dev/dle/dle_api/200.1.0/guides/migrate-v1-v2) |
+ | Справочник HTTP | [readme.devcraft.club/…/reference/http](https://readme.devcraft.club/dev/dle/dle_api/200.1.0/reference/http) |
+ | SDK | [readme.devcraft.club/…/reference/sdk](https://readme.devcraft.club/dev/dle/dle_api/200.1.0/reference/sdk) |
+ | OpenAPI спецификация | [`apidata/openapi.yaml`](apidata/openapi.yaml) |
 
-### Публичные (без авторизации)
+ ## Лицензия
 
-| Метод     | Путь                                      | Описание                    |
-| --------- | ----------------------------------------- | --------------------------- |
-| GET       | `/health`                                 | Версия, статус              |
-| GET       | `/.well-known/oauth-authorization-server` | OAuth2 AS discovery         |
-| GET, POST | `/oauth/authorize`                        | Авторизация (redirect flow) |
-| POST      | `/oauth/token`                            | Выдача access_token         |
-| POST      | `/oauth/revoke`                           | Отзыв токена                |
-
-### Raw API Key (`Authorization: Bearer <apiKey>`)
-
-| Метод | Путь         | Описание                         |
-| ----- | ------------ | -------------------------------- |
-| GET   | `/key/check` | Проверка ключа, scopes, identity |
+ [AGPL-3.0-or-later](LICENSE)

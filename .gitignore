@@ -1,4 +1,6 @@
 .idea/
+.idea/*
+.idea/**/
 .vscode/
 .DS_Store
 .env
@@ -9,9 +11,6 @@
 .env.development
 .env.test
 .env.production
-.env.local
-.env.development.local
-.env.test.local
 upload/.env
 upload/.env.local
 upload/.env.development.local
@@ -20,9 +19,6 @@ upload/.env.production.local
 upload/.env.development
 upload/.env.test
 upload/.env.production
-upload/.env.local
-upload/.env.development.local
-upload/.env.test.local
 *.zip
 upload/api/.phpunit.result.cache
 upload/api/var/

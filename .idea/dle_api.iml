@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/upload/api" isTestSource="false" packagePrefix="DleApi" />
+      <sourceFolder url="file://$MODULE_DIR$/upload/api/src" isTestSource="false" packagePrefix="DleApi" />
+      <sourceFolder url="file://$MODULE_DIR$/upload/api/src/Support" isTestSource="false" packagePrefix="JetBrains" />
+      <sourceFolder url="file://$MODULE_DIR$/upload/devcraft/src" isTestSource="false" packagePrefix="DevCraft" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
