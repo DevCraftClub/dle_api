@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `views` (DLE install.php).
+ * Схема таблицы `views`.
  */
 #[OA\Schema(schema: 'Views')]
 final class ViewsSchema extends AbstractTableSchema {

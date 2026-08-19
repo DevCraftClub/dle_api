@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `redirects` (DLE install.php).
+ * Схема таблицы `redirects`.
  */
 #[OA\Schema(schema: 'Redirects')]
 final class RedirectsSchema extends AbstractTableSchema {

@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `lostdb` (DLE install.php).
+ * Схема таблицы `lostdb`.
  */
 #[OA\Schema(schema: 'Lostdb')]
 final class LostdbSchema extends AbstractTableSchema {

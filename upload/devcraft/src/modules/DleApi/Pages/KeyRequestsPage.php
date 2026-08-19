@@ -29,11 +29,23 @@ final class KeyRequestsPage extends AbstractPage {
 			$levelNames[$lvl->id()] = $lvl->name;
 		}
 
+		$userNames = [];
+		foreach(Application::instance()->dleData()->users() as $row) {
+			$id = (int) ($row['user_id'] ?? 0);
+			if($id < 1) {
+				continue;
+			}
+			$name = trim((string) ($row['name'] ?? ''));
+			$userNames[$id] = $name !== '' ? $name : ('#' . $id);
+		}
+
 		$rows = [];
 		foreach($repo->all() as $req) {
+			$userId = $req->user_id;
 			$rows[] = [
 				'id'               => $req->id(),
-				'user_id'          => $req->user_id,
+				'user_id'          => $userId,
+				'user_label'       => $userId < 1 ? __('гость') : ($userNames[$userId] ?? ('#' . $userId)),
 				'access_level_id'  => $req->access_level_id,
 				'level_name'       => $levelNames[$req->access_level_id] ?? ('#' . $req->access_level_id),
 				'status'           => $req->status,

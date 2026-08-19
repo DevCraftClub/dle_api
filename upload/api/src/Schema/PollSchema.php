@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `poll` (DLE install.php).
+ * Схема таблицы `poll`.
  */
 #[OA\Schema(schema: 'Poll')]
 final class PollSchema extends AbstractTableSchema {

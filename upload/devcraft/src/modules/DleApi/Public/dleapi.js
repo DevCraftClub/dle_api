@@ -27,6 +27,153 @@
 		return v != null && v !== '' ? v : t(fallback);
 	}
 
+	function setPanelCaption(titleEl, text) {
+		if (!titleEl) {
+			return;
+		}
+		var cap = titleEl.querySelector('.caption');
+		if (cap) {
+			cap.textContent = text;
+			return;
+		}
+		titleEl.textContent = text;
+	}
+
+	function formToggleButton(box) {
+		if (!box || !box.id) {
+			return null;
+		}
+		return document.querySelector('[data-dleapi-form-toggle="' + box.id + '"]');
+	}
+
+	function syncFormToggleLabel(btn, box) {
+		if (!btn || !box) {
+			return;
+		}
+		var open = !box.classList.contains('d-none');
+		btn.textContent = attrLabel(
+			btn,
+			open ? 'data-label-hide' : 'data-label-show',
+			open ? 'Скрыть форму' : 'Показать форму'
+		);
+	}
+
+	function setFormBoxOpen(box, open) {
+		if (!box) {
+			return;
+		}
+		if (open) {
+			box.classList.remove('d-none');
+		} else {
+			box.classList.add('d-none');
+		}
+		syncFormToggleLabel(formToggleButton(box), box);
+	}
+
+	function bindFormToggles() {
+		document.querySelectorAll('[data-dleapi-form-toggle]').forEach(function (btn) {
+			var box = document.getElementById(btn.getAttribute('data-dleapi-form-toggle') || '');
+			if (!box) {
+				return;
+			}
+			syncFormToggleLabel(btn, box);
+			btn.addEventListener('click', function () {
+				setFormBoxOpen(box, box.classList.contains('d-none'));
+			});
+		});
+	}
+
+	function parsePlaceholderList(field) {
+		if (!field || !field.dataset) {
+			return [];
+		}
+		try {
+			var parsed = JSON.parse(field.dataset.dleapiPlaceholders || '[]');
+			return Array.isArray(parsed) ? parsed : [];
+		} catch (e) {
+			return [];
+		}
+	}
+
+	function renderPlaceholderLists() {
+		document.querySelectorAll('[data-dleapi-placeholders]').forEach(function (field) {
+			var placeholders = parsePlaceholderList(field);
+			if (!placeholders.length || field.dataset.dleapiPlaceholdersReady === '1') {
+				return;
+			}
+			field.dataset.dleapiPlaceholdersReady = '1';
+
+			var wrap = document.createElement('div');
+			wrap.className = 'dleapi-placeholder-list mt-2';
+
+			var title = document.createElement('div');
+			title.className = 'text-small fg-gray mb-1';
+			title.textContent = field.dataset.dleapiPlaceholderTitle || t('Доступные плейсхолдеры');
+			wrap.appendChild(title);
+
+			placeholders.forEach(function (placeholder) {
+				var btn = document.createElement('button');
+				btn.type = 'button';
+				btn.className = 'button secondary mini outline rounded mr-1 mb-1';
+				btn.setAttribute('data-dleapi-placeholder-value', placeholder);
+				btn.setAttribute('data-dleapi-placeholder-target', field.id || '');
+				btn.textContent = placeholder;
+				wrap.appendChild(btn);
+			});
+
+			field.insertAdjacentElement('afterend', wrap);
+		});
+	}
+
+	function editorForField(field) {
+		if (!field || !field.id || typeof window.tinymce === 'undefined') {
+			return null;
+		}
+		return window.tinymce.get(field.id) || null;
+	}
+
+	function insertPlaceholder(field, text) {
+		if (!field || !text) {
+			return;
+		}
+
+		var editor = editorForField(field);
+		if (editor && !editor.hidden) {
+			editor.focus();
+			editor.insertContent(text);
+			editor.save();
+			return;
+		}
+
+		var start = typeof field.selectionStart === 'number' ? field.selectionStart : field.value.length;
+		var end = typeof field.selectionEnd === 'number' ? field.selectionEnd : field.value.length;
+		var value = String(field.value || '');
+		field.value = value.slice(0, start) + text + value.slice(end);
+		field.focus();
+		if (typeof field.setSelectionRange === 'function') {
+			field.setSelectionRange(start + text.length, start + text.length);
+		}
+		field.dispatchEvent(new Event('input', { bubbles: true }));
+		field.dispatchEvent(new Event('change', { bubbles: true }));
+	}
+
+	function bindPlaceholderClicks() {
+		if (document.body.dataset.dleapiPlaceholderBound === '1') {
+			return;
+		}
+		document.body.dataset.dleapiPlaceholderBound = '1';
+
+		document.addEventListener('click', function (e) {
+			var btn = e.target.closest('[data-dleapi-placeholder-value]');
+			if (!btn) {
+				return;
+			}
+			e.preventDefault();
+			var target = document.getElementById(btn.getAttribute('data-dleapi-placeholder-target') || '');
+			insertPlaceholder(target, btn.getAttribute('data-dleapi-placeholder-value') || '');
+		});
+	}
+
 	function metroLib() {
 		if (window.DevCraft && DevCraft.Metro && typeof DevCraft.Metro.lib === 'function') {
 			return DevCraft.Metro.lib();
@@ -177,7 +324,7 @@
 		}
 		if (!on) {
 			idInput.value = '';
-			if (title) title.textContent = attrLabel(title, 'data-label-create', 'Создать ключ');
+			if (title) setPanelCaption(title, attrLabel(title, 'data-label-create', 'Создать ключ'));
 			if (submit) submit.textContent = attrLabel(submit, 'data-label-create', 'Создать');
 			if (cancel) cancel.hidden = true;
 			resetCreateKeyForm(form);
@@ -190,9 +337,10 @@
 			levelSel.value = String(data.access_level_id != null ? data.access_level_id : 0);
 		}
 		applyScopes(data.tables || {});
-		if (title) title.textContent = t('Права ключа #{id}', {id: data.id});
+		if (title) setPanelCaption(title, t('Права ключа #{id}', {id: data.id}));
 		if (submit) submit.textContent = attrLabel(submit, 'data-label-save', 'Сохранить');
 		if (cancel) cancel.hidden = false;
+		setFormBoxOpen(document.getElementById('dleapi-key-form-container'), true);
 		form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 		var panel = document.getElementById('dleapi-scopes-panel');
 		if (panel) {
@@ -215,9 +363,9 @@
 		tr.innerHTML =
 			'<td>' + data.id + '</td>' +
 			'<td><code>' + String(data.api || '').replace(/</g, '&lt;') + '</code></td>' +
-			'<td data-level-id="' + (data.access_level_id || 0) + '">' + (data.access_level_id || '—') + '</td>' +
+			'<td data-level-id="' + (data.access_level_id || 0) + '">' + escText(data.level_name || levelLabel(data.access_level_id)) + '</td>' +
 			'<td>' + yesNo(data.active !== false && data.active !== 0) + '</td>' +
-			'<td>' + (data.user_id != null ? data.user_id : 0) + '</td>' +
+			'<td data-user-id="' + (data.user_id != null ? data.user_id : 0) + '">' + escText(data.user_label || userLabel(data.user_id)) + '</td>' +
 			'<td>' +
 				'<button type="button" class="button small" data-dleapi-edit-key="' + data.id + '">' + t('Права') + '</button> ' +
 				'<button type="button" class="button small" data-dleapi-toggle-key="' + data.id + '" data-active="0">' + t('Отключить') + '</button> ' +
@@ -231,9 +379,41 @@
 		if (!tr) {
 			return;
 		}
-		if (tr.children[2]) tr.children[2].textContent = data.access_level_id || '—';
+		if (tr.children[2]) {
+			tr.children[2].setAttribute('data-level-id', String(data.access_level_id || 0));
+			tr.children[2].textContent = data.level_name || levelLabel(data.access_level_id);
+		}
 		if (tr.children[3]) tr.children[3].textContent = yesNo(data.active !== false && data.active !== 0);
-		if (tr.children[4]) tr.children[4].textContent = String(data.user_id != null ? data.user_id : 0);
+		if (tr.children[4]) {
+			tr.children[4].setAttribute('data-user-id', String(data.user_id != null ? data.user_id : 0));
+			tr.children[4].textContent = data.user_label || userLabel(data.user_id);
+		}
+	}
+
+	function escText(s) {
+		var d = document.createElement('div');
+		d.textContent = s == null ? '' : String(s);
+		return d.innerHTML;
+	}
+
+	function levelLabel(id) {
+		id = parseInt(id || '0', 10) || 0;
+		if (id < 1) {
+			return '—';
+		}
+		var sel = document.querySelector('#dleapi-create-key-form [name="access_level_id"]');
+		var opt = sel && sel.querySelector('option[value="' + id + '"]');
+		return opt ? opt.textContent.trim() : ('#' + id);
+	}
+
+	function userLabel(id) {
+		id = parseInt(id || '0', 10) || 0;
+		var sel = document.querySelector('#dleapi-create-key-form [name="user_id"]');
+		var opt = sel && sel.querySelector('option[value="' + id + '"]');
+		if (opt) {
+			return opt.textContent.trim().replace(/^#\d+\s*—\s*/, '');
+		}
+		return id < 1 ? t('гость') : ('#' + id);
 	}
 
 	function removeKeyRow(id) {
@@ -462,7 +642,7 @@
 		if (!on) {
 			idInput.value = '';
 			resetOauthForm(form);
-			if (title) title.textContent = attrLabel(title, 'data-label-create', 'Создать клиент');
+			if (title) setPanelCaption(title, attrLabel(title, 'data-label-create', 'Создать клиент'));
 			if (submit) submit.textContent = attrLabel(submit, 'data-label-create', 'Создать');
 			if (cancel) cancel.hidden = true;
 			if (idGroup) idGroup.hidden = true;
@@ -487,7 +667,7 @@
 		if (idView) {
 			idView.value = String(data.client_id || '');
 		}
-		if (title) title.textContent = t('Клиент #{id}', {id: data.id});
+		if (title) setPanelCaption(title, t('Клиент #{id}', {id: data.id}));
 		if (submit) submit.textContent = attrLabel(submit, 'data-label-save', 'Сохранить');
 		if (cancel) cancel.hidden = false;
 		if (idGroup) idGroup.hidden = false;
@@ -496,7 +676,22 @@
 		if (help) {
 			help.textContent = attrLabel(help, 'data-help-edit', 'Редактирование: название, API-ключ, Redirect URI, grant types и активность. client_id не меняется; секрет — только через «Пересоздать client_secret».');
 		}
+		setFormBoxOpen(document.getElementById('dleapi-oauth-form-container'), true);
 		form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+	}
+
+	function markRequestRow(row, status) {
+		if (!row) {
+			return;
+		}
+		var st = row.querySelector('[data-status]');
+		if (st) {
+			st.textContent = status || '—';
+		}
+		var actions = row.querySelector('td:last-child');
+		if (actions) {
+			actions.textContent = '—';
+		}
 	}
 
 	function post(method, data, onSuccess, triggerEl) {
@@ -511,8 +706,8 @@
 		if (triggerEl) {
 			triggerEl.disabled = true;
 		}
-		var activity = openActivity(activityText(method));
-		return DevCraft.Ajax.post(method, data || {}).then(function (res) {
+		var payload = Object.assign({}, data || {}, { __loaderText: activityText(method) });
+		return DevCraft.Ajax.post(method, payload).then(function (res) {
 			if (DevCraft.Ajax.handleNotice) {
 				DevCraft.Ajax.handleNotice(res);
 			}
@@ -525,9 +720,8 @@
 				DevCraft.Metro.notifyError(t('Ошибка'), t('Сеть или сервер недоступен'), err);
 			}
 		}).then(function (res) {
-			closeActivity(activity);
 			busy = false;
-			if (triggerEl) {
+			if (triggerEl && triggerEl.isConnected) {
 				triggerEl.disabled = false;
 			}
 			return res;
@@ -753,19 +947,19 @@
 			if (approveReq) {
 				e.preventDefault();
 				var aid = parseInt(approveReq.getAttribute('data-dleapi-approve-request'), 10);
-				post('decide_key_request', { id: aid, approve: 1 }, function () {
-					var row = approveReq.closest('tr');
-					if (row) {
-						var st = row.querySelector('[data-status]');
-						if (st) {
-							st.textContent = 'approved';
-						}
-						var cell = approveReq.parentNode;
-						if (cell) {
-							cell.textContent = '—';
-						}
+				var aRow = approveReq.closest('tr');
+				if (aRow) {
+					aRow.querySelectorAll('button').forEach(function (b) {
+						b.disabled = true;
+					});
+				}
+				post('decide_key_request', { id: aid, approve: 1 }, function (data) {
+					markRequestRow(aRow, data.status || 'approved');
+				}, approveReq).then(function (res) {
+					if (res && !res.success && res.error && (res.error.code === 'already_decided' || res.error.code === 'not_found')) {
+						markRequestRow(aRow, (res.data && res.data.status) || '—');
 					}
-				}, approveReq);
+				});
 				return;
 			}
 
@@ -773,22 +967,26 @@
 			if (denyReq) {
 				e.preventDefault();
 				var nid = parseInt(denyReq.getAttribute('data-dleapi-deny-request'), 10);
-				post('decide_key_request', { id: nid, approve: 0 }, function () {
-					var row = denyReq.closest('tr');
-					if (row) {
-						var st = row.querySelector('[data-status]');
-						if (st) {
-							st.textContent = 'denied';
-						}
-						var cell = denyReq.parentNode;
-						if (cell) {
-							cell.textContent = '—';
-						}
+				var nRow = denyReq.closest('tr');
+				if (nRow) {
+					nRow.querySelectorAll('button').forEach(function (b) {
+						b.disabled = true;
+					});
+				}
+				post('decide_key_request', { id: nid, approve: 0 }, function (data) {
+					markRequestRow(nRow, data.status || 'denied');
+				}, denyReq).then(function (res) {
+					if (res && !res.success && res.error && (res.error.code === 'already_decided' || res.error.code === 'not_found')) {
+						markRequestRow(nRow, (res.data && res.data.status) || '—');
 					}
-				}, denyReq);
+				});
+				return;
 			}
 		});
 
+		bindFormToggles();
+		renderPlaceholderLists();
+		bindPlaceholderClicks();
 		bindLevelForm();
 		bindAccessSyncForm();
 	});
@@ -860,7 +1058,7 @@
 			});
 			clearLevelScopes();
 			if (title) {
-				title.textContent = attrLabel(title, 'data-label-create', 'Создать уровень');
+				setPanelCaption(title, attrLabel(title, 'data-label-create', 'Создать уровень'));
 			}
 			if (cancel) {
 				cancel.hidden = true;
@@ -880,11 +1078,12 @@
 		form.querySelector('[name="mask_personal"]').checked = data.mask_personal !== false && data.mask_personal !== 0;
 		applyLevelScopes(data.tables || {});
 		if (title) {
-			title.textContent = t('Уровень #{id}', { id: data.id });
+			setPanelCaption(title, t('Уровень #{id}', { id: data.id }));
 		}
 		if (cancel) {
 			cancel.hidden = false;
 		}
+		setFormBoxOpen(document.getElementById('dleapi-level-form-container'), true);
 		form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 	}
 
@@ -939,4 +1138,10 @@
 			post('save_access_sync', { map: map }, function () {}, form.querySelector('[type="submit"]'));
 		});
 	}
+
+	global.DleApiAdminSettings = global.DleApiAdminSettings || {
+		renderPlaceholderLists: renderPlaceholderLists,
+		bindPlaceholderClicks: bindPlaceholderClicks,
+		insertPlaceholder: insertPlaceholder
+	};
 })(window);

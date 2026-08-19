@@ -1,12 +1,12 @@
 <div class="container-fluid">
 	<div class="panel">
-		<div class="panel-title">{{ 'Заявки на API-ключ'|trans }}</div>
+		<div class="panel-title"><span class="caption">{{ 'Заявки на API-ключ'|trans }}</span></div>
 		<div class="panel-content">
 			<table class="table striped table-border">
 				<thead>
 				<tr>
 					<th>#</th>
-					<th>{{ 'User ID'|trans }}</th>
+					<th>{{ 'Пользователь'|trans }}</th>
 					<th>{{ 'Уровень'|trans }}</th>
 					<th>{{ 'Статус'|trans }}</th>
 					<th>{{ 'Дата'|trans }}</th>
@@ -15,9 +15,9 @@
 				</thead>
 				<tbody id="dleapi-requests-tbody">
 				{% for req in requests %}
-					<tr data-request-id="{{ req.id }}">
+					<tr id="request-{{ req.id }}" data-request-id="{{ req.id }}">
 						<td>{{ req.id }}</td>
-						<td>{{ req.user_id }}</td>
+						<td data-user-id="{{ req.user_id }}">{{ req.user_label }}</td>
 						<td>{{ req.level_name }}</td>
 						<td data-status>{{ req.status }}</td>
 						<td>{{ req.created }}</td>

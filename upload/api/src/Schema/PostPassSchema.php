@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `post_pass` (DLE install.php).
+ * Схема таблицы `post_pass`.
  */
 #[OA\Schema(schema: 'PostPass')]
 final class PostPassSchema extends AbstractTableSchema {

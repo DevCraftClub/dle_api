@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: 'DLE API'
-  description: 'Неофициальное REST API для DataLife Engine 20.0. Единственная поверхность: /api/v2. Auth: Bearer (в т.ч. grant_type=password: username=name|email + password).'
+  description: 'Неофициальное REST API для DataLife Engine 20.0. Поверхность: /api/v2. Ресурсы: Authorization: Bearer <AuthToken>. Выдача: POST /oauth/token с credential_type=api_key|auth|oauth_client или grant_type. Discovery: /.well-known/oauth-authorization-server. Identity: GET /me и /oauth/userinfo. Проверка сырого ключа: GET /key/check.'
   version: 200.1.0
 servers:
   -
@@ -19,81 +19,182 @@ paths:
     post:
       tags:
         - OAuth
-      summary: 'Выдача access_token (в т.ч. password: username|email + password)'
-      description: 'grant_type=password: username — логин (users.name) или email, password — пароль DLE; нужны client_id и client_secret.'
+      summary: 'Выдача AuthToken (credential_type или grant_type)'
+      description: 'Предпочтительно credential_type=api_key|auth|oauth_client. Альтернатива: grant_type=client_credentials|password|authorization_code|refresh_token. В DEMO_MODE при успехе — authorized без access_token.'
       operationId: oauthToken
       requestBody:
-        description: 'Параметры OAuth2 grant'
+        description: 'Параметры credential_type или OAuth2 grant'
         required: true
         content:
           application/json:
             schema:
-              required:
-                - grant_type
-                - client_id
-                - client_secret
               properties:
+                credential_type:
+                  description: 'Предпочтительный способ выдачи AuthToken'
+                  type: string
+                  enum: [api_key, auth, oauth_client]
                 grant_type:
                   type: string
                   enum: [client_credentials, authorization_code, refresh_token, password]
-                  example: password
+                api_key:
+                  description: credential_type=api_key
+                  type: string
                 client_id:
-                  description: 'ID OAuth-клиента'
                   type: string
                 client_secret:
-                  description: 'Секрет клиента'
                   type: string
                 scope:
-                  description: 'Запрашиваемые scope'
                   type: string
                 code:
-                  description: 'Код authorization_code'
                   type: string
                 redirect_uri:
                   type: string
                 code_verifier:
-                  description: 'PKCE verifier'
                   type: string
                 refresh_token:
                   type: string
                 username:
-                  description: 'Логин (name) или email пользователя DLE (grant_type=password)'
+                  description: 'Логин или email (auth / password)'
                   type: string
-                  example: admin
                 password:
-                  description: 'Пароль пользователя DLE (grant_type=password)'
                   type: string
-                  example: secret
               type: object
             example:
-              grant_type: password
-              client_id: your_client_id
-              client_secret: your_client_secret
-              username: admin
-              password: secret
+              credential_type: api_key
+              api_key: your_api_key
       responses:
         '200':
-          description: 'Токен выдан'
+          description: 'Токен выдан или DEMO_MODE authorized'
           content:
             application/json:
               schema:
                 properties:
-                  access_token: { type: string }
+                  access_token: { type: string, nullable: true }
                   token_type: { type: string, example: Bearer }
                   expires_in: { type: integer }
                   refresh_token: { type: string }
-                  scope: { type: string }
+                  demo_mode: { type: boolean }
+                  authorized: { type: boolean }
+                  message: { type: string }
                 type: object
+              example:
+                access_token: …
+                token_type: Bearer
+                expires_in: 3600
+                refresh_token: …
         '400':
-          description: 'Ошибка grant'
+          description: 'Ошибка grant / credential'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security: []
+  /.well-known/oauth-authorization-server:
+    get:
+      tags:
+        - OAuth
+      summary: 'OAuth AS discovery (без Bearer)'
+      operationId: oauthDiscovery
+      responses:
+        '200':
+          description: 'Метаданные AS'
           content:
             application/json:
               schema:
                 properties:
-                  error: { type: string }
-                  message: { type: string }
+                  issuer: { type: string }
+                  authorization_endpoint: { type: string }
+                  token_endpoint: { type: string }
+                  revocation_endpoint: { type: string }
+                  userinfo_endpoint: { type: string }
+                  response_types_supported: { type: array, items: { type: string } }
+                  grant_types_supported: { type: array, items: { type: string } }
+                  code_challenge_methods_supported: { type: array, items: { type: string } }
+                  token_endpoint_auth_methods_supported: { type: array, items: { type: string } }
+                  credential_types_supported: { type: array, items: { type: string } }
                 type: object
       security: []
+  /me:
+    get:
+      tags:
+        - Me
+      summary: 'Субъект AuthToken (identity без CRUD-масок ПДн)'
+      operationId: me
+      responses:
+        '200':
+          description: Identity
+          content:
+            application/json:
+              schema:
+                properties:
+                  sub: { type: string, nullable: true }
+                  user_id: { type: integer }
+                  name: { type: string, nullable: true }
+                  email: { type: string, nullable: true }
+                  user_group: { type: integer, nullable: true }
+                  user: { type: object, nullable: true, additionalProperties: true }
+                  api_key_id: { type: integer }
+                  access_level: { type: object, nullable: true, additionalProperties: true }
+                  client_id: { type: string, nullable: true }
+                  auth_via: { type: string, example: access_token }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        -
+          bearerAuth: []
+  /key/check:
+    get:
+      tags:
+        - Me
+      summary: 'Проверка сырого API-ключа'
+      description: 'Принимает Authorization: Bearer <apiKey>, возвращает ключ, scopes и payload `me`. `validTo = null` означает бессрочный ключ.'
+      operationId: keyCheck
+      responses:
+        '200':
+          description: 'Ключ валиден'
+          content:
+            application/json:
+              schema:
+                properties:
+                  apiKey: { properties: { key: { type: string }, validFrom: { type: string, format: date-time, nullable: true }, validTo: { description: 'null = ключ бессрочный', type: string, format: date-time, nullable: true }, accessLevel: { type: object, nullable: true, additionalProperties: true } }, type: object }
+                  scopes: { type: object, additionalProperties: { properties: { read: { type: boolean }, write: { type: boolean }, edit: { type: boolean }, delete: { type: boolean } }, type: object } }
+                  me: { type: object, additionalProperties: true }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        -
+          rawApiKeyBearer: []
+  /oauth/userinfo:
+    get:
+      tags:
+        - OAuth
+      summary: 'OIDC-совместимый userinfo (тот же payload, что /me)'
+      operationId: oauthUserinfo
+      responses:
+        '200':
+          description: Identity
+          content:
+            application/json:
+              schema:
+                properties:
+                  sub: { type: string, nullable: true }
+                  user_id: { type: integer }
+                  name: { type: string, nullable: true }
+                  email: { type: string, nullable: true }
+                  user_group: { type: integer, nullable: true }
+                  user: { type: object, nullable: true, additionalProperties: true }
+                  api_key_id: { type: integer }
+                  access_level: { type: object, nullable: true, additionalProperties: true }
+                  client_id: { type: string, nullable: true }
+                  auth_via: { type: string }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      security:
+        -
+          bearerAuth: []
   /oauth/revoke:
     post:
       tags:
@@ -121,6 +222,8 @@ paths:
                 properties:
                   revoked: { type: boolean, example: true }
                 type: object
+              example:
+                revoked: true
       security: []
   /post/:
     get:
@@ -184,11 +287,12 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Post' } }
+                  count: { type: integer }
+                type: object
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
       security:
         -
           bearerAuth: []
@@ -213,10 +317,16 @@ paths:
                 properties:
                   id: { type: integer }
                 type: object
+              example:
+                id: 1
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'Ошибка создания'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -239,15 +349,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                properties:
+                  data: { $ref: '#/components/schemas/Post' }
+                type: object
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: 'Не найдено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
-  '/table/{name}/':
+  '/table/{name}':
     get:
       tags:
         - Table
@@ -312,11 +428,19 @@ paths:
                   table: { type: string }
                 type: object
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: 'Неизвестная таблица'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '422':
           description: 'Неизвестная колонка / ошибка фильтра'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -351,10 +475,17 @@ paths:
                   id: { type: integer }
                   table: { type: string }
                 type: object
+              example:
+                id: 1
+                table: banners
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'Ошибка создания'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -391,10 +522,18 @@ paths:
                 type: object
         '400':
           description: 'Составной PK не поддерживается через /{id}'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: 'Не найдено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -432,16 +571,32 @@ paths:
                 properties:
                   id: { type: string }
                   table: { type: string }
-                  updated: { type: boolean }
+                  updated: { type: boolean, example: true }
                 type: object
+              example:
+                id: '1'
+                table: banners
+                updated: true
         '400':
           description: 'Составной PK не поддерживается'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: 'Не найдено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '422':
           description: 'Ошибка обновления'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -473,14 +628,26 @@ paths:
                 properties:
                   id: { type: string }
                   table: { type: string }
-                  deleted: { type: boolean }
+                  deleted: { type: boolean, example: true }
                 type: object
+              example:
+                id: '1'
+                table: banners
+                deleted: true
         '400':
           description: 'Составной PK не поддерживается'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: 'Не найдено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -505,10 +672,16 @@ paths:
                 properties:
                   id: { type: integer }
                 type: object
+              example:
+                id: 1
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'Ошибка создания'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -533,10 +706,16 @@ paths:
                 properties:
                   id: { type: integer }
                 type: object
+              example:
+                id: 1
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'Ошибка создания'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -561,10 +740,16 @@ paths:
                 properties:
                   id: { type: integer }
                 type: object
+              example:
+                id: 1
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'Ошибка создания'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -585,6 +770,9 @@ paths:
                 file:
                   type: string
                   format: binary
+                subdir:
+                  type: string
+                  example: files
               type: object
       responses:
         '201':
@@ -593,8 +781,18 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: true
+              example:
+                url: /uploads/files/…
+                name: file.jpg
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: 'Ошибка загрузки'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -610,11 +808,11 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Conversations'
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Conversations' } }
+                type: object
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
       security:
         -
           bearerAuth: []
@@ -640,11 +838,12 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - { $ref: '#/components/schemas/PostXfieldsCatalog' }
-                  - { $ref: '#/components/schemas/UserXfieldsCatalog' }
+                properties:
+                  data: { oneOf: [{ $ref: '#/components/schemas/PostXfieldsCatalog' }, { $ref: '#/components/schemas/UserXfieldsCatalog' }] }
+                  scope: { type: string, enum: [post, user] }
+                type: object
         '401':
-          description: 'Требуется Bearer'
+          $ref: '#/components/responses/Unauthorized'
       security:
         -
           bearerAuth: []
@@ -672,8 +871,22 @@ paths:
       responses:
         '201':
           description: Создано
+          content:
+            application/json:
+              schema:
+                properties:
+                  name: { type: string }
+                  scope: { type: string }
+                  data: { $ref: '#/components/schemas/PostXfieldField' }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'validation + details.fields'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -700,15 +913,25 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: true
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
+                properties:
+                  raw: { type: string }
+                  parsed: { type: object, additionalProperties: true }
                 type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'Неизвестное поле / validation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -746,11 +969,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostXfieldField'
+                properties:
+                  data: { $ref: '#/components/schemas/PostXfieldField' }
+                  scope: { type: string }
+                type: object
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: 'Не найдено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '422':
           description: 'Тип не совпадает с ?as='
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -784,8 +1020,25 @@ paths:
       responses:
         '200':
           description: Обновлено
+          content:
+            application/json:
+              schema:
+                properties:
+                  name: { type: string }
+                  updated: { type: boolean, example: true }
+                  data: { $ref: '#/components/schemas/PostXfieldField' }
+                type: object
+              example:
+                name: myfield
+                updated: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '422':
           description: 'validation + details.fields'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
@@ -813,14 +1066,38 @@ paths:
       responses:
         '200':
           description: Удалено
+          content:
+            application/json:
+              schema:
+                properties:
+                  name: { type: string, example: myfield }
+                  deleted: { type: boolean, example: true }
+                type: object
+              example:
+                name: myfield
+                deleted: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: 'Поле не найдено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 'Ошибка удаления'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
       security:
         -
           bearerAuth: []
-  /health/:
+  /health:
     get:
       tags:
         - System
-      summary: 'Проверка API'
+      summary: 'Проверка API (без Bearer)'
       operationId: health
       responses:
         '200':
@@ -829,18 +1106,42 @@ paths:
             application/json:
               schema:
                 properties:
-                  ok: { type: boolean, example: true }
                   version: { type: string, example: 200.1.0 }
+                  api: { type: string, example: v2 }
+                  auth: { type: string, example: Bearer }
                 type: object
-        '401':
-          description: 'Требуется Bearer'
-      security:
-        -
-          bearerAuth: []
+              example:
+                version: 200.1.0
+                api: v2
+                auth: Bearer
+      security: []
 components:
   schemas:
+    ApiError:
+      description: 'Единый JSON-формат ошибки API v2: error, message, details?'
+      required:
+        - error
+        - message
+      properties:
+        error:
+          description: 'Код ошибки'
+          type: string
+          example: unauthorized
+        message:
+          description: 'Человекочитаемое сообщение'
+          type: string
+          example: 'Требуется Authorization: Bearer <AuthToken>'
+        details:
+          description: 'Доп. детали (validation и т.п.)'
+          type: object
+          nullable: true
+          additionalProperties: true
+      type: object
+      example:
+        error: unauthorized
+        message: 'Требуется Authorization: Bearer <AuthToken>'
     AdminLogs:
-      description: 'Схема таблицы `admin_logs` (DLE install.php).'
+      description: 'Схема таблицы `admin_logs`.'
       properties:
         id:
           description: 'Первичный ключ (admin_logs.id)'
@@ -862,7 +1163,7 @@ components:
           type: string
       type: object
     AdminSections:
-      description: 'Схема таблицы `admin_sections` (DLE install.php).'
+      description: 'Схема таблицы `admin_sections`.'
       properties:
         id:
           description: 'Первичный ключ (admin_sections.id)'
@@ -884,7 +1185,7 @@ components:
           type: string
       type: object
     Banned:
-      description: 'Схема таблицы `banned` (DLE install.php).'
+      description: 'Схема таблицы `banned`.'
       properties:
         id:
           description: 'Первичный ключ (banned.id)'
@@ -909,7 +1210,7 @@ components:
           type: string
       type: object
     BannersLogs:
-      description: 'Схема таблицы `banners_logs` (DLE install.php).'
+      description: 'Схема таблицы `banners_logs`.'
       properties:
         id:
           description: 'Первичный ключ (banners_logs.id)'
@@ -925,7 +1226,7 @@ components:
           type: string
       type: object
     BannersRubrics:
-      description: 'Схема таблицы `banners_rubrics` (DLE install.php).'
+      description: 'Схема таблицы `banners_rubrics`.'
       properties:
         id:
           description: 'Первичный ключ (banners_rubrics.id)'
@@ -941,7 +1242,7 @@ components:
           type: string
       type: object
     Banners:
-      description: 'Схема таблицы `banners` (DLE install.php).'
+      description: 'Схема таблицы `banners`.'
       properties:
         id:
           description: 'Первичный ключ (banners.id)'
@@ -1026,7 +1327,7 @@ components:
           type: string
       type: object
     Category:
-      description: 'Схема таблицы `category` (DLE install.php).'
+      description: 'Схема таблицы `category`.'
       properties:
         id:
           description: 'Первичный ключ (category.id)'
@@ -1111,7 +1412,7 @@ components:
           type: integer
       type: object
     CommentRatingLog:
-      description: 'Схема таблицы `comment_rating_log` (DLE install.php).'
+      description: 'Схема таблицы `comment_rating_log`.'
       properties:
         id:
           description: 'Первичный ключ (comment_rating_log.id)'
@@ -1130,7 +1431,7 @@ components:
           type: integer
       type: object
     CommentsFiles:
-      description: 'Схема таблицы `comments_files` (DLE install.php).'
+      description: 'Схема таблицы `comments_files`.'
       properties:
         id:
           description: 'Первичный ключ (comments_files.id)'
@@ -1152,7 +1453,7 @@ components:
           type: integer
       type: object
     Comments:
-      description: 'Схема таблицы `comments` (DLE install.php).'
+      description: 'Схема таблицы `comments`.'
       properties:
         id:
           description: 'Первичный ключ (comments.id)'
@@ -1195,7 +1496,7 @@ components:
           type: integer
       type: object
     Complaint:
-      description: 'Схема таблицы `complaint` (DLE install.php).'
+      description: 'Схема таблицы `complaint`.'
       properties:
         id:
           description: 'Первичный ключ (complaint.id)'
@@ -1226,7 +1527,7 @@ components:
           type: string
       type: object
     ConversationReads:
-      description: 'Схема таблицы `conversation_reads` (DLE install.php).'
+      description: 'Схема таблицы `conversation_reads`.'
       properties:
         user_id:
           description: 'ID пользователя (conversation_reads.user_id)'
@@ -1239,7 +1540,7 @@ components:
           type: integer
       type: object
     ConversationUsers:
-      description: 'Схема таблицы `conversation_users` (DLE install.php).'
+      description: 'Схема таблицы `conversation_users`.'
       properties:
         user_id:
           description: 'ID пользователя (conversation_users.user_id)'
@@ -1249,7 +1550,7 @@ components:
           type: integer
       type: object
     ConversationsMessages:
-      description: 'Схема таблицы `conversations_messages` (DLE install.php).'
+      description: 'Схема таблицы `conversations_messages`.'
       properties:
         id:
           description: 'Первичный ключ (conversations_messages.id)'
@@ -1268,7 +1569,7 @@ components:
           type: integer
       type: object
     Conversations:
-      description: 'Схема таблицы `conversations` (DLE install.php).'
+      description: 'Схема таблицы `conversations`.'
       properties:
         id:
           description: 'Первичный ключ (conversations.id)'
@@ -1290,7 +1591,7 @@ components:
           type: integer
       type: object
     DownloadsLog:
-      description: 'Схема таблицы `downloads_log` (DLE install.php).'
+      description: 'Схема таблицы `downloads_log`.'
       properties:
         id:
           description: 'Первичный ключ (downloads_log.id)'
@@ -1309,7 +1610,7 @@ components:
           type: integer
       type: object
     Email:
-      description: 'Схема таблицы `email` (DLE install.php).'
+      description: 'Схема таблицы `email`.'
       properties:
         id:
           description: 'Первичный ключ (email.id)'
@@ -1325,7 +1626,7 @@ components:
           type: integer
       type: object
     Files:
-      description: 'Схема таблицы `files` (DLE install.php).'
+      description: 'Схема таблицы `files`.'
       properties:
         id:
           description: 'Первичный ключ (files.id)'
@@ -1362,7 +1663,7 @@ components:
           type: integer
       type: object
     Flood:
-      description: 'Схема таблицы `flood` (DLE install.php).'
+      description: 'Схема таблицы `flood`.'
       properties:
         f_id:
           description: 'Колонка flood.f_id'
@@ -1378,7 +1679,7 @@ components:
           type: integer
       type: object
     IgnoreList:
-      description: 'Схема таблицы `ignore_list` (DLE install.php).'
+      description: 'Схема таблицы `ignore_list`.'
       properties:
         id:
           description: 'Первичный ключ (ignore_list.id)'
@@ -1391,7 +1692,7 @@ components:
           type: string
       type: object
     Images:
-      description: 'Схема таблицы `images` (DLE install.php).'
+      description: 'Схема таблицы `images`.'
       properties:
         id:
           description: 'Первичный ключ (images.id)'
@@ -1410,7 +1711,7 @@ components:
           type: string
       type: object
     Links:
-      description: 'Схема таблицы `links` (DLE install.php).'
+      description: 'Схема таблицы `links`.'
       properties:
         id:
           description: 'Первичный ключ (links.id)'
@@ -1441,7 +1742,7 @@ components:
           type: integer
       type: object
     LoginLog:
-      description: 'Схема таблицы `login_log` (DLE install.php).'
+      description: 'Схема таблицы `login_log`.'
       properties:
         id:
           description: 'Первичный ключ (login_log.id)'
@@ -1457,7 +1758,7 @@ components:
           type: integer
       type: object
     Logs:
-      description: 'Схема таблицы `logs` (DLE install.php).'
+      description: 'Схема таблицы `logs`.'
       properties:
         id:
           description: 'Первичный ключ (logs.id)'
@@ -1476,7 +1777,7 @@ components:
           type: integer
       type: object
     Lostdb:
-      description: 'Схема таблицы `lostdb` (DLE install.php).'
+      description: 'Схема таблицы `lostdb`.'
       properties:
         id:
           description: 'Первичный ключ (lostdb.id)'
@@ -1489,7 +1790,7 @@ components:
           type: string
       type: object
     MailLog:
-      description: 'Схема таблицы `mail_log` (DLE install.php).'
+      description: 'Схема таблицы `mail_log`.'
       properties:
         id:
           description: 'Первичный ключ (mail_log.id)'
@@ -1505,7 +1806,7 @@ components:
           type: string
       type: object
     Metatags:
-      description: 'Схема таблицы `metatags` (DLE install.php).'
+      description: 'Схема таблицы `metatags`.'
       properties:
         id:
           description: 'Первичный ключ (metatags.id)'
@@ -1536,7 +1837,7 @@ components:
           type: integer
       type: object
     NewsletterTemplateCategories:
-      description: 'Схема таблицы `newsletter_template_categories` (DLE install.php).'
+      description: 'Схема таблицы `newsletter_template_categories`.'
       properties:
         id:
           description: 'Первичный ключ (newsletter_template_categories.id)'
@@ -1558,7 +1859,7 @@ components:
           type: integer
       type: object
     NewsletterTemplateItems:
-      description: 'Схема таблицы `newsletter_template_items` (DLE install.php).'
+      description: 'Схема таблицы `newsletter_template_items`.'
       properties:
         id:
           description: 'Первичный ключ (newsletter_template_items.id)'
@@ -1587,7 +1888,7 @@ components:
           type: integer
       type: object
     Notice:
-      description: 'Схема таблицы `notice` (DLE install.php).'
+      description: 'Схема таблицы `notice`.'
       properties:
         id:
           description: 'Первичный ключ (notice.id)'
@@ -1600,7 +1901,7 @@ components:
           type: string
       type: object
     PluginsFiles:
-      description: 'Схема таблицы `plugins_files` (DLE install.php).'
+      description: 'Схема таблицы `plugins_files`.'
       properties:
         id:
           description: 'Первичный ключ (plugins_files.id)'
@@ -1640,7 +1941,7 @@ components:
           type: string
       type: object
     PluginsLogs:
-      description: 'Схема таблицы `plugins_logs` (DLE install.php).'
+      description: 'Схема таблицы `plugins_logs`.'
       properties:
         id:
           description: 'Первичный ключ (plugins_logs.id)'
@@ -1662,7 +1963,7 @@ components:
           type: integer
       type: object
     Plugins:
-      description: 'Схема таблицы `plugins` (DLE install.php).'
+      description: 'Схема таблицы `plugins`.'
       properties:
         id:
           description: 'Первичный ключ (plugins.id)'
@@ -1741,7 +2042,7 @@ components:
           type: integer
       type: object
     PollLog:
-      description: 'Схема таблицы `poll_log` (DLE install.php).'
+      description: 'Схема таблицы `poll_log`.'
       properties:
         id:
           description: 'Первичный ключ (poll_log.id)'
@@ -1754,7 +2055,7 @@ components:
           type: string
       type: object
     Poll:
-      description: 'Схема таблицы `poll` (DLE install.php).'
+      description: 'Схема таблицы `poll`.'
       properties:
         id:
           description: 'Первичный ключ (poll.id)'
@@ -1788,7 +2089,7 @@ components:
           type: string
       type: object
     PostExtrasCats:
-      description: 'Схема таблицы `post_extras_cats` (DLE install.php).'
+      description: 'Схема таблицы `post_extras_cats`.'
       properties:
         id:
           description: 'Первичный ключ (post_extras_cats.id)'
@@ -1801,7 +2102,7 @@ components:
           type: integer
       type: object
     PostExtras:
-      description: 'Схема таблицы `post_extras` (DLE install.php).'
+      description: 'Схема таблицы `post_extras`.'
       properties:
         eid:
           description: 'Колонка post_extras.eid'
@@ -1871,7 +2172,7 @@ components:
           type: string
       type: object
     PostLog:
-      description: 'Схема таблицы `post_log` (DLE install.php).'
+      description: 'Схема таблицы `post_log`.'
       properties:
         id:
           description: 'Первичный ключ (post_log.id)'
@@ -1890,7 +2191,7 @@ components:
           type: string
       type: object
     PostPass:
-      description: 'Схема таблицы `post_pass` (DLE install.php).'
+      description: 'Схема таблицы `post_pass`.'
       properties:
         id:
           description: 'Первичный ключ (post_pass.id)'
@@ -1903,7 +2204,7 @@ components:
           type: string
       type: object
     Post:
-      description: 'Схема таблицы `post` (DLE install.php).'
+      description: 'Схема таблицы `post`.'
       properties:
         id:
           description: 'Первичный ключ (post.id)'
@@ -1969,7 +2270,7 @@ components:
           type: string
       type: object
     Question:
-      description: 'Схема таблицы `question` (DLE install.php).'
+      description: 'Схема таблицы `question`.'
       properties:
         id:
           description: 'Первичный ключ (question.id)'
@@ -1982,7 +2283,7 @@ components:
           type: string
       type: object
     ReadLog:
-      description: 'Схема таблицы `read_log` (DLE install.php).'
+      description: 'Схема таблицы `read_log`.'
       properties:
         id:
           description: 'Первичный ключ (read_log.id)'
@@ -1995,7 +2296,7 @@ components:
           type: string
       type: object
     Redirects:
-      description: 'Схема таблицы `redirects` (DLE install.php).'
+      description: 'Схема таблицы `redirects`.'
       properties:
         id:
           description: 'Первичный ключ (redirects.id)'
@@ -2011,7 +2312,7 @@ components:
           type: integer
       type: object
     Rss:
-      description: 'Схема таблицы `rss` (DLE install.php).'
+      description: 'Схема таблицы `rss`.'
       properties:
         id:
           description: 'Первичный ключ (rss.id)'
@@ -2057,7 +2358,7 @@ components:
           type: integer
       type: object
     Rssinform:
-      description: 'Схема таблицы `rssinform` (DLE install.php).'
+      description: 'Схема таблицы `rssinform`.'
       properties:
         id:
           description: 'Первичный ключ (rssinform.id)'
@@ -2094,7 +2395,7 @@ components:
           type: string
       type: object
     Sendlog:
-      description: 'Схема таблицы `sendlog` (DLE install.php).'
+      description: 'Схема таблицы `sendlog`.'
       properties:
         id:
           description: 'Первичный ключ (sendlog.id)'
@@ -2110,7 +2411,7 @@ components:
           type: integer
       type: object
     SocialLogin:
-      description: 'Схема таблицы `social_login` (DLE install.php).'
+      description: 'Схема таблицы `social_login`.'
       properties:
         id:
           description: 'Первичный ключ (social_login.id)'
@@ -2135,7 +2436,7 @@ components:
           type: integer
       type: object
     SpamLog:
-      description: 'Схема таблицы `spam_log` (DLE install.php).'
+      description: 'Схема таблицы `spam_log`.'
       properties:
         id:
           description: 'Первичный ключ (spam_log.id)'
@@ -2154,7 +2455,7 @@ components:
           type: integer
       type: object
     StaticFiles:
-      description: 'Схема таблицы `static_files` (DLE install.php).'
+      description: 'Схема таблицы `static_files`.'
       properties:
         id:
           description: 'Первичный ключ (static_files.id)'
@@ -2191,7 +2492,7 @@ components:
           type: integer
       type: object
     Static:
-      description: 'Схема таблицы `static` (DLE install.php).'
+      description: 'Схема таблицы `static`.'
       properties:
         id:
           description: 'Первичный ключ (static.id)'
@@ -2252,7 +2553,7 @@ components:
           type: string
       type: object
     Storage:
-      description: 'Схема таблицы `storage` (DLE install.php).'
+      description: 'Схема таблицы `storage`.'
       properties:
         id:
           description: 'Первичный ключ (storage.id)'
@@ -2307,7 +2608,7 @@ components:
           type: integer
       type: object
     Subscribe:
-      description: 'Схема таблицы `subscribe` (DLE install.php).'
+      description: 'Схема таблицы `subscribe`.'
       properties:
         id:
           description: 'Первичный ключ (subscribe.id)'
@@ -2454,7 +2755,7 @@ components:
         -
           $ref: '#/components/schemas/Xfsearch'
     Tags:
-      description: 'Схема таблицы `tags` (DLE install.php).'
+      description: 'Схема таблицы `tags`.'
       properties:
         id:
           description: 'Первичный ключ (tags.id)'
@@ -2467,7 +2768,7 @@ components:
           type: string
       type: object
     Twofactor:
-      description: 'Схема таблицы `twofactor` (DLE install.php).'
+      description: 'Схема таблицы `twofactor`.'
       properties:
         id:
           description: 'Первичный ключ (twofactor.id)'
@@ -2486,7 +2787,7 @@ components:
           type: integer
       type: object
     Usergroups:
-      description: 'Схема таблицы `usergroups` (DLE install.php).'
+      description: 'Схема таблицы `usergroups`.'
       properties:
         id:
           description: 'Первичный ключ (usergroups.id)'
@@ -2901,7 +3202,7 @@ components:
           type: integer
       type: object
     UsersDelete:
-      description: 'Схема таблицы `users_delete` (DLE install.php).'
+      description: 'Схема таблицы `users_delete`.'
       properties:
         id:
           description: 'Первичный ключ (users_delete.id)'
@@ -2911,7 +3212,7 @@ components:
           type: integer
       type: object
     Users:
-      description: 'Схема таблицы `users` (DLE install.php).'
+      description: 'Схема таблицы `users`.'
       properties:
         email:
           description: 'E-mail (users.email)'
@@ -3017,7 +3318,7 @@ components:
           type: string
       type: object
     Views:
-      description: 'Схема таблицы `views` (DLE install.php).'
+      description: 'Схема таблицы `views`.'
       properties:
         id:
           description: 'Первичный ключ (views.id)'
@@ -3027,7 +3328,7 @@ components:
           type: integer
       type: object
     VoteResult:
-      description: 'Схема таблицы `vote_result` (DLE install.php).'
+      description: 'Схема таблицы `vote_result`.'
       properties:
         id:
           description: 'Первичный ключ (vote_result.id)'
@@ -3046,7 +3347,7 @@ components:
           type: integer
       type: object
     Vote:
-      description: 'Схема таблицы `vote` (DLE install.php).'
+      description: 'Схема таблицы `vote`.'
       properties:
         id:
           description: 'Первичный ключ (vote.id)'
@@ -3080,7 +3381,7 @@ components:
           type: string
       type: object
     Xfsearch:
-      description: 'Схема таблицы `xfsearch` (DLE install.php).'
+      description: 'Схема таблицы `xfsearch`.'
       properties:
         id:
           description: 'Первичный ключ (xfsearch.id)'
@@ -3255,16 +3556,42 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/UserXfieldField'
       type: object
+  responses:
+    Unauthorized:
+      description: 'Нет Authorization: Bearer или AuthToken недействителен/просрочен'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          examples:
+            missing:
+              summary: 'Нет Bearer'
+              value:
+                error: unauthorized
+                message: 'Требуется Authorization: Bearer <AuthToken>'
+            invalid:
+              summary: 'Неверный или просроченный token'
+              value:
+                error: unauthorized
+                message: 'Недействительный или просроченный AuthToken'
   securitySchemes:
     bearerAuth:
       type: http
-      description: 'Access token из POST /oauth/token (client_credentials, password, authorization_code, refresh_token)'
-      bearerFormat: JWT
+      description: 'Access token из POST /oauth/token (credential_type или grant_type). Сырой API-ключ на ресурсах не принимается.'
+      bearerFormat: AuthToken
+      scheme: bearer
+    rawApiKeyBearer:
+      type: http
+      description: 'Сырой API-ключ только для GET /key/check. Формат: Authorization: Bearer <apiKey>.'
+      bearerFormat: 'API Key'
       scheme: bearer
 tags:
   -
     name: OAuth
-    description: 'Выдача и отзыв токенов'
+    description: 'Выдача и отзыв токенов, discovery, userinfo'
+  -
+    name: Me
+    description: 'Субъект AuthToken и проверка сырого API-ключа'
   -
     name: Table
     description: 'Универсальный CRUD по SchemaRegistry: GET/POST /table/{name}/, GET/PUT/DELETE /table/{name}/{id}'

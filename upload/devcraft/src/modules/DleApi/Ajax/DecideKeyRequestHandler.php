@@ -34,8 +34,17 @@ final class DecideKeyRequestHandler implements AjaxHandlerInterface {
 		/** @var ApiKeyRequestRepository $repo */
 		$repo = Application::instance()->database()->repository(ApiKeyRequest::class);
 		$req  = $repo->find($id);
-		if($req === null || $req->status !== 'pending') {
-			return JsonResponse::fail(__('Ошибка'), __('Заявка не найдена или уже обработана'), 'not_found', 404);
+		if($req === null) {
+			return JsonResponse::fail(__('Ошибка'), __('Заявка не найдена'), 'not_found', 404);
+		}
+		if($req->status !== 'pending') {
+			return JsonResponse::fail(
+				__('Ошибка'),
+				__('Заявка уже обработана'),
+				'already_decided',
+				409,
+				['data' => ['id' => $id, 'status' => $req->status]],
+			);
 		}
 
 		$profile = new ProfileKeyService();
@@ -56,6 +65,7 @@ final class DecideKeyRequestHandler implements AjaxHandlerInterface {
 			$repo->decide($req, 'denied', $adminId);
 			$notify->notifyDecision($req->user_id, false, [
 				'{%user_id%}' => (string) $req->user_id,
+				'{%api_key%}' => '',
 				'{%subject%}' => __('API-ключ отклонён'),
 			]);
 		}

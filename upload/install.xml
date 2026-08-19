@@ -3,7 +3,7 @@
 	<name>DLE-API</name>
 	<description>Неофициальное REST API для CMS DLE</description>
 	<icon></icon>
-	<version>200.2.0</version>
+	<version>200.1.0</version>
 	<dleversion>20.0</dleversion>
 	<versioncompare>greater</versioncompare>
 	<upgradeurl></upgradeurl>
@@ -11,18 +11,204 @@
 	<needplugin>DevCraft Admin</needplugin>
 	<mnotice>1</mnotice>
 	<mysqlinstall><![CDATA[
+ALTER TABLE {prefix}_email MODIFY name varchar(64) NOT NULL;
 INSERT INTO {prefix}_email (name, template, use_html) VALUES
-('dleapi_key_request', 'Здравствуйте, {%username%}!\n\nПоступила заявка на API-ключ.\nUser ID: {%user_id%}\nУровень: {%level%}\nЗаявка: #{%request_id%}\n', 0),
-('dleapi_key_decision', 'Здравствуйте, {%username%}!\n\nРешение по заявке на API-ключ.\n{%subject%}\nКлюч (если одобрен): {%api_key%}\n', 0)
-ON DUPLICATE KEY UPDATE name=name;
+('dleapi_key_request', '<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заявка на API-ключ</title>
+  <style type="text/css">
+    html, body { font-family: system-ui, sans-serif; line-height: 1.5; font-size: 14px; }
+    p { margin-top: 0; margin-bottom: 11px; }
+    p:last-child { margin-bottom: 0; }
+    a:active, a:visited, a:link { color: #4C6891; text-decoration: none; }
+    a:hover { color: #4C6891; text-decoration: underline; }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f0f0f0; font-family: system-ui, sans-serif; font-size:14px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-family: system-ui, sans-serif; font-size:14px;">
+    <tr>
+      <td align="center" style="padding:20px; font-family: system-ui, sans-serif; font-size:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; max-width:1024px; background-color:#ffffff; border-radius:10px; box-shadow:0 16px 16px -10px rgba(34,47,62,.15),0 0 40px 1px rgba(34,47,62,.15); font-family: system-ui, sans-serif; font-size:14px;">
+          <tr>
+            <td style="background-color:#4C6891; color:#ffffff; padding-left:20px; padding-right:20px; padding-top:12px; padding-bottom:12px; vertical-align:middle; border-top-left-radius:6px; border-top-right-radius:6px; font-family: system-ui, sans-serif; font-size:15px; text-shadow:1px 1px 2px rgba(51, 51, 51, .5);">
+              Заявка на API-ключ
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#ffffff; color:#000000; text-align:left; padding:20px; border-bottom-left-radius:6px; border-bottom-right-radius:6px; font-family: system-ui, sans-serif; font-size:14px;">
+              {%username%},<br><br>
+              Это письмо отправлено с сайта <a href="{%site_url%}" target="_blank">{%site_url%}</a>.<br><br>
+              Поступила новая заявка на API-ключ.<br><br>
+              ------------------------------------------------<br>
+              Данные заявки<br>
+              ------------------------------------------------<br><br>
+              Пользователь (ID): {%user_id%}<br>
+              Уровень доступа: {%level%}<br>
+              Номер заявки: #{%request_id%}<br><br>
+              ------------------------------------------------<br>
+              Действие<br>
+              ------------------------------------------------<br><br>
+              Откройте заявку в панели управления:<br><br>
+              <a href="{%request_url%}" target="_blank">{%request_url%}</a><br><br>
+              С уважением,<br>
+              Администрация <a href="{%site_url%}" target="_blank">{%site_url%}</a>.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>', 1),
+('dleapi_key_decision', '<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Решение по заявке на API-ключ</title>
+  <style type="text/css">
+    html, body { font-family: system-ui, sans-serif; line-height: 1.5; font-size: 14px; }
+    p { margin-top: 0; margin-bottom: 11px; }
+    p:last-child { margin-bottom: 0; }
+    a:active, a:visited, a:link { color: #4C6891; text-decoration: none; }
+    a:hover { color: #4C6891; text-decoration: underline; }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f0f0f0; font-family: system-ui, sans-serif; font-size:14px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-family: system-ui, sans-serif; font-size:14px;">
+    <tr>
+      <td align="center" style="padding:20px; font-family: system-ui, sans-serif; font-size:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; max-width:1024px; background-color:#ffffff; border-radius:10px; box-shadow:0 16px 16px -10px rgba(34,47,62,.15),0 0 40px 1px rgba(34,47,62,.15); font-family: system-ui, sans-serif; font-size:14px;">
+          <tr>
+            <td style="background-color:#4C6891; color:#ffffff; padding-left:20px; padding-right:20px; padding-top:12px; padding-bottom:12px; vertical-align:middle; border-top-left-radius:6px; border-top-right-radius:6px; font-family: system-ui, sans-serif; font-size:15px; text-shadow:1px 1px 2px rgba(51, 51, 51, .5);">
+              {%subject%}
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#ffffff; color:#000000; text-align:left; padding:20px; border-bottom-left-radius:6px; border-bottom-right-radius:6px; font-family: system-ui, sans-serif; font-size:14px;">
+              {%username%},<br><br>
+              Это письмо отправлено с сайта <a href="{%site_url%}" target="_blank">{%site_url%}</a>.<br><br>
+              {%subject%}<br><br>
+              ------------------------------------------------<br>
+              Результат<br>
+              ------------------------------------------------<br><br>
+              Пользователь (ID): {%user_id%}<br>
+              API-ключ (если одобрен): {%api_key%}<br><br>
+              С уважением,<br>
+              Администрация <a href="{%site_url%}" target="_blank">{%site_url%}</a>.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>', 1)
+ON DUPLICATE KEY UPDATE template=VALUES(template), use_html=VALUES(use_html);
 ]]></mysqlinstall>
 	<mysqlupgrade><![CDATA[
+ALTER TABLE {prefix}_email MODIFY name varchar(64) NOT NULL;
 INSERT INTO {prefix}_email (name, template, use_html) VALUES
-('dleapi_key_request', 'Здравствуйте, {%username%}!\n\nПоступила заявка на API-ключ.\nUser ID: {%user_id%}\nУровень: {%level%}\nЗаявка: #{%request_id%}\n', 0),
-('dleapi_key_decision', 'Здравствуйте, {%username%}!\n\nРешение по заявке на API-ключ.\n{%subject%}\nКлюч (если одобрен): {%api_key%}\n', 0)
-ON DUPLICATE KEY UPDATE name=name;
+('dleapi_key_request', '<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заявка на API-ключ</title>
+  <style type="text/css">
+    html, body { font-family: system-ui, sans-serif; line-height: 1.5; font-size: 14px; }
+    p { margin-top: 0; margin-bottom: 11px; }
+    p:last-child { margin-bottom: 0; }
+    a:active, a:visited, a:link { color: #4C6891; text-decoration: none; }
+    a:hover { color: #4C6891; text-decoration: underline; }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f0f0f0; font-family: system-ui, sans-serif; font-size:14px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-family: system-ui, sans-serif; font-size:14px;">
+    <tr>
+      <td align="center" style="padding:20px; font-family: system-ui, sans-serif; font-size:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; max-width:1024px; background-color:#ffffff; border-radius:10px; box-shadow:0 16px 16px -10px rgba(34,47,62,.15),0 0 40px 1px rgba(34,47,62,.15); font-family: system-ui, sans-serif; font-size:14px;">
+          <tr>
+            <td style="background-color:#4C6891; color:#ffffff; padding-left:20px; padding-right:20px; padding-top:12px; padding-bottom:12px; vertical-align:middle; border-top-left-radius:6px; border-top-right-radius:6px; font-family: system-ui, sans-serif; font-size:15px; text-shadow:1px 1px 2px rgba(51, 51, 51, .5);">
+              Заявка на API-ключ
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#ffffff; color:#000000; text-align:left; padding:20px; border-bottom-left-radius:6px; border-bottom-right-radius:6px; font-family: system-ui, sans-serif; font-size:14px;">
+              {%username%},<br><br>
+              Это письмо отправлено с сайта <a href="{%site_url%}" target="_blank">{%site_url%}</a>.<br><br>
+              Поступила новая заявка на API-ключ.<br><br>
+              ------------------------------------------------<br>
+              Данные заявки<br>
+              ------------------------------------------------<br><br>
+              Пользователь (ID): {%user_id%}<br>
+              Уровень доступа: {%level%}<br>
+              Номер заявки: #{%request_id%}<br><br>
+              ------------------------------------------------<br>
+              Действие<br>
+              ------------------------------------------------<br><br>
+              Откройте заявку в панели управления:<br><br>
+              <a href="{%request_url%}" target="_blank">{%request_url%}</a><br><br>
+              С уважением,<br>
+              Администрация <a href="{%site_url%}" target="_blank">{%site_url%}</a>.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>', 1),
+('dleapi_key_decision', '<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Решение по заявке на API-ключ</title>
+  <style type="text/css">
+    html, body { font-family: system-ui, sans-serif; line-height: 1.5; font-size: 14px; }
+    p { margin-top: 0; margin-bottom: 11px; }
+    p:last-child { margin-bottom: 0; }
+    a:active, a:visited, a:link { color: #4C6891; text-decoration: none; }
+    a:hover { color: #4C6891; text-decoration: underline; }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f0f0f0; font-family: system-ui, sans-serif; font-size:14px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; font-family: system-ui, sans-serif; font-size:14px;">
+    <tr>
+      <td align="center" style="padding:20px; font-family: system-ui, sans-serif; font-size:14px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: separate; border-spacing: 0; max-width:1024px; background-color:#ffffff; border-radius:10px; box-shadow:0 16px 16px -10px rgba(34,47,62,.15),0 0 40px 1px rgba(34,47,62,.15); font-family: system-ui, sans-serif; font-size:14px;">
+          <tr>
+            <td style="background-color:#4C6891; color:#ffffff; padding-left:20px; padding-right:20px; padding-top:12px; padding-bottom:12px; vertical-align:middle; border-top-left-radius:6px; border-top-right-radius:6px; font-family: system-ui, sans-serif; font-size:15px; text-shadow:1px 1px 2px rgba(51, 51, 51, .5);">
+              {%subject%}
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#ffffff; color:#000000; text-align:left; padding:20px; border-bottom-left-radius:6px; border-bottom-right-radius:6px; font-family: system-ui, sans-serif; font-size:14px;">
+              {%username%},<br><br>
+              Это письмо отправлено с сайта <a href="{%site_url%}" target="_blank">{%site_url%}</a>.<br><br>
+              {%subject%}<br><br>
+              ------------------------------------------------<br>
+              Результат<br>
+              ------------------------------------------------<br><br>
+              Пользователь (ID): {%user_id%}<br>
+              API-ключ (если одобрен): {%api_key%}<br><br>
+              С уважением,<br>
+              Администрация <a href="{%site_url%}" target="_blank">{%site_url%}</a>.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>', 1)
+ON DUPLICATE KEY UPDATE template=VALUES(template), use_html=VALUES(use_html);
 ]]></mysqlupgrade>
-	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.2.0', 'Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.', '/devcraft/src/modules/DleApi/Public/icon.png', 1) ON DUPLICATE KEY UPDATE title='DLE-API v200.2.0', descr='Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.';]]></mysqlenable>
+	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.1.0', 'Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.', '/devcraft/src/modules/DleApi/Public/icon.png', 1) ON DUPLICATE KEY UPDATE title='DLE-API v200.1.0', descr='Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.';]]></mysqlenable>
 	<mysqldisable><![CDATA[DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi']]></mysqldisable>
 	<mysqldelete><![CDATA[
 DROP TABLE IF EXISTS {prefix}_api_oauth_refresh_tokens;
@@ -45,7 +231,6 @@ DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';
 	<phpdelete><![CDATA[]]></phpdelete>
 	<notice><![CDATA[Документация: https://readme.devcraft.club/dev/dle_api/install/
 API v2: /api/v2 — Authorization: Bearer &lt;AuthToken&gt;.
-Профиль: {include file="engine/modules/devcraft/dleapi_profile.php"}
 .env: DEMO_MODE=false, DLEAPI_SECURE=false]]></notice>
 	<file name="engine/init.php">
 		<operation action="after">

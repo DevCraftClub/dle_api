@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `static` (DLE install.php).
+ * Схема таблицы `static`.
  */
 #[OA\Schema(schema: 'Static')]
 final class StaticSchema extends AbstractTableSchema {

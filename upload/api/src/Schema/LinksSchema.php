@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `links` (DLE install.php).
+ * Схема таблицы `links`.
  */
 #[OA\Schema(schema: 'Links')]
 final class LinksSchema extends AbstractTableSchema {

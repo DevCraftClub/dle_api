@@ -9,89 +9,39 @@ declare(strict_types=1);
  */
 return [
 	[
-		'version' => '200.2.0',
-		'date'    => '2026-07-24',
-		'changes' => [
-			'added'   => [
-				__('credential_type api_key|auth|oauth_client; ресурсы только AuthToken; GET /me и /oauth/userinfo.'),
-				__('OAuth AS discovery, authorize по сессии DLE, копируемые endpoint URL.'),
-				__('Уровни доступа, синхронизация с группами, заявки на ключ, профиль (public AJAX).'),
-				__('DEMO_MODE / DLEAPI_SECURE из .env; email-шаблоны через install.xml.'),
-			],
-			'changed' => [
-				__('Scopes: колонка edit; own_only/cheater на уровне; trailing slash на всех маршрутах v2.'),
-			],
-			'removed' => [
-				__('Приём сырого API-ключа как Bearer на ресурсах /table.'),
-			],
-		],
-	],
-	[
 		'version' => '200.1.0',
 		'date'    => '2026-07-21',
 		'changes' => [
 			'added'   => [
 				__('API v2 (/api/v2) на CycleORM из DevCraft Admin.'),
 				__('OAuth2 Authorization Server: authorize, token, revoke; доступ только через Bearer.'),
+				__('credential_type api_key|auth|oauth_client; ресурсы только AuthToken; GET /me и /oauth/userinfo.'),
+				__('OAuth AS discovery, authorize по сессии DLE, копируемые endpoint URL.'),
+				__('Уровни доступа, синхронизация с группами, заявки на ключ, профиль (public AJAX).'),
+				__('DEMO_MODE / DLEAPI_SECURE из .env; email-шаблоны через install.xml.'),
 				__('Fluent-билдеры prepareNewPost / prepareNewUser / preparePlugin / prepareNewUsergroup (in-process и HTTP SDK).'),
 				__('Каталог Schema таблиц DLE в api/includes/Schemas.'),
 				__('OpenAPI (swagger-php) и документация OAD в mhdocs.'),
 				__('Загрузка файлов через штатный пайплайн DLE.'),
 				__('Фильтр постов по одной категории при нескольких (FIND_IN_SET / issue #12).'),
 				__('Админ-модуль DleApi для DevCraft Admin ≥ 200.4.0 (только конфигурация).'),
+				__('HTTP /table/{name}: интроспекция таблиц вне SchemaRegistry + TableScopeGuard.'),
+				__('SDK facades: DcApi::news() / user() / comment() / conversation() / plugin() / file() / staticPage() / schema().'),
+				__('Fluent CRUD на AbstractTableSchema (with / create / save / delete / filter / fromArray).'),
+				__('GET-кэш TableQuery через CacheControl (dle_api_query, TTL).'),
+				__('Админка: multi получатели уведомлений, WYSIWYG для PM; panel-title через caption.'),
+				__('Админка: FormPanel ключей/уровней/OAuth свёрнут на узком экране (Metro d-none / d-block-md).'),
 			],
 			'changed' => [
 				__('Совместимость с DLE 20.0 (xfields.json, dual category, conversations).'),
 				__('Таблицы api_keys / api_scope / OAuth создаются Cycle-миграциями DevCraft (Models + AbstractEntity), а не DDL в install.xml.'),
+				__('Scopes: колонка edit; own_only/cheater на уровне; trailing slash на всех маршрутах v2.'),
+				__('OpenAPI: описание ApiError без PHPDoc {@see}; Schema без пометки install.php.'),
 			],
 			'removed' => [
 				__('API v1 (Slim + Illuminate Capsule, X-Api-Key) полностью удалён.'),
+				__('Приём сырого API-ключа как Bearer на ресурсах /table.'),
 			],
-		],
-	],
-	[
-		'version' => '180.0.39',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '173.0.38',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '173.0.37',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '173.0.36',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '160.0.35',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '160.0.34',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '160.0.33',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '0.3.2',
-		'changes' => [
-		],
-	],
-	[
-		'version' => '0.3.1',
-		'changes' => [
 		],
 	],
 	[
@@ -102,11 +52,6 @@ return [
 				__('Минимально поддерживаемая версия DLE - 16.0'),
 				__('Изменён список алгоритмов на hash_hmac_algos'),
 			],
-		],
-	],
-	[
-		'version' => '0.2.2',
-		'changes' => [
 		],
 	],
 	[

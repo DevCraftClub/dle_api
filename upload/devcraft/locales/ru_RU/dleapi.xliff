@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="ru" target-language="ru-RU" datatype="plaintext" original="dleapi">
+    <body>
+      <trans-unit id="1">
+        <source>Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2</source>
+        <target>Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2</target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>API-ключи</source>
+        <target>API-ключи</target>
+      </trans-unit>
+      <trans-unit id="3">
+        <source>OAuth-клиенты</source>
+        <target>OAuth-клиенты</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `users_delete` (DLE install.php).
+ * Схема таблицы `users_delete`.
  */
 #[OA\Schema(schema: 'UsersDelete')]
 final class UsersDeleteSchema extends AbstractTableSchema {

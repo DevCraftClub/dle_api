@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `comments_files` (DLE install.php).
+ * Схема таблицы `comments_files`.
  */
 #[OA\Schema(schema: 'CommentsFiles')]
 final class CommentsFilesSchema extends AbstractTableSchema {

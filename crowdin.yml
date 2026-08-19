@@ -1,0 +1,3 @@
+files:
+  - source: /upload/devcraft/locales/ru_RU/dleapi.xliff
+    translation: /upload/devcraft/locales/%locale_with_underscore%/%file_name%.%file_extension%

@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `metatags` (DLE install.php).
+ * Схема таблицы `metatags`.
  */
 #[OA\Schema(schema: 'Metatags')]
 final class MetatagsSchema extends AbstractTableSchema {

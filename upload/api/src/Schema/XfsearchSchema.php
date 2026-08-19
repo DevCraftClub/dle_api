@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `xfsearch` (DLE install.php).
+ * Схема таблицы `xfsearch`.
  */
 #[OA\Schema(schema: 'Xfsearch')]
 final class XfsearchSchema extends AbstractTableSchema {
