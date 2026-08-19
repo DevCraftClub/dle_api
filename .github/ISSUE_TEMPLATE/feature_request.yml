@@ -1,0 +1,39 @@
+name: Предложение
+description: Предложить новую возможность или улучшение
+title: '[Предложение]: '
+assignees:
+  - Gokujo
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо за предложение! Опишите, что хотели бы видеть в DLE API.
+  - type: checkboxes
+    id: prechecks
+    attributes:
+      label: Предварительные проверки
+      options:
+        - label: Я прочёл / прочла [пользовательское соглашение](https://devcraft.club/pages/licence-agreement/) и согласен / согласна с ним
+          required: true
+        - label: Я ознакомился / ознакомилась с [документацией](https://readme.devcraft.club/dev/dle_api/)
+          required: true
+        - label: Я проверил / проверила, что такой запрос ещё не открыт в [очереди тикетов](https://devcraft.club/tickets/queue?status_not%5B0%5D=-1)
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Описание
+      description: Что вы хотели бы добавить или изменить?
+      placeholder: Описание предложения
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Пример использования
+      description: Как бы вы использовали эту возможность?
+      placeholder: Пример или сценарий
+    validations:
+      required: false

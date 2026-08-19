@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Тикет на devcraft.club
+    url: https://devcraft.club/tickets/queue?status_not%5B0%5D=-1
+    about: Проверьте, не была ли уже открыта проблема или запрос на сайте
+  - name: Документация
+    url: https://readme.devcraft.club/dev/dle_api/
+    about: Прочитайте документацию перед созданием issue

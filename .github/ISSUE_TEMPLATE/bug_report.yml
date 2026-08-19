@@ -9,79 +9,73 @@ body:
     -   type: markdown
         attributes:
             value: |
-                Спасибо, что нашли время, чтобы составить этот отчёт
+                Спасибо, что нашли время, чтобы составить этот отчёт.
     -   type: checkboxes
-        id: read-rules
+        id: prechecks
         attributes:
-            label: Пользовательское соглашение
-            description: Перед просьбой добавить или "починить" что-либо в срочном порядке - [нужно прочесть соглашение](https://devcraft.club/pages/licence-agreement/).
+            label: Предварительные проверки
             options:
-                -   label: Я прочёл / прочла соглашение и согласен / согласна с ними
+                -   label: Я прочёл / прочла [пользовательское соглашение](https://devcraft.club/pages/licence-agreement/) и согласен / согласна с ним
                     required: true
-    -   type: checkboxes
-        id: read-docs
-        attributes:
-            label: Я читал / читала документацию, перед созданием тикета
-            description: Рекомендую прочесть и ознакомится с документацией - [нужно прочесть документацию](https://documenter.getpostman.com/view/7856564/2s93CLsZ6p).
-            options:
-                -   label: Я прочёл / прочла и ознакомился / ознакомилась с документацией
+                -   label: Я ознакомился / ознакомилась с [документацией](https://readme.devcraft.club/dev/dle_api/)
+                    required: true
+                -   label: Я проверил / проверила, что такая проблема ещё не открыта в [очереди тикетов](https://devcraft.club/tickets/queue?status_not%5B0%5D=-1)
                     required: true
     -   type: textarea
         id: what-happened
         attributes:
             label: В чём проблема?
-            description: Если можно, то пожалуйста, опиши проблему в деталях и то, как до неё добраться. Если можно пошагово
-            placeholder: Я - проблема, и вот моё описание
-            value: "Проблемка нарисовалась!"
+            description: Опишите проблему в деталях. Если возможно — пошагово, как её воспроизвести.
+            placeholder: Описание проблемы
         validations:
             required: true
     -   type: textarea
         id: what-should-happen
         attributes:
             label: Что ожидали?
-            description: Когда плагин был установлен, то что должно было произойти по твоему мнению, но не произошло?
-            placeholder: Чтобы всё решилось, а не всё это
-            value: "В ожидании чуда"
+            description: Что должно было произойти вместо ошибки?
+            placeholder: Ожидаемое поведение
         validations:
             required: false
     -   type: input
         id: plugin-version
         attributes:
             label: Версия плагина
-            description: Какой версией плагина пользуешься? Стоит обычно в менеджере плагинов
+            description: Указана в менеджере плагинов DLE или в DevCraft Admin → DLE API
         validations:
             required: true
     -   type: dropdown
         id: dle-version
         attributes:
             label: Версия DLE
-            description: На какой версии DLE это произошло?
             options:
-                - "16.x (Default)"
-                - "15.x"
-                - "14.x"
-                - "13.x"
-                - "< 13.x"
+                - "20.0"
+                - "17.x"
+                - "16.x"
         validations:
             required: true
     -   type: dropdown
         id: php-version
         attributes:
             label: Версия PHP
-            description: На какой версии PHP работает сайт?
             options:
-                - "8.x (Default)"
-                - "7.x"
-                - "5.x"
+                - "8.3"
+                - "8.2"
+                - "8.1"
         validations:
             required: true
-
     -   type: textarea
-        id: "screenshots"
+        id: screenshots
         attributes:
             label: Скриншоты
-            description: Если есть возможность, добавь скриншоты преступления
-            value: |
-                ![DESCRIPTION](LINK.png)
+            description: Если есть возможность, добавьте скриншоты
+        validations:
+            required: false
+    -   type: textarea
+        id: logs
+        attributes:
+            label: Логи / ответ API
+            description: Если ошибка связана с HTTP-запросом — вставьте тело ответа и HTTP-статус
+            render: json
         validations:
             required: false
