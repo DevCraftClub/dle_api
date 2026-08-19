@@ -42,7 +42,7 @@ return [
 	],
 	'meta'              => [
 		'name'        => 'DLE API',
-		'version'     => '200.2.0',
+		'version'     => '200.1.0',
 		'description' => __('Неофициальное REST/SDK API для DLE: ключи, OAuth2 Bearer, /api/v2'),
 		'icon'        => 'mif-embed2',
 		'docsLink'    => 'https://readme.devcraft.club/dev/dle_api/install/',

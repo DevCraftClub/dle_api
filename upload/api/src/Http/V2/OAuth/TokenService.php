@@ -66,6 +66,9 @@ final class TokenService {
 		if($client === null || !password_verify($clientSecret, $client->client_secret)) {
 			return ['error' => 'invalid_client', 'message' => __('Неверный client_id или client_secret')];
 		}
+		if(!$this->clientAllowsGrant($client, 'client_credentials')) {
+			return ['error' => 'unauthorized_client', 'message' => __('Клиент не разрешает grant_type=client_credentials')];
+		}
 		$key = $this->findActiveApiKey($client->api_key_id);
 		if($key === null) {
 			return ['error' => 'invalid_client', 'message' => __('API-ключ клиента неактивен')];
@@ -136,6 +139,9 @@ final class TokenService {
 		if($client === null || !password_verify($clientSecret, $client->client_secret)) {
 			return ['error' => 'invalid_client', 'message' => __('Неверный client')];
 		}
+		if(!$this->clientAllowsGrant($client, 'authorization_code')) {
+			return ['error' => 'unauthorized_client', 'message' => __('Клиент не разрешает grant_type=authorization_code')];
+		}
 		/** @var OauthAuthCodeRepository $codes */
 		$codes = $this->repo(OauthAuthCode::class);
 		$row   = $codes->findValidByCode($code);
@@ -187,6 +193,9 @@ final class TokenService {
 		$key    = $this->findActiveApiKey($access->api_key_id);
 		if($client === null || $key === null) {
 			return ['error' => 'invalid_client', 'message' => __('Клиент или ключ неактивен')];
+		}
+		if(!$this->clientAllowsGrant($client, 'refresh_token')) {
+			return ['error' => 'unauthorized_client', 'message' => __('Клиент не разрешает grant_type=refresh_token')];
 		}
 		if(DleApiConfig::isDemoMode()) {
 			return DleApiConfig::demoAuthorizedResponse();
@@ -246,6 +255,30 @@ final class TokenService {
 		}
 
 		return $repo->findActiveGuest();
+	}
+
+	/**
+	 * Проверка client_id / redirect_uri / grant authorization_code до выдачи code.
+	 *
+	 * @return array{error: string, message: string}|null null — OK
+	 */
+	public function validateAuthorizeRequest(string $clientId, string $redirectUri): ?array {
+		$client = $this->findActiveClient($clientId);
+		if($client === null) {
+			return ['error' => 'invalid_client', 'message' => __('Неизвестный или неактивный client_id')];
+		}
+		if(!$this->clientAllowsGrant($client, 'authorization_code')) {
+			return ['error' => 'unauthorized_client', 'message' => __('Клиент не разрешает grant_type=authorization_code')];
+		}
+		$registered = (string) ($client->redirect_uri ?? '');
+		if($registered === '') {
+			return ['error' => 'invalid_request', 'message' => __('У клиента не задан redirect_uri')];
+		}
+		if($registered !== $redirectUri) {
+			return ['error' => 'invalid_request', 'message' => __('redirect_uri не совпадает с зарегистрированным у клиента')];
+		}
+
+		return null;
 	}
 
 	public function createAuthCode(

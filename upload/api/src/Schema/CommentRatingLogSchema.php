@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `comment_rating_log` (DLE install.php).
+ * Схема таблицы `comment_rating_log`.
  */
 #[OA\Schema(schema: 'CommentRatingLog')]
 final class CommentRatingLogSchema extends AbstractTableSchema {

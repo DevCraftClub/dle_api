@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `notice` (DLE install.php).
+ * Схема таблицы `notice`.
  */
 #[OA\Schema(schema: 'Notice')]
 final class NoticeSchema extends AbstractTableSchema {

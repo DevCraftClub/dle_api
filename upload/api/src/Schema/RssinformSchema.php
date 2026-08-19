@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `rssinform` (DLE install.php).
+ * Схема таблицы `rssinform`.
  */
 #[OA\Schema(schema: 'Rssinform')]
 final class RssinformSchema extends AbstractTableSchema {

@@ -1,0 +1,48 @@
+name: Composer update
+
+on:
+  schedule:
+    - cron: '0 4 1 * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'upload/api/composer.json'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: upload/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: json, pdo, simplexml
+          coverage: none
+
+      - name: Run composer update
+        run: composer update --no-interaction --prefer-dist --no-progress
+
+      - name: Open PR if lock file changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(deps): composer update'
+          branch: chore/composer-update
+          delete-branch: true
+          title: 'chore(deps): composer update'
+          body: |
+            Автоматическое обновление `composer.lock` после `composer update`.
+
+            Триггер: `${{ github.event_name }}`
+          labels: dependencies, php

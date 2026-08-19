@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `conversation_reads` (DLE install.php).
+ * Схема таблицы `conversation_reads`.
  */
 #[OA\Schema(schema: 'ConversationReads')]
 final class ConversationReadsSchema extends AbstractTableSchema {

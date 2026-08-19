@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `spam_log` (DLE install.php).
+ * Схема таблицы `spam_log`.
  */
 #[OA\Schema(schema: 'SpamLog')]
 final class SpamLogSchema extends AbstractTableSchema {

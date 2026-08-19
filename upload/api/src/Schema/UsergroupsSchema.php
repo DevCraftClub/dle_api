@@ -7,7 +7,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `usergroups` (DLE install.php).
+ * Схема таблицы `usergroups`.
  */
 #[OA\Schema(schema: 'Usergroups')]
 final class UsergroupsSchema extends AbstractTableSchema {

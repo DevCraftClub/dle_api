@@ -57,7 +57,9 @@ final class SettingsHandler implements AjaxHandlerInterface {
 				$merged['secure'] = true;
 			}
 
+			$merged = \DevCraft\Modules\DleApi\Services\KeyNotifyDelivery::applyEditorDefaults($merged);
 			DataManager::saveConfig($schema->codename, $merged);
+			\DevCraft\Modules\DleApi\Services\KeyNotifyDelivery::syncEmailTemplates($merged);
 			DevCraftConfig::resetCache();
 			\DevCraft\Modules\DleApi\Services\DleApiConfig::resetCache();
 		}

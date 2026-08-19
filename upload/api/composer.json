@@ -25,6 +25,15 @@
 			"src/Fluent/functions.php"
 		]
 	},
+	"require-dev": {
+		"guzzlehttp/guzzle": "^8.0",
+		"phpunit/phpunit": "^12.5"
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"DleApi\\Tests\\": "tests/"
+		}
+	},
 	"scripts": {
 		"openapi": [
 			"@php vendor/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"

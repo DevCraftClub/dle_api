@@ -50,6 +50,16 @@ final class ApiKeyRequestRepository extends AbstractRepository {
 		return $e;
 	}
 
+	public function latestByUser(int $userId): ?ApiKeyRequest {
+		/** @var ApiKeyRequest|null $e */
+		$e = $this->select()
+			->where('user_id', $userId)
+			->orderBy('id', 'DESC')
+			->fetchOne();
+
+		return $e;
+	}
+
 	public function create(int $userId, int $accessLevelId, string $message = ''): ApiKeyRequest {
 		$e                   = new ApiKeyRequest();
 		$e->user_id          = $userId;

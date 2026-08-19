@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace DevCraft\Modules\DleApi\Services;
 
 use DevCraft\Core\Application;
+use DevCraft\Modules\DleApi\Models\ApiAccessLevel;
 use DevCraft\Modules\DleApi\Models\ApiKey;
 use DevCraft\Modules\DleApi\Models\ApiScope;
+use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiKeyRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiScopeRepository;
 use RuntimeException;
@@ -105,18 +107,61 @@ final class ApiKeyService {
 	}
 
 	/**
-	 * @return array{id: int, api: string, is_admin: bool|int, active: bool|int, user_id: int, own_only: bool|int, access_level_id: int}
+	 * @return array{
+	 *     id: int,
+	 *     api: string,
+	 *     is_admin: bool|int,
+	 *     active: bool|int,
+	 *     user_id: int,
+	 *     own_only: bool|int,
+	 *     access_level_id: int,
+	 *     level_name: string,
+	 *     user_label: string
+	 * }
 	 */
 	private function payload(ApiKey $key): array {
 		return [
-			'id'               => $key->id(),
-			'api'              => $key->api,
-			'is_admin'         => $key->is_admin,
-			'active'           => $key->active,
-			'user_id'          => $key->user_id,
-			'own_only'         => $key->own_only,
-			'access_level_id'  => $key->access_level_id,
+			'id'              => $key->id(),
+			'api'             => $key->api,
+			'is_admin'        => $key->is_admin,
+			'active'          => $key->active,
+			'user_id'         => $key->user_id,
+			'own_only'        => $key->own_only,
+			'access_level_id' => $key->access_level_id,
+			'level_name'      => $this->levelName($key->access_level_id),
+			'user_label'      => $this->userLabel($key->user_id),
 		];
+	}
+
+	private function levelName(int $levelId): string {
+		if($levelId < 1) {
+			return '—';
+		}
+		$level = (new AccessLevelResolver())->findActive($levelId);
+		if($level !== null) {
+			return $level->name;
+		}
+		/** @var ApiAccessLevelRepository $repo */
+		$repo  = Application::instance()->database()->repository(ApiAccessLevel::class);
+		$found = $repo->find($levelId);
+
+		return $found !== null ? $found->name : ('#' . $levelId);
+	}
+
+	private function userLabel(int $userId): string {
+		if($userId < 1) {
+			return __('гость');
+		}
+		foreach(Application::instance()->dleData()->users() as $row) {
+			if((int) ($row['user_id'] ?? 0) !== $userId) {
+				continue;
+			}
+			$name = trim((string) ($row['name'] ?? ''));
+
+			return $name !== '' ? $name : ('#' . $userId);
+		}
+
+		return '#' . $userId;
 	}
 
 }

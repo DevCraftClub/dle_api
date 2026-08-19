@@ -12,6 +12,7 @@ use DevCraft\Modules\DleApi\Repositories\ApiKeyRequestRepository;
 
 /**
  * Генерация / заявка API-ключа для профиля пользователя.
+ * Ключ хранится только в `{prefix}_api_keys` (без user xfields).
  */
 final class ProfileKeyService {
 
@@ -30,6 +31,14 @@ final class ProfileKeyService {
 		if(empty($cfg['profile_allow_generate'])) {
 			return ['ok' => false, 'message' => __('Генерация ключа запрещена')];
 		}
+
+		/** @var ApiKeyRepository $keys */
+		$keys     = Application::instance()->database()->repository(ApiKey::class);
+		$existing = $keys->findActiveByUserId($userId);
+		if($existing !== null) {
+			return ['ok' => false, 'message' => __('У вас уже есть активный API-ключ'), 'status' => 'exists'];
+		}
+
 		$level = $this->levels->forUserId($userId);
 		if($level === null) {
 			return ['ok' => false, 'message' => __('Не задан уровень доступа по умолчанию')];
@@ -43,16 +52,21 @@ final class ProfileKeyService {
 		}
 
 		if($level->premoderate) {
-			$req = $reqRepo->create($userId, $level->id());
-			$recipients = $this->recipientUserIds($cfg);
-			$this->notify->notifyRequest($recipients, [
-				'{%user_id%}'   => (string) $userId,
-				'{%level%}'     => $level->name,
-				'{%request_id%}' => (string) $req->id(),
-				'{%subject%}'   => __('Заявка на API-ключ'),
-			]);
+			$req       = $reqRepo->create($userId, $level->id());
+			$requestId = (int) $req->id();
+			// Заявка уже в БД — сбой уведомлений не должен давать HTTP 500.
+			try {
+				$this->notify->notifyRequest($this->recipientUserIds($cfg), [
+					'{%user_id%}'     => (string) $userId,
+					'{%level%}'       => $level->name,
+					'{%request_id%}'  => (string) $requestId,
+					'{%request_url%}' => $this->adminRequestUrl($requestId),
+					'{%subject%}'     => __('Заявка на API-ключ'),
+				]);
+			} catch(\Throwable) {
+			}
 
-			return ['ok' => true, 'status' => 'pending', 'request_id' => $req->id(), 'message' => __('Заявка отправлена на модерацию')];
+			return ['ok' => true, 'status' => 'pending', 'request_id' => $requestId, 'message' => __('Заявка отправлена на модерацию')];
 		}
 
 		$key = $this->generateForUser($userId, $level->id());
@@ -70,7 +84,8 @@ final class ProfileKeyService {
 		/** @var ApiKeyRepository $keys */
 		$keys = Application::instance()->database()->repository(ApiKey::class);
 		$api  = $this->generator->generate();
-		$key  = $keys->create([
+
+		return $keys->create([
 			'api'              => $api,
 			'user_id'          => $userId,
 			'active'           => true,
@@ -79,34 +94,6 @@ final class ProfileKeyService {
 			'access_level_id'  => $accessLevelId,
 			'creator'          => $userId,
 		]);
-		$this->writeXfield($userId, $api);
-
-		return $key;
-	}
-
-	public function writeXfield(int $userId, string $apiKey): void {
-		$cfg   = DleApiConfig::all();
-		$field = (string) ($cfg['profile_xfield'] ?? '');
-		if($field === '') {
-			return;
-		}
-		global $db;
-		$row = $db->super_query('SELECT xfields FROM ' . USERPREFIX . '_users WHERE user_id=' . (int) $userId);
-		$xf  = (string) ($row['xfields'] ?? '');
-		$parts = $xf !== '' ? explode('||', $xf) : [];
-		$found = false;
-		foreach($parts as $i => $p) {
-			if(str_starts_with($p, $field . '|')) {
-				$parts[$i] = $field . '|' . $apiKey;
-				$found     = true;
-				break;
-			}
-		}
-		if(!$found) {
-			$parts[] = $field . '|' . $apiKey;
-		}
-		$new = implode('||', array_filter($parts, static fn(string $p): bool => $p !== ''));
-		$db->query('UPDATE ' . USERPREFIX . "_users SET xfields='" . $db->safesql($new) . "' WHERE user_id=" . (int) $userId);
 	}
 
 	/**
@@ -114,24 +101,39 @@ final class ProfileKeyService {
 	 * @return list<int>
 	 */
 	private function recipientUserIds(array $cfg): array {
-		global $db;
 		$ids = [];
 		foreach((array) ($cfg['notify_user_ids'] ?? []) as $id) {
 			$ids[] = (int) $id;
 		}
+
+		$table = (defined('USERPREFIX') ? USERPREFIX : 'dle') . '_users';
+		$db    = Application::instance()->database();
 		foreach((array) ($cfg['notify_group_ids'] ?? []) as $gid) {
 			$gid = (int) $gid;
 			if($gid < 1) {
 				continue;
 			}
-			$db->query('SELECT user_id FROM ' . USERPREFIX . '_users WHERE user_group=' . $gid);
-			while($r = $db->get_row()) {
-				$ids[] = (int) $r['user_id'];
+			$rows = $db->query(
+				'SELECT user_id FROM ' . $table . ' WHERE user_group = :gid',
+				['gid' => $gid],
+			)->fetchAll();
+			foreach($rows as $r) {
+				$ids[] = (int) ($r['user_id'] ?? 0);
 			}
 		}
 		$ids = array_values(array_unique(array_filter($ids)));
 
 		return $ids !== [] ? $ids : [1];
+	}
+
+	/** Абсолютный URL страницы заявок в админке (якорь на строку заявки). */
+	private function adminRequestUrl(int $requestId): string {
+		global $config;
+
+		$home  = (string) ($config['http_home_url'] ?? '/');
+		$admin = (string) ($config['admin_path'] ?? 'admin.php');
+
+		return $home . $admin . '?mod=dleapi&action=key_requests#request-' . $requestId;
 	}
 
 }

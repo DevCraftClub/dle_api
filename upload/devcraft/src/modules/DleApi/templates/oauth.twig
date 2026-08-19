@@ -2,7 +2,7 @@
 	<div class="row mb-3">
 		<div class="cell-12">
 			<div class="panel">
-				<div class="panel-title">{{ 'Эндпоинты Authorization Server'|trans }}</div>
+				<div class="panel-title"><span class="caption">{{ 'Эндпоинты Authorization Server'|trans }}</span></div>
 				<div class="panel-content">
 					<p class="text-small text-muted mb-2">{{ 'Скопируйте URL для интеграции внешних OAuth-клиентов (DLE = IdP).'|trans }}</p>
 					{% for key, url in endpoints %}
@@ -19,8 +19,8 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="cell-md-8">
-			<div id="dleapi-oauth-secret-banner" class="remark warning mb-4" hidden>
+		<div class="cell-12 cell-md-8">
+            <div id="dleapi-oauth-secret-banner" class="remark warning mb-4" hidden>
 				<p class="mb-2">
 					<strong>{{ 'Сохраните client_secret сейчас'|trans }}</strong>
 					— {{ 'он показывается один раз и больше не будет доступен.'|trans }}
@@ -52,7 +52,7 @@
 				</button>
 			</div>
 			<div class="panel">
-				<div class="panel-title">{{ 'OAuth-клиенты'|trans }}</div>
+				<div class="panel-title"><span class="caption">{{ 'OAuth-клиенты'|trans }}</span></div>
 				<div class="panel-content">
 					<table class="table striped table-border mt-2" data-role="table">
 						<thead>
@@ -94,11 +94,19 @@
 				</div>
 			</div>
 		</div>
-		<div class="cell-md-4">
+		<div class="cell-12 cell-md-4">
 			<div class="panel">
 				<div class="panel-title" id="dleapi-oauth-form-title"
-					 data-label-create="{{ 'Создать клиент'|trans|e('html_attr') }}">{{ 'Создать клиент'|trans }}</div>
-				<div class="panel-content">
+					 data-label-create="{{ 'Создать клиент'|trans|e('html_attr') }}">
+					<span class="caption">{{ 'Создать клиент'|trans }}</span>
+					<button type="button" class="button small d-none-md" id="dleapi-oauth-toggle-form"
+							data-dleapi-form-toggle="dleapi-oauth-form-container"
+							data-label-show="{{ 'Показать форму'|trans|e('html_attr') }}"
+							data-label-hide="{{ 'Скрыть форму'|trans|e('html_attr') }}">
+						{{ 'Показать форму'|trans }}
+					</button>
+				</div>
+				<div class="panel-content d-none d-block-md" id="dleapi-oauth-form-container">
 					<div class="remark info mb-3 text-small" id="dleapi-oauth-form-help"
 						 data-help-create="{{ 'OAuth-клиент выдаёт access_token для вызовов /api/v2. Права запросов берёт из выбранного API-ключа (scopes). После создания сохраните client_id и client_secret — секрет больше не показывается.'|trans|e('html_attr') }}"
 						 data-help-edit="{{ 'Редактирование: название, API-ключ, Redirect URI, grant types и активность. client_id не меняется; секрет — только через «Пересоздать client_secret».'|trans|e('html_attr') }}">

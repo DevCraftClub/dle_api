@@ -1,8 +1,8 @@
 <div class="container-fluid">
-	<div class="row">
-		<div class="cell-md-8">
+    <div class="row">
+		<div class="cell-12 cell-md-8">
 			<div class="panel">
-				<div class="panel-title">{{ 'Список API-ключей'|trans }}</div>
+				<div class="panel-title"><span class="caption">{{ 'Список API-ключей'|trans }}</span></div>
 				<div class="panel-content">
 					<table class="table striped table-border mt-2" id="dleapi-keys-table">
 						<thead>
@@ -11,7 +11,7 @@
 							<th>{{ 'Ключ'|trans }}</th>
 							<th>{{ 'Уровень'|trans }}</th>
 							<th>{{ 'Активен'|trans }}</th>
-							<th>{{ 'User ID'|trans }}</th>
+							<th>{{ 'Пользователь'|trans }}</th>
 							<th>{{ 'Действия'|trans }}</th>
 						</tr>
 						</thead>
@@ -20,9 +20,9 @@
 							<tr data-key-id="{{ key.id }}">
 								<td>{{ key.id }}</td>
 								<td><code>{{ key.api }}</code></td>
-								<td data-level-id="{{ key.access_level_id }}">{{ key.access_level_id ?: '—' }}</td>
+								<td data-level-id="{{ key.access_level_id }}">{{ key.level_name }}</td>
 								<td>{{ key.active ? ('Да'|trans) : ('Нет'|trans) }}</td>
-								<td>{{ key.user_id }}</td>
+								<td data-user-id="{{ key.user_id }}">{{ key.user_label }}</td>
 								<td>
 									<button type="button" class="button small"
 											data-dleapi-edit-key="{{ key.id }}">
@@ -49,11 +49,19 @@
 				</div>
 			</div>
 		</div>
-		<div class="cell-md-4">
+		<div class="cell-12 cell-md-4">
 			<div class="panel">
 				<div class="panel-title" id="dleapi-key-form-title"
-					 data-label-create="{{ 'Создать ключ'|trans|e('html_attr') }}">{{ 'Создать ключ'|trans }}</div>
-				<div class="panel-content">
+					 data-label-create="{{ 'Создать ключ'|trans|e('html_attr') }}">
+					<span class="caption">{{ 'Создать ключ'|trans }}</span>
+					<button type="button" class="button small d-none-md" id="dleapi-key-toggle-form"
+							data-dleapi-form-toggle="dleapi-key-form-container"
+							data-label-show="{{ 'Показать форму'|trans|e('html_attr') }}"
+							data-label-hide="{{ 'Скрыть форму'|trans|e('html_attr') }}">
+						{{ 'Показать форму'|trans }}
+					</button>
+				</div>
+				<div class="panel-content d-none d-block-md" id="dleapi-key-form-container">
 					<form id="dleapi-create-key-form" method="post" action="#">
 						<input type="hidden" name="id" id="dleapi-key-id" value="">
 						<div class="form-group">
@@ -89,7 +97,7 @@
 	<div class="row mt-2">
 		<div class="cell-12">
 			<div class="panel" id="dleapi-scopes-panel">
-				<div class="panel-title">{{ 'Права доступа к таблицам (если уровень не задан или для legacy-ключей)'|trans }}</div>
+				<div class="panel-title"><span class="caption">{{ 'Права доступа к таблицам (если уровень не задан или для legacy-ключей)'|trans }}</span></div>
 				<div class="panel-content">
 					<p class="text-small text-muted mb-2">
 						{{ 'Чтение — просмотр; Запись — создание; Правка — изменение; Удаление — удаление. При уровне с cheater матрица игнорируется.'|trans }}

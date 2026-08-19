@@ -1,8 +1,8 @@
 <div class="container-fluid">
-	<div class="row">
-		<div class="cell-md-7">
+    <div class="row">
+		<div class="cell-12 cell-md-7">
 			<div class="panel">
-				<div class="panel-title">{{ 'Уровни доступа'|trans }}</div>
+				<div class="panel-title"><span class="caption">{{ 'Уровни доступа'|trans }}</span></div>
 				<div class="panel-content">
 					<table class="table striped table-border mt-2">
 						<thead>
@@ -40,11 +40,19 @@
 				</div>
 			</div>
 		</div>
-		<div class="cell-md-5">
+		<div class="cell-12 cell-md-5">
 			<div class="panel">
 				<div class="panel-title" id="dleapi-level-form-title"
-					 data-label-create="{{ 'Создать уровень'|trans|e('html_attr') }}">{{ 'Создать уровень'|trans }}</div>
-				<div class="panel-content">
+					 data-label-create="{{ 'Создать уровень'|trans|e('html_attr') }}">
+					<span class="caption">{{ 'Создать уровень'|trans }}</span>
+					<button type="button" class="button small d-none-md" id="dleapi-level-toggle-form"
+							data-dleapi-form-toggle="dleapi-level-form-container"
+							data-label-show="{{ 'Показать форму'|trans|e('html_attr') }}"
+							data-label-hide="{{ 'Скрыть форму'|trans|e('html_attr') }}">
+						{{ 'Показать форму'|trans }}
+					</button>
+				</div>
+				<div class="panel-content d-none d-block-md" id="dleapi-level-form-container">
 					<form id="dleapi-level-form" method="post" action="#">
 						<input type="hidden" name="id" id="dleapi-level-id" value="">
 						<div class="form-group">
@@ -88,7 +96,7 @@
 	<div class="row mt-2">
 		<div class="cell-12">
 			<div class="panel">
-				<div class="panel-title">{{ 'Scopes уровня (read / write / edit / delete)'|trans }}</div>
+				<div class="panel-title"><span class="caption">{{ 'Scopes уровня (read / write / edit / delete)'|trans }}</span></div>
 				<div class="panel-content">
 					<div class="table-container" style="max-height: 420px; overflow: auto;">
 						<table class="table striped table-border table-sm" id="dleapi-level-scopes-table">
