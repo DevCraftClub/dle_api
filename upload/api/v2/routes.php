@@ -83,12 +83,14 @@ declare(strict_types=1);
  */
 
 use Slim\Routing\RouteCollectorProxy;
+use DleApi\Http\V2\Controller\ApiKeyCheckController;
 use DleApi\Http\V2\Controller\MeController;
 use DleApi\Http\V2\Controller\OauthController;
 use DleApi\Http\V2\Controller\ResourceController;
 use DleApi\Http\V2\Controller\TableCrudController;
 use DleApi\Http\V2\Controller\UploadController;
 use DleApi\Http\V2\Controller\XfieldController;
+use DleApi\Http\V2\Middleware\ApiKeyAuthMiddleware;
 use DleApi\Http\V2\Middleware\BearerAuthMiddleware;
 
 require_once DLEPlugins::Check(API_ROOT . '/src/Fluent/functions.php');
@@ -101,6 +103,10 @@ $app->group('', function (RouteCollectorProxy $group) {
 	$group->get('/.well-known/oauth-authorization-server[/]', [$oauth, 'discovery']);
 	$group->get('/health[/]', [new ResourceController(), 'health']);
 });
+
+$app->group('', function (RouteCollectorProxy $group) {
+	$group->get('/key/check[/]', [new ApiKeyCheckController(), 'check']);
+})->add(new ApiKeyAuthMiddleware());
 
 $app->group('', function (RouteCollectorProxy $group) {
 	$table    = new TableCrudController();

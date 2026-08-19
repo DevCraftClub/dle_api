@@ -73,7 +73,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `mail_log` (DLE install.php).
+ * Схема таблицы `mail_log`.
  */
 #[OA\Schema(schema: 'MailLog')]
 final class MailLogSchema extends AbstractTableSchema {

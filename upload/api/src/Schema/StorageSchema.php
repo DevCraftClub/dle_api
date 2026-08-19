@@ -177,7 +177,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `storage` (DLE install.php).
+ * Схема таблицы `storage`.
  */
 #[OA\Schema(schema: 'Storage')]
 final class StorageSchema extends AbstractTableSchema {

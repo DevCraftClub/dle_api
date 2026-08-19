@@ -244,7 +244,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `banners` (DLE install.php).
+ * Схема таблицы `banners`.
  */
 #[OA\Schema(schema: 'Banners')]
 final class BannersSchema extends AbstractTableSchema {

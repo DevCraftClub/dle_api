@@ -153,7 +153,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `rss` (DLE install.php).
+ * Схема таблицы `rss`.
  */
 #[OA\Schema(schema: 'Rss')]
 final class RssSchema extends AbstractTableSchema {

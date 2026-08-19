@@ -113,7 +113,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `complaint` (DLE install.php).
+ * Схема таблицы `complaint`.
  */
 #[OA\Schema(schema: 'Complaint')]
 final class ComplaintSchema extends AbstractTableSchema {

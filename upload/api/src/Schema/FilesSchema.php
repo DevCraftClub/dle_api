@@ -149,7 +149,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `files` (DLE install.php).
+ * Схема таблицы `files`.
  */
 #[OA\Schema(schema: 'Files')]
 final class FilesSchema extends AbstractTableSchema {

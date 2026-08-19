@@ -1,20 +1,3 @@
-<<<<<<< New base: Update README.md
-<?php declare(strict_types=1);
-
-/**
- * @license Apache 2.0
- */
-
-namespace OpenApi\Analysers;
-
-/**
- * @deprecated use {@see \OpenApi\Utils\TokenScanner} instead
- */
-class TokenScanner extends \OpenApi\Utils\TokenScanner
-{
-}
-|||||||
-=======
 <?php declare(strict_types=1);
 
 /**
@@ -169,4 +152,3 @@ class TokenScanner
         return $this->collect_classlike($stmt, $details, $resolve);
     }
 }
->>>>>>> Current commit: Начало обновления до api v2

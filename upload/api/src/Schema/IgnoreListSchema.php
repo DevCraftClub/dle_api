@@ -65,7 +65,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `ignore_list` (DLE install.php).
+ * Схема таблицы `ignore_list`.
  */
 #[OA\Schema(schema: 'IgnoreList')]
 final class IgnoreListSchema extends AbstractTableSchema {

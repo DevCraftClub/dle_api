@@ -89,7 +89,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `subscribe` (DLE install.php).
+ * Схема таблицы `subscribe`.
  */
 #[OA\Schema(schema: 'Subscribe')]
 final class SubscribeSchema extends AbstractTableSchema {

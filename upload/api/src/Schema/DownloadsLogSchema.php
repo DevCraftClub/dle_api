@@ -81,7 +81,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `downloads_log` (DLE install.php).
+ * Схема таблицы `downloads_log`.
  */
 #[OA\Schema(schema: 'DownloadsLog')]
 final class DownloadsLogSchema extends AbstractTableSchema {

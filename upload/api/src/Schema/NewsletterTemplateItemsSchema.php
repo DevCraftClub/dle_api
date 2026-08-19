@@ -106,7 +106,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `newsletter_template_items` (DLE install.php).
+ * Схема таблицы `newsletter_template_items`.
  */
 #[OA\Schema(schema: 'NewsletterTemplateItems')]
 final class NewsletterTemplateItemsSchema extends AbstractTableSchema {

@@ -97,7 +97,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `social_login` (DLE install.php).
+ * Схема таблицы `social_login`.
  */
 #[OA\Schema(schema: 'SocialLogin')]
 final class SocialLoginSchema extends AbstractTableSchema {

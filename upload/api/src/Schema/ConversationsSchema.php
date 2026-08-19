@@ -109,7 +109,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `conversations` (DLE install.php).
+ * Схема таблицы `conversations`.
  */
 #[OA\Schema(schema: 'Conversations')]
 final class ConversationsSchema extends AbstractTableSchema {

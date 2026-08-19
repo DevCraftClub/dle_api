@@ -863,9 +863,9 @@ use OpenApi\Attributes as OA;
  * Корневое описание OpenAPI для DLE API v2.
  */
 #[OA\Info(
-	version: '200.2.0',
+	version: '200.1.0',
 	title: 'DLE API',
-	description: 'Неофициальное REST API для DataLife Engine 20.0. Поверхность: /api/v2. Ресурсы: Authorization: Bearer <AuthToken>. Выдача: POST /oauth/token с credential_type=api_key|auth|oauth_client или grant_type. Discovery: /.well-known/oauth-authorization-server. Identity: GET /me и /oauth/userinfo.',
+	description: 'Неофициальное REST API для DataLife Engine 20.0. Поверхность: /api/v2. Ресурсы: Authorization: Bearer <AuthToken>. Выдача: POST /oauth/token с credential_type=api_key|auth|oauth_client или grant_type. Discovery: /.well-known/oauth-authorization-server. Identity: GET /me и /oauth/userinfo. Проверка сырого ключа: GET /key/check.',
 )]
 #[OA\Server(
 	url: '{apiBase}',
@@ -886,8 +886,15 @@ use OpenApi\Attributes as OA;
 	bearerFormat: 'AuthToken',
 	description: 'Access token из POST /oauth/token (credential_type или grant_type). Сырой API-ключ на ресурсах не принимается.',
 )]
+#[OA\SecurityScheme(
+	securityScheme: 'rawApiKeyBearer',
+	type: 'http',
+	scheme: 'bearer',
+	bearerFormat: 'API Key',
+	description: 'Сырой API-ключ только для GET /key/check. Формат: Authorization: Bearer <apiKey>.',
+)]
 #[OA\Tag(name: 'OAuth', description: 'Выдача и отзыв токенов, discovery, userinfo')]
-#[OA\Tag(name: 'Me', description: 'Субъект AuthToken')]
+#[OA\Tag(name: 'Me', description: 'Субъект AuthToken и проверка сырого API-ключа')]
 #[OA\Tag(name: 'Table', description: 'Универсальный CRUD по SchemaRegistry: GET/POST /table/{name}/, GET/PUT/DELETE /table/{name}/{id}')]
 #[OA\Tag(name: 'Post', description: 'Новости')]
 #[OA\Tag(name: 'User', description: 'Пользователи и группы')]
@@ -896,6 +903,7 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: 'Xfield', description: 'Каталог доп. полей (xfields.json / userxfields.json)')]
 #[OA\Tag(name: 'System', description: 'Служебные')]
 final class Document {
+
 	#[OA\Post(
 		path: '/oauth/token',
 		operationId: 'oauthToken',
@@ -950,14 +958,19 @@ final class Document {
 				new OA\Property(property: 'authorized', type: 'boolean'),
 				new OA\Property(property: 'message', type: 'string'),
 			],
+			example: [
+				'access_token'  => '…',
+				'token_type'    => 'Bearer',
+				'expires_in'    => 3600,
+				'refresh_token' => '…',
+			],
 		),
 	)]
-	#[OA\Response(response: 400, description: 'Ошибка grant', content: new OA\JsonContent(
-		properties: [
-			new OA\Property(property: 'error', type: 'string'),
-			new OA\Property(property: 'message', type: 'string'),
-		],
-	))]
+	#[OA\Response(
+		response: 400,
+		description: 'Ошибка grant / credential',
+		content: new OA\JsonContent(ref: ApiError::class),
+	)]
 	public function oauthToken(): void {}
 
 	#[OA\Get(
@@ -967,7 +980,24 @@ final class Document {
 		security: [],
 		tags: ['OAuth'],
 	)]
-	#[OA\Response(response: 200, description: 'Метаданные AS')]
+	#[OA\Response(
+		response: 200,
+		description: 'Метаданные AS',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'issuer', type: 'string'),
+				new OA\Property(property: 'authorization_endpoint', type: 'string'),
+				new OA\Property(property: 'token_endpoint', type: 'string'),
+				new OA\Property(property: 'revocation_endpoint', type: 'string'),
+				new OA\Property(property: 'userinfo_endpoint', type: 'string'),
+				new OA\Property(property: 'response_types_supported', type: 'array', items: new OA\Items(type: 'string')),
+				new OA\Property(property: 'grant_types_supported', type: 'array', items: new OA\Items(type: 'string')),
+				new OA\Property(property: 'code_challenge_methods_supported', type: 'array', items: new OA\Items(type: 'string')),
+				new OA\Property(property: 'token_endpoint_auth_methods_supported', type: 'array', items: new OA\Items(type: 'string')),
+				new OA\Property(property: 'credential_types_supported', type: 'array', items: new OA\Items(type: 'string')),
+			],
+		),
+	)]
 	public function oauthDiscovery(): void {}
 
 	#[OA\Get(
@@ -977,8 +1007,69 @@ final class Document {
 		security: [['bearerAuth' => []]],
 		tags: ['Me'],
 	)]
-	#[OA\Response(response: 200, description: 'Identity')]
+	#[OA\Response(
+		response: 200,
+		description: 'Identity',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'sub', type: 'string', nullable: true),
+				new OA\Property(property: 'user_id', type: 'integer'),
+				new OA\Property(property: 'name', type: 'string', nullable: true),
+				new OA\Property(property: 'email', type: 'string', nullable: true),
+				new OA\Property(property: 'user_group', type: 'integer', nullable: true),
+				new OA\Property(property: 'user', type: 'object', nullable: true, additionalProperties: true),
+				new OA\Property(property: 'api_key_id', type: 'integer'),
+				new OA\Property(property: 'access_level', type: 'object', nullable: true, additionalProperties: true),
+				new OA\Property(property: 'client_id', type: 'string', nullable: true),
+				new OA\Property(property: 'auth_via', type: 'string', example: 'access_token'),
+			],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
 	public function me(): void {}
+
+	#[OA\Get(
+		path: '/key/check',
+		operationId: 'keyCheck',
+		summary: 'Проверка сырого API-ключа',
+		description: 'Принимает Authorization: Bearer <apiKey>, возвращает ключ, scopes и payload `me`. `validTo = null` означает бессрочный ключ.',
+		security: [['rawApiKeyBearer' => []]],
+		tags: ['Me'],
+	)]
+	#[OA\Response(
+		response: 200,
+		description: 'Ключ валиден',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(
+					property: 'apiKey',
+					type: 'object',
+					properties: [
+						new OA\Property(property: 'key', type: 'string'),
+						new OA\Property(property: 'validFrom', type: 'string', format: 'date-time', nullable: true),
+						new OA\Property(property: 'validTo', type: 'string', format: 'date-time', nullable: true, description: 'null = ключ бессрочный'),
+						new OA\Property(property: 'accessLevel', type: 'object', nullable: true, additionalProperties: true),
+					],
+				),
+				new OA\Property(
+					property: 'scopes',
+					type: 'object',
+					additionalProperties: new OA\AdditionalProperties(
+						type: 'object',
+						properties: [
+							new OA\Property(property: 'read', type: 'boolean'),
+							new OA\Property(property: 'write', type: 'boolean'),
+							new OA\Property(property: 'edit', type: 'boolean'),
+							new OA\Property(property: 'delete', type: 'boolean'),
+						],
+					),
+				),
+				new OA\Property(property: 'me', type: 'object', additionalProperties: true),
+			],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	public function keyCheck(): void {}
 
 	#[OA\Get(
 		path: '/oauth/userinfo',
@@ -987,7 +1078,25 @@ final class Document {
 		security: [['bearerAuth' => []]],
 		tags: ['OAuth'],
 	)]
-	#[OA\Response(response: 200, description: 'Identity')]
+	#[OA\Response(
+		response: 200,
+		description: 'Identity',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'sub', type: 'string', nullable: true),
+				new OA\Property(property: 'user_id', type: 'integer'),
+				new OA\Property(property: 'name', type: 'string', nullable: true),
+				new OA\Property(property: 'email', type: 'string', nullable: true),
+				new OA\Property(property: 'user_group', type: 'integer', nullable: true),
+				new OA\Property(property: 'user', type: 'object', nullable: true, additionalProperties: true),
+				new OA\Property(property: 'api_key_id', type: 'integer'),
+				new OA\Property(property: 'access_level', type: 'object', nullable: true, additionalProperties: true),
+				new OA\Property(property: 'client_id', type: 'string', nullable: true),
+				new OA\Property(property: 'auth_via', type: 'string'),
+			],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
 	public function oauthUserinfo(): void {}
 
 	#[OA\Post(
@@ -1013,6 +1122,7 @@ final class Document {
 			properties: [
 				new OA\Property(property: 'revoked', type: 'boolean', example: true),
 			],
+			example: ['revoked' => true],
 		),
 	)]
 	public function oauthRevoke(): void {}
@@ -1042,11 +1152,13 @@ final class Document {
 		response: 200,
 		description: 'OK',
 		content: new OA\JsonContent(
-			type: 'array',
-			items: new OA\Items(ref: PostSchema::class),
+			properties: [
+				new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: PostSchema::class)),
+				new OA\Property(property: 'count', type: 'integer'),
+			],
 		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
 	public function listPosts(): void {}
 
 	#[OA\Get(
@@ -1060,13 +1172,14 @@ final class Document {
 	#[OA\Response(
 		response: 200,
 		description: 'OK',
-		content: [new OA\MediaType(
-			mediaType: 'application/json',
-			schema: new OA\Schema(ref: PostSchema::class),
-		)],
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'data', ref: PostSchema::class),
+			],
+		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 404, description: 'Не найдено')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 404, description: 'Не найдено', content: new OA\JsonContent(ref: ApiError::class))]
 	public function getPost(): void {}
 
 	#[OA\Get(
@@ -1105,9 +1218,9 @@ final class Document {
 			],
 		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 404, description: 'Неизвестная таблица')]
-	#[OA\Response(response: 422, description: 'Неизвестная колонка / ошибка фильтра')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 404, description: 'Неизвестная таблица', content: new OA\JsonContent(ref: ApiError::class))]
+	#[OA\Response(response: 422, description: 'Неизвестная колонка / ошибка фильтра', content: new OA\JsonContent(ref: ApiError::class))]
 	public function listTableRows(): void {}
 
 	#[OA\Get(
@@ -1133,9 +1246,9 @@ final class Document {
 			],
 		),
 	)]
-	#[OA\Response(response: 400, description: 'Составной PK не поддерживается через /{id}')]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 404, description: 'Не найдено')]
+	#[OA\Response(response: 400, description: 'Составной PK не поддерживается через /{id}', content: new OA\JsonContent(ref: ApiError::class))]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 404, description: 'Не найдено', content: new OA\JsonContent(ref: ApiError::class))]
 	public function getTableRow(): void {}
 
 	#[OA\Post(
@@ -1167,10 +1280,11 @@ final class Document {
 				new OA\Property(property: 'id', type: 'integer'),
 				new OA\Property(property: 'table', type: 'string'),
 			],
+			example: ['id' => 1, 'table' => 'banners'],
 		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 422, description: 'Ошибка создания')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'Ошибка создания', content: new OA\JsonContent(ref: ApiError::class))]
 	public function createTableRow(): void {}
 
 	#[OA\Put(
@@ -1200,14 +1314,15 @@ final class Document {
 			properties: [
 				new OA\Property(property: 'id', type: 'string'),
 				new OA\Property(property: 'table', type: 'string'),
-				new OA\Property(property: 'updated', type: 'boolean'),
+				new OA\Property(property: 'updated', type: 'boolean', example: true),
 			],
+			example: ['id' => '1', 'table' => 'banners', 'updated' => true],
 		),
 	)]
-	#[OA\Response(response: 400, description: 'Составной PK не поддерживается')]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 404, description: 'Не найдено')]
-	#[OA\Response(response: 422, description: 'Ошибка обновления')]
+	#[OA\Response(response: 400, description: 'Составной PK не поддерживается', content: new OA\JsonContent(ref: ApiError::class))]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 404, description: 'Не найдено', content: new OA\JsonContent(ref: ApiError::class))]
+	#[OA\Response(response: 422, description: 'Ошибка обновления', content: new OA\JsonContent(ref: ApiError::class))]
 	public function updateTableRow(): void {}
 
 	#[OA\Delete(
@@ -1230,13 +1345,14 @@ final class Document {
 			properties: [
 				new OA\Property(property: 'id', type: 'string'),
 				new OA\Property(property: 'table', type: 'string'),
-				new OA\Property(property: 'deleted', type: 'boolean'),
+				new OA\Property(property: 'deleted', type: 'boolean', example: true),
 			],
+			example: ['id' => '1', 'table' => 'banners', 'deleted' => true],
 		),
 	)]
-	#[OA\Response(response: 400, description: 'Составной PK не поддерживается')]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 404, description: 'Не найдено')]
+	#[OA\Response(response: 400, description: 'Составной PK не поддерживается', content: new OA\JsonContent(ref: ApiError::class))]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 404, description: 'Не найдено', content: new OA\JsonContent(ref: ApiError::class))]
 	public function deleteTableRow(): void {}
 
 	#[OA\Post(
@@ -1257,15 +1373,15 @@ final class Document {
 	#[OA\Response(
 		response: 201,
 		description: 'Создано',
-		content: [new OA\MediaType(
-			mediaType: 'application/json',
-			schema: new OA\Schema(properties: [
+		content: new OA\JsonContent(
+			properties: [
 				new OA\Property(property: 'id', type: 'integer'),
-			]),
-		)],
+			],
+			example: ['id' => 1],
+		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 422, description: 'Ошибка создания')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'Ошибка создания', content: new OA\JsonContent(ref: ApiError::class))]
 	public function createPost(): void {}
 
 	#[OA\Post(
@@ -1282,12 +1398,15 @@ final class Document {
 	#[OA\Response(
 		response: 201,
 		description: 'Создано',
-		content: new OA\JsonContent(properties: [
-			new OA\Property(property: 'id', type: 'integer'),
-		]),
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'id', type: 'integer'),
+			],
+			example: ['id' => 1],
+		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 422, description: 'Ошибка создания')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'Ошибка создания', content: new OA\JsonContent(ref: ApiError::class))]
 	public function createUser(): void {}
 
 	#[OA\Post(
@@ -1304,12 +1423,15 @@ final class Document {
 	#[OA\Response(
 		response: 201,
 		description: 'Создано',
-		content: new OA\JsonContent(properties: [
-			new OA\Property(property: 'id', type: 'integer'),
-		]),
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'id', type: 'integer'),
+			],
+			example: ['id' => 1],
+		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 422, description: 'Ошибка создания')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'Ошибка создания', content: new OA\JsonContent(ref: ApiError::class))]
 	public function createUsergroup(): void {}
 
 	#[OA\Post(
@@ -1326,12 +1448,15 @@ final class Document {
 	#[OA\Response(
 		response: 201,
 		description: 'Создано',
-		content: new OA\JsonContent(properties: [
-			new OA\Property(property: 'id', type: 'integer'),
-		]),
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'id', type: 'integer'),
+			],
+			example: ['id' => 1],
+		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
-	#[OA\Response(response: 422, description: 'Ошибка создания')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'Ошибка создания', content: new OA\JsonContent(ref: ApiError::class))]
 	public function createPlugin(): void {}
 
 	#[OA\Post(
@@ -1349,6 +1474,7 @@ final class Document {
 				required: ['file'],
 				properties: [
 					new OA\Property(property: 'file', type: 'string', format: 'binary'),
+					new OA\Property(property: 'subdir', type: 'string', example: 'files'),
 				],
 			),
 		)],
@@ -1356,9 +1482,14 @@ final class Document {
 	#[OA\Response(
 		response: 201,
 		description: 'Загружено',
-		content: new OA\JsonContent(type: 'object'),
+		content: new OA\JsonContent(
+			type: 'object',
+			additionalProperties: true,
+			example: ['url' => '/uploads/files/…', 'name' => 'file.jpg'],
+		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'Ошибка загрузки', content: new OA\JsonContent(ref: ApiError::class))]
 	public function uploadFile(): void {}
 
 	#[OA\Get(
@@ -1372,11 +1503,12 @@ final class Document {
 		response: 200,
 		description: 'OK',
 		content: new OA\JsonContent(
-			type: 'array',
-			items: new OA\Items(ref: ConversationsSchema::class),
+			properties: [
+				new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: ConversationsSchema::class)),
+			],
 		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
 	public function listConversations(): void {}
 
 	#[OA\Get(
@@ -1391,13 +1523,19 @@ final class Document {
 		response: 200,
 		description: 'OK (post → PostXfieldsCatalog, user → UserXfieldsCatalog)',
 		content: new OA\JsonContent(
-			oneOf: [
-				new OA\Schema(ref: PostXfieldsCatalog::class),
-				new OA\Schema(ref: UserXfieldsCatalog::class),
+			properties: [
+				new OA\Property(
+					property: 'data',
+					oneOf: [
+						new OA\Schema(ref: PostXfieldsCatalog::class),
+						new OA\Schema(ref: UserXfieldsCatalog::class),
+					],
+				),
+				new OA\Property(property: 'scope', type: 'string', enum: ['post', 'user']),
 			],
 		),
 	)]
-	#[OA\Response(response: 401, description: 'Требуется Bearer')]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
 	public function listXfields(): void {}
 
 	#[OA\Post(
@@ -1409,9 +1547,19 @@ final class Document {
 		tags: ['Xfield'],
 	)]
 	#[OA\PathParameter(name: 'scope', required: true, schema: new OA\Schema(type: 'string', enum: ['post', 'user']))]
-	#[OA\RequestBody(required: true, content: new OA\JsonContent(type: 'object'))]
-	#[OA\Response(response: 200, description: 'OK', content: new OA\JsonContent(type: 'object'))]
-	#[OA\Response(response: 422, description: 'Неизвестное поле / validation')]
+	#[OA\RequestBody(required: true, content: new OA\JsonContent(type: 'object', additionalProperties: true))]
+	#[OA\Response(
+		response: 200,
+		description: 'OK',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'raw', type: 'string'),
+				new OA\Property(property: 'parsed', type: 'object', additionalProperties: true),
+			],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'Неизвестное поле / validation', content: new OA\JsonContent(ref: ApiError::class))]
 	public function encodeXfields(): void {}
 
 	#[OA\Get(
@@ -1424,9 +1572,19 @@ final class Document {
 	#[OA\PathParameter(name: 'scope', required: true, schema: new OA\Schema(type: 'string', enum: ['post', 'user']))]
 	#[OA\PathParameter(name: 'name', required: true, schema: new OA\Schema(type: 'string'))]
 	#[OA\QueryParameter(name: 'as', description: 'Projection по типу (image, text, …)', schema: new OA\Schema(type: 'string'))]
-	#[OA\Response(response: 200, description: 'OK', content: new OA\JsonContent(ref: PostXfieldField::class))]
-	#[OA\Response(response: 404, description: 'Не найдено')]
-	#[OA\Response(response: 422, description: 'Тип не совпадает с ?as=')]
+	#[OA\Response(
+		response: 200,
+		description: 'OK',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'data', ref: PostXfieldField::class),
+				new OA\Property(property: 'scope', type: 'string'),
+			],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 404, description: 'Не найдено', content: new OA\JsonContent(ref: ApiError::class))]
+	#[OA\Response(response: 422, description: 'Тип не совпадает с ?as=', content: new OA\JsonContent(ref: ApiError::class))]
 	public function getXfield(): void {}
 
 	#[OA\Post(
@@ -1438,8 +1596,19 @@ final class Document {
 	)]
 	#[OA\PathParameter(name: 'scope', required: true, schema: new OA\Schema(type: 'string', enum: ['post', 'user']))]
 	#[OA\RequestBody(required: true, content: new OA\JsonContent(ref: PostXfieldField::class))]
-	#[OA\Response(response: 201, description: 'Создано')]
-	#[OA\Response(response: 422, description: 'validation + details.fields')]
+	#[OA\Response(
+		response: 201,
+		description: 'Создано',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'name', type: 'string'),
+				new OA\Property(property: 'scope', type: 'string'),
+				new OA\Property(property: 'data', ref: PostXfieldField::class),
+			],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'validation + details.fields', content: new OA\JsonContent(ref: ApiError::class))]
 	public function createXfield(): void {}
 
 	#[OA\Put(
@@ -1452,8 +1621,20 @@ final class Document {
 	#[OA\PathParameter(name: 'scope', required: true, schema: new OA\Schema(type: 'string', enum: ['post', 'user']))]
 	#[OA\PathParameter(name: 'name', required: true, schema: new OA\Schema(type: 'string'))]
 	#[OA\RequestBody(required: true, content: new OA\JsonContent(ref: PostXfieldField::class))]
-	#[OA\Response(response: 200, description: 'Обновлено')]
-	#[OA\Response(response: 422, description: 'validation + details.fields')]
+	#[OA\Response(
+		response: 200,
+		description: 'Обновлено',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'name', type: 'string'),
+				new OA\Property(property: 'updated', type: 'boolean', example: true),
+				new OA\Property(property: 'data', ref: PostXfieldField::class),
+			],
+			example: ['name' => 'myfield', 'updated' => true],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 422, description: 'validation + details.fields', content: new OA\JsonContent(ref: ApiError::class))]
 	public function replaceXfield(): void {}
 
 	#[OA\Delete(
@@ -1465,7 +1646,20 @@ final class Document {
 	)]
 	#[OA\PathParameter(name: 'scope', required: true, schema: new OA\Schema(type: 'string', enum: ['post', 'user']))]
 	#[OA\PathParameter(name: 'name', required: true, schema: new OA\Schema(type: 'string'))]
-	#[OA\Response(response: 200, description: 'Удалено')]
+	#[OA\Response(
+		response: 200,
+		description: 'Удалено',
+		content: new OA\JsonContent(
+			properties: [
+				new OA\Property(property: 'name', type: 'string', example: 'myfield'),
+				new OA\Property(property: 'deleted', type: 'boolean', example: true),
+			],
+			example: ['name' => 'myfield', 'deleted' => true],
+		),
+	)]
+	#[OA\Response(response: 401, ref: UnauthorizedResponse::class)]
+	#[OA\Response(response: 404, description: 'Поле не найдено', content: new OA\JsonContent(ref: ApiError::class))]
+	#[OA\Response(response: 422, description: 'Ошибка удаления', content: new OA\JsonContent(ref: ApiError::class))]
 	public function deleteXfield(): void {}
 
 	#[OA\Get(
@@ -1484,6 +1678,7 @@ final class Document {
 				new OA\Property(property: 'api', type: 'string', example: 'v2'),
 				new OA\Property(property: 'auth', type: 'string', example: 'Bearer'),
 			],
+			example: ['version' => '200.1.0', 'api' => 'v2', 'auth' => 'Bearer'],
 		),
 	)]
 	public function health(): void {}

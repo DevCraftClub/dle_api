@@ -372,7 +372,7 @@ namespace DleApi\Schema;
 use OpenApi\Attributes as OA;
 
 /**
- * Схема таблицы `post` (DLE install.php).
+ * Схема таблицы `post`.
  */
 #[OA\Schema(schema: 'Post')]
 final class PostSchema extends AbstractTableSchema {
