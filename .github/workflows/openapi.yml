@@ -3,7 +3,7 @@ name: OpenAPI generate
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - 'upload/api/src/**/*.php'
       - 'upload/api/composer.json'
