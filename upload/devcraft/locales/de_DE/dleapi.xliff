@@ -1,18 +1,1186 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-  <file source-language="ru" target-language="de" datatype="plaintext" original="dleapi">
+  <file original="dle-api.ru_RU" datatype="plaintext" source-language="ru" target-language="de">
     <body>
-      <trans-unit id="1">
-        <source>Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2</source>
-        <target state="needs-translation">Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2</target>
+      <trans-unit id="f397cbc673ad6b9487f8453ae4bcc6a9">
+        <source>API-ключ</source>
+        <target state="needs-translation">API-ключ</target>
       </trans-unit>
-      <trans-unit id="2">
+      <trans-unit id="97ae6e0bca16b37dbdc5e324d0ecaf60">
+        <source>Новый</source>
+        <target state="needs-translation">Новый</target>
+      </trans-unit>
+      <trans-unit id="89d69a9a488a6f7fd6236c00c67ed928">
+        <source>Загрузка…</source>
+        <target state="needs-translation">Загрузка…</target>
+      </trans-unit>
+      <trans-unit id="6252727443e5a8de378aba95bd2405c8">
+        <source>Ключ</source>
+        <target state="needs-translation">Ключ</target>
+      </trans-unit>
+      <trans-unit id="112b141bc7e09133a8b2a57541f90166">
+        <source>Копировать</source>
+        <target state="needs-translation">Копировать</target>
+      </trans-unit>
+      <trans-unit id="e90ddec943d1736be7f89c97e9e9da27">
+        <source>Когда</source>
+        <target state="needs-translation">Когда</target>
+      </trans-unit>
+      <trans-unit id="542672d182313616976e3a988cc57fe0">
+        <source>Истекает</source>
+        <target state="needs-translation">Истекает</target>
+      </trans-unit>
+      <trans-unit id="27f10a857dd46c0477013a6048d46d5e">
+        <source>Уровень</source>
+        <target state="needs-translation">Уровень</target>
+      </trans-unit>
+      <trans-unit id="b48c84fcfa78554f9781f94fedbe0a81">
+        <source>Запросить ключ</source>
+        <target state="needs-translation">Запросить ключ</target>
+      </trans-unit>
+      <trans-unit id="8df353081dff6b4d6152b671cd44f9ce">
+        <source>Одобрить</source>
+        <target state="needs-translation">Одобрить</target>
+      </trans-unit>
+      <trans-unit id="52ff8dc6363ae054cb858bff5298ccee">
+        <source>Отказать</source>
+        <target state="needs-translation">Отказать</target>
+      </trans-unit>
+      <trans-unit id="7c718eff2b0bb5411a8e9181114fbb87">
+        <source>Метод не разрешён</source>
+        <target state="needs-translation">Метод не разрешён</target>
+      </trans-unit>
+      <trans-unit id="1ece0b9ffb598e24bfce61d888a8e0da">
+        <source>Допустимо</source>
+        <target state="needs-translation">Допустимо</target>
+      </trans-unit>
+      <trans-unit id="e58d0d1511f08ead4cfd986fbc282341">
+        <source>Маршрут не найден</source>
+        <target state="needs-translation">Маршрут не найден</target>
+      </trans-unit>
+      <trans-unit id="c0479bad2997cfe9acb6123b576675e9">
+        <source>Неверный или неактивный API-ключ</source>
+        <target state="needs-translation">Неверный или неактивный API-ключ</target>
+      </trans-unit>
+      <trans-unit id="1ce25abf1f5817cbbe25d0ab9c0458b8">
+        <source>Неверный логин или пароль</source>
+        <target state="needs-translation">Неверный логин или пароль</target>
+      </trans-unit>
+      <trans-unit id="64031257e694f95435a221ccc8a9b79b">
+        <source>Нет API-ключа пользователя и гостевого ключа</source>
+        <target state="needs-translation">Нет API-ключа пользователя и гостевого ключа</target>
+      </trans-unit>
+      <trans-unit id="6388fe3fca10b7cc180c5410eb339780">
+        <source>Неверный client_id или client_secret</source>
+        <target state="needs-translation">Неверный client_id или client_secret</target>
+      </trans-unit>
+      <trans-unit id="6ed053645f0ffe414d73f4230454f0a6">
+        <source>Клиент не разрешает grant_type=client_credentials</source>
+        <target state="needs-translation">Клиент не разрешает grant_type=client_credentials</target>
+      </trans-unit>
+      <trans-unit id="e02e73b191ded233b2543353c986d67f">
+        <source>API-ключ клиента неактивен</source>
+        <target state="needs-translation">API-ключ клиента неактивен</target>
+      </trans-unit>
+      <trans-unit id="9f295008c59d33ed7802ab2913b7b405">
+        <source>Нужны оба: client_id и client_secret</source>
+        <target state="needs-translation">Нужны оба: client_id и client_secret</target>
+      </trans-unit>
+      <trans-unit id="bb76f23faefcd7e848fbdf601bb89f72">
+        <source>Клиент не разрешает grant_type=password</source>
+        <target state="needs-translation">Клиент не разрешает grant_type=password</target>
+      </trans-unit>
+      <trans-unit id="027418950dbd36b83e7a7d08afc1af37">
+        <source>Неверный client</source>
+        <target state="needs-translation">Неверный client</target>
+      </trans-unit>
+      <trans-unit id="093514219e7cc24fdb1bb88eeee6f857">
+        <source>Клиент не разрешает grant_type=authorization_code</source>
+        <target state="needs-translation">Клиент не разрешает grant_type=authorization_code</target>
+      </trans-unit>
+      <trans-unit id="ee43e7b51fedca8fe36a6a3797942ff2">
+        <source>Код недействителен</source>
+        <target state="needs-translation">Код недействителен</target>
+      </trans-unit>
+      <trans-unit id="44a5b32ceac2bc9e1052bb6a7e90feab">
+        <source>redirect_uri не совпадает</source>
+        <target state="needs-translation">redirect_uri не совпадает</target>
+      </trans-unit>
+      <trans-unit id="c409d86694e7b728b388aa8ae8b8a895">
+        <source>Ошибка проверки PKCE</source>
+        <target state="needs-translation">Ошибка проверки PKCE</target>
+      </trans-unit>
+      <trans-unit id="7b0b710a0dc84babee15065b194bbeb6">
+        <source>API-ключ неактивен</source>
+        <target state="needs-translation">API-ключ неактивен</target>
+      </trans-unit>
+      <trans-unit id="a0b3010621988ff19e03851dd665d680">
+        <source>Refresh token недействителен</source>
+        <target state="needs-translation">Refresh token недействителен</target>
+      </trans-unit>
+      <trans-unit id="f78e8da39fcc8563a2e2e0f4460e2e41">
+        <source>Связанный access token не найден</source>
+        <target state="needs-translation">Связанный access token не найден</target>
+      </trans-unit>
+      <trans-unit id="1831652b3757d75d340bfd073d06387c">
+        <source>Клиент или ключ неактивен</source>
+        <target state="needs-translation">Клиент или ключ неактивен</target>
+      </trans-unit>
+      <trans-unit id="01436c89cba06c743ddadc9931340f6d">
+        <source>Клиент не разрешает grant_type=refresh_token</source>
+        <target state="needs-translation">Клиент не разрешает grant_type=refresh_token</target>
+      </trans-unit>
+      <trans-unit id="d6a2f95d3c47b51afb1f9daa72134375">
+        <source>Неизвестный или неактивный client_id</source>
+        <target state="needs-translation">Неизвестный или неактивный client_id</target>
+      </trans-unit>
+      <trans-unit id="3f42fe047fa4a31a4cc8355880cbf24e">
+        <source>У клиента не задан redirect_uri</source>
+        <target state="needs-translation">У клиента не задан redirect_uri</target>
+      </trans-unit>
+      <trans-unit id="50cd23d234c9416f76f206f27da4eff1">
+        <source>redirect_uri не совпадает с зарегистрированным у клиента</source>
+        <target state="needs-translation">redirect_uri не совпадает с зарегистрированным у клиента</target>
+      </trans-unit>
+      <trans-unit id="0f086487593175a5550c76034f6aab4e">
+        <source>Попытка взлома!</source>
+        <target state="needs-translation">Попытка взлома!</target>
+      </trans-unit>
+      <trans-unit id="caec6c81b64daed649c81c61e4dbc3b6">
+        <source>Неподдерживаемый credential_type</source>
+        <target state="needs-translation">Неподдерживаемый credential_type</target>
+      </trans-unit>
+      <trans-unit id="3261cfbf1661e91f84fb0c5cf9149da5">
+        <source>Укажите credential_type или grant_type</source>
+        <target state="needs-translation">Укажите credential_type или grant_type</target>
+      </trans-unit>
+      <trans-unit id="6f015648d917dbf1ff9d853897594d48">
+        <source>Нужны client_id и redirect_uri</source>
+        <target state="needs-translation">Нужны client_id и redirect_uri</target>
+      </trans-unit>
+      <trans-unit id="ba839fc711eadc610b876ea252872594">
+        <source>Авторизация пройдена, но сброшена в демо-режиме</source>
+        <target state="needs-translation">Авторизация пройдена, но сброшена в демо-режиме</target>
+      </trans-unit>
+      <trans-unit id="8e2c9a818693fa769c2b73d9094e3241">
+        <source>Неизвестная таблица</source>
+        <target state="needs-translation">Неизвестная таблица</target>
+      </trans-unit>
+      <trans-unit id="1223dcd0736b6a0a250a5c63b040169e">
+        <source>Запись не найдена</source>
+        <target state="needs-translation">Запись не найдена</target>
+      </trans-unit>
+      <trans-unit id="b5b32b6b76803a349d0703dff757b396">
+        <source>Нужен fields{} или name+value</source>
+        <target state="needs-translation">Нужен fields{} или name+value</target>
+      </trans-unit>
+      <trans-unit id="526418394698e67fa1b4f9884b28d9ca">
+        <source>Поле не найдено</source>
+        <target state="needs-translation">Поле не найдено</target>
+      </trans-unit>
+      <trans-unit id="6cf377b799031cc0254cc02223b5c626">
+        <source>Нужен multipart field file</source>
+        <target state="needs-translation">Нужен multipart field file</target>
+      </trans-unit>
+      <trans-unit id="7b5623cb57a35bf7972d4cd49bd0f498">
+        <source>Новость не найдена</source>
+        <target state="needs-translation">Новость не найдена</target>
+      </trans-unit>
+      <trans-unit id="6a1fdb2ca3074d928589076e7b4b3147">
+        <source>Метод требует значение</source>
+        <target state="needs-translation">Метод требует значение</target>
+      </trans-unit>
+      <trans-unit id="165ee5ca70cd893a01edf6f4bf478a87">
+        <source>Нельзя выполнить операцию: не задан первичный ключ.</source>
+        <target state="needs-translation">Нельзя выполнить операцию: не задан первичный ключ.</target>
+      </trans-unit>
+      <trans-unit id="ec8f078b0e47ed20077dfba901420acd">
+        <source>Неизвестная колонка «{column}» для таблицы {table}</source>
+        <target state="needs-translation">Неизвестная колонка «{column}» для таблицы {table}</target>
+      </trans-unit>
+      <trans-unit id="3058f2b572e0ec900ab2160688e8657f">
+        <source>Нет права «{action}» на таблицу «{table}»</source>
+        <target state="needs-translation">Нет права «{action}» на таблицу «{table}»</target>
+      </trans-unit>
+      <trans-unit id="22a74e1be402b6eba8e760e918ca8769">
+        <source>Неизвестный метод</source>
+        <target state="needs-translation">Неизвестный метод</target>
+      </trans-unit>
+      <trans-unit id="3677ee79e51454e8da26eb578c6c4e5c">
+        <source>Безопасность</source>
+        <target state="needs-translation">Безопасность</target>
+      </trans-unit>
+      <trans-unit id="78fe2a4f5449bb096a7d9b257e4ce2d1">
+        <source>Алгоритм HMAC</source>
+        <target state="needs-translation">Алгоритм HMAC</target>
+      </trans-unit>
+      <trans-unit id="9675e5a150c5384fce7b98c4327270e0">
+        <source>Алгоритм для генерации API-ключей.</source>
+        <target state="needs-translation">Алгоритм для генерации API-ключей.</target>
+      </trans-unit>
+      <trans-unit id="7a793ceaa00f5a17a5f94b06ed4876e2">
+        <source>Секрет</source>
+        <target state="needs-translation">Секрет</target>
+      </trans-unit>
+      <trans-unit id="716a31370a7ced8524489933df613e6b">
+        <source>Секретная строка для HMAC. Оставьте пустым для автогенерации при сохранении.</source>
+        <target state="needs-translation">Секретная строка для HMAC. Оставьте пустым для автогенерации при сохранении.</target>
+      </trans-unit>
+      <trans-unit id="a95a3dd6678fafd50ee4dfa7317f8ea4">
+        <source>Длина ключа</source>
+        <target state="needs-translation">Длина ключа</target>
+      </trans-unit>
+      <trans-unit id="08d39b4632cf3fe11a5f5f4fd5b88396">
+        <source>Длина генерируемого API-ключа.</source>
+        <target state="needs-translation">Длина генерируемого API-ключа.</target>
+      </trans-unit>
+      <trans-unit id="25bd71d3b91e16df55074510152ce96c">
+        <source>Маскировать чувствительные поля</source>
+        <target state="needs-translation">Маскировать чувствительные поля</target>
+      </trans-unit>
+      <trans-unit id="0ffeb4968cbeccf14ecea21245479a99">
+        <source>Задано DEMO_MODE в .env — маскирование принудительно включено.</source>
+        <target state="needs-translation">Задано DEMO_MODE в .env — маскирование принудительно включено.</target>
+      </trans-unit>
+      <trans-unit id="957d2360bb5fe11e74f9f9f2b9bc3533">
+        <source>Скрывать пароли, IP и хеши в ответах API (CRUD).</source>
+        <target state="needs-translation">Скрывать пароли, IP и хеши в ответах API (CRUD).</target>
+      </trans-unit>
+      <trans-unit id="cf293d58d7d6ca190c7e12983f1fdac4">
+        <source>OAuth2</source>
+        <target state="needs-translation">OAuth2</target>
+      </trans-unit>
+      <trans-unit id="ad88cb0cb9c09dc95f453ed92d9a212b">
+        <source>TTL access token (сек)</source>
+        <target state="needs-translation">TTL access token (сек)</target>
+      </trans-unit>
+      <trans-unit id="46165390bc5fb9afa761260fb0cc8ce9">
+        <source>Время жизни access token в секундах.</source>
+        <target state="needs-translation">Время жизни access token в секундах.</target>
+      </trans-unit>
+      <trans-unit id="3cc8651c3541d180dd204d813bc11710">
+        <source>Уровни доступа</source>
+        <target state="needs-translation">Уровни доступа</target>
+      </trans-unit>
+      <trans-unit id="fde0e443c43374758c3e38dcc65fde96">
+        <source>Уровень доступа по умолчанию</source>
+        <target state="needs-translation">Уровень доступа по умолчанию</target>
+      </trans-unit>
+      <trans-unit id="dafceaef4ef28f55e1e603f5ed3a4d3c">
+        <source>Используется при самогенерации ключа и если группа DLE не привязана на странице синхронизации.</source>
+        <target state="needs-translation">Используется при самогенерации ключа и если группа DLE не привязана на странице синхронизации.</target>
+      </trans-unit>
+      <trans-unit id="10d660a5c0012887a5ba584eb0a4eead">
+        <source>Профиль пользователя</source>
+        <target state="needs-translation">Профиль пользователя</target>
+      </trans-unit>
+      <trans-unit id="911821b0145adc98f5e7f4ecfc0397dc">
+        <source>Показывать блок API-ключа в профиле</source>
+        <target state="needs-translation">Показывать блок API-ключа в профиле</target>
+      </trans-unit>
+      <trans-unit id="621bf652813f87aa7896979420caef44">
+        <source>Если выключено — блок виден только при включённой самогенерации / заявке. Ключ берётся из таблицы api_keys.</source>
+        <target state="needs-translation">Если выключено — блок виден только при включённой самогенерации / заявке. Ключ берётся из таблицы api_keys.</target>
+      </trans-unit>
+      <trans-unit id="44dab4ec5a841c98d0576bf06e1b0327">
+        <source>Разрешить пользователям генерировать ключ</source>
+        <target state="needs-translation">Разрешить пользователям генерировать ключ</target>
+      </trans-unit>
+      <trans-unit id="f7efdc436daa5afcd4e35a953f4b25b0">
+        <source>Если выключено — кнопка запроса не показывается; ключ выдаёт администратор.</source>
+        <target state="needs-translation">Если выключено — кнопка запроса не показывается; ключ выдаёт администратор.</target>
+      </trans-unit>
+      <trans-unit id="dfeb489b54bdeabd2249b2148d4ff7d1">
+        <source>Уведомления о заявках</source>
+        <target state="needs-translation">Уведомления о заявках</target>
+      </trans-unit>
+      <trans-unit id="315fd549351cbb6c8b5daa8ae5146f40">
+        <source>Уведомлять по почте при заявке на ключ</source>
+        <target state="needs-translation">Уведомлять по почте при заявке на ключ</target>
+      </trans-unit>
+      <trans-unit id="2fb4b38b624b6b5611b885f913ce7989">
+        <source>ЛС на сайте при заявке на ключ</source>
+        <target state="needs-translation">ЛС на сайте при заявке на ключ</target>
+      </trans-unit>
+      <trans-unit id="4965ad839a3672f4736ad5019426c319">
+        <source>Группы DLE</source>
+        <target state="needs-translation">Группы DLE</target>
+      </trans-unit>
+      <trans-unit id="416ca0c39b38fae62447ce48ca36f92d">
+        <source>Получатели уведомлений о заявках.</source>
+        <target state="needs-translation">Получатели уведомлений о заявках.</target>
+      </trans-unit>
+      <trans-unit id="b8c4e70da7bea88961184a1c1be9cb13">
+        <source>Пользователи</source>
+        <target state="needs-translation">Пользователи</target>
+      </trans-unit>
+      <trans-unit id="1c8037125a99bc5fadfd5807ddc89da6">
+        <source>Дополнительные получатели уведомлений о заявках (по user_id).</source>
+        <target state="needs-translation">Дополнительные получатели уведомлений о заявках (по user_id).</target>
+      </trans-unit>
+      <trans-unit id="a482ea0a2dadf022ddb1396202c84f94">
+        <source>PM: тема заявки</source>
+        <target state="needs-translation">PM: тема заявки</target>
+      </trans-unit>
+      <trans-unit id="d01af93db75edf7b0b4cf67cc8987c22">
+        <source>Тема личного сообщения для администраторов о новой заявке на API-ключ.</source>
+        <target state="needs-translation">Тема личного сообщения для администраторов о новой заявке на API-ключ.</target>
+      </trans-unit>
+      <trans-unit id="9aa55458faff182f191b2baaecc731f0">
+        <source>Плейсхолдеры заявки (PM)</source>
+        <target state="needs-translation">Плейсхолдеры заявки (PM)</target>
+      </trans-unit>
+      <trans-unit id="bad352be1ba6f095f3f9447cbdfe711d">
+        <source>Заявка на API-ключ</source>
+        <target state="needs-translation">Заявка на API-ключ</target>
+      </trans-unit>
+      <trans-unit id="9e0c980e480ff4f4cc5f25510539afe8">
+        <source>PM: текст заявки</source>
+        <target state="needs-translation">PM: текст заявки</target>
+      </trans-unit>
+      <trans-unit id="a94f3451e3d46d1daedfae999159a778">
+        <source>Текст личного сообщения администраторам о новой заявке на API-ключ.</source>
+        <target state="needs-translation">Текст личного сообщения администраторам о новой заявке на API-ключ.</target>
+      </trans-unit>
+      <trans-unit id="5315e53953720117a34674a6948681f7">
+        <source>Уведомления о решении</source>
+        <target state="needs-translation">Уведомления о решении</target>
+      </trans-unit>
+      <trans-unit id="88ad8eaea1e25c20c6b15923ea31f614">
+        <source>Уведомлять по почте об одобрении / отказе</source>
+        <target state="needs-translation">Уведомлять по почте об одобрении / отказе</target>
+      </trans-unit>
+      <trans-unit id="a7ca7dcc81da1446e37dfffb92016e0f">
+        <source>ЛС об одобрении / отказе</source>
+        <target state="needs-translation">ЛС об одобрении / отказе</target>
+      </trans-unit>
+      <trans-unit id="33112748f15a121b7a793d00bc4f8998">
+        <source>PM: тема одобрения</source>
+        <target state="needs-translation">PM: тема одобрения</target>
+      </trans-unit>
+      <trans-unit id="edbcc573de4d0781def6584d681fafe5">
+        <source>Тема личного сообщения пользователю при одобрении API-ключа.</source>
+        <target state="needs-translation">Тема личного сообщения пользователю при одобрении API-ключа.</target>
+      </trans-unit>
+      <trans-unit id="0fbc165bb5e17500abdb21eb1335387d">
+        <source>Плейсхолдеры одобрения (PM)</source>
+        <target state="needs-translation">Плейсхолдеры одобрения (PM)</target>
+      </trans-unit>
+      <trans-unit id="b88ad3ca39b7c7e84247d318622aa8ee">
+        <source>API-ключ одобрен</source>
+        <target state="needs-translation">API-ключ одобрен</target>
+      </trans-unit>
+      <trans-unit id="87e9cd658331f80141f4b93e733644ac">
+        <source>PM: текст одобрения</source>
+        <target state="needs-translation">PM: текст одобрения</target>
+      </trans-unit>
+      <trans-unit id="a18f473afe68a9dbb70cdbbbda714a3b">
+        <source>Текст личного сообщения пользователю при одобрении API-ключа.</source>
+        <target state="needs-translation">Текст личного сообщения пользователю при одобрении API-ключа.</target>
+      </trans-unit>
+      <trans-unit id="17fc45312da9c5982430f50423114704">
+        <source>PM: тема отказа</source>
+        <target state="needs-translation">PM: тема отказа</target>
+      </trans-unit>
+      <trans-unit id="16520525709088dd4e929401037d3d88">
+        <source>Тема личного сообщения пользователю при отказе в API-ключе.</source>
+        <target state="needs-translation">Тема личного сообщения пользователю при отказе в API-ключе.</target>
+      </trans-unit>
+      <trans-unit id="7b4267d3d3ffbf7cf8c20498b028c8d1">
+        <source>Плейсхолдеры отказа (PM)</source>
+        <target state="needs-translation">Плейсхолдеры отказа (PM)</target>
+      </trans-unit>
+      <trans-unit id="4265285dc3286798eceb8b5cf00daf9f">
+        <source>API-ключ отклонён</source>
+        <target state="needs-translation">API-ключ отклонён</target>
+      </trans-unit>
+      <trans-unit id="0c1c57088604d484d1d544d15449b154">
+        <source>PM: текст отказа</source>
+        <target state="needs-translation">PM: текст отказа</target>
+      </trans-unit>
+      <trans-unit id="11fbe8ae13df09bf13808dd9e3b55a2f">
+        <source>Текст личного сообщения пользователю при отказе в API-ключе.</source>
+        <target state="needs-translation">Текст личного сообщения пользователю при отказе в API-ключе.</target>
+      </trans-unit>
+      <trans-unit id="cc097200fb52734f0199eebaab59697a">
+        <source>Ваша заявка на API-ключ отклонена.</source>
+        <target state="needs-translation">Ваша заявка на API-ключ отклонена.</target>
+      </trans-unit>
+      <trans-unit id="94cf4aed8629daa9b4e8afe13ac38e90">
+        <source>Email-шаблоны</source>
+        <target state="needs-translation">Email-шаблоны</target>
+      </trans-unit>
+      <trans-unit id="f94c87908be5c476a132afcd44115c81">
+        <source>Email: тема заявки</source>
+        <target state="needs-translation">Email: тема заявки</target>
+      </trans-unit>
+      <trans-unit id="c8e4cffbb1fe2b5c75c085cd7a7e27a4">
+        <source>Тема письма администраторам о новой заявке на API-ключ.</source>
+        <target state="needs-translation">Тема письма администраторам о новой заявке на API-ключ.</target>
+      </trans-unit>
+      <trans-unit id="83ed65034dc28eb2ca5afe4943108c25">
+        <source>Плейсхолдеры заявки (email)</source>
+        <target state="needs-translation">Плейсхолдеры заявки (email)</target>
+      </trans-unit>
+      <trans-unit id="2aa92f217b5e55d0d3c473092a2e98a8">
+        <source>Email: тело заявки</source>
+        <target state="needs-translation">Email: тело заявки</target>
+      </trans-unit>
+      <trans-unit id="72eda970d2584925da2aba95b549201e">
+        <source>HTML или текст письма администраторам о новой заявке на API-ключ.</source>
+        <target state="needs-translation">HTML или текст письма администраторам о новой заявке на API-ключ.</target>
+      </trans-unit>
+      <trans-unit id="88f0caae65837e5ca04aab6bde55db47">
+        <source>Email: тема одобрения</source>
+        <target state="needs-translation">Email: тема одобрения</target>
+      </trans-unit>
+      <trans-unit id="20a196c17b0443524f6df12fd0dd700e">
+        <source>Тема письма пользователю при одобрении API-ключа.</source>
+        <target state="needs-translation">Тема письма пользователю при одобрении API-ключа.</target>
+      </trans-unit>
+      <trans-unit id="1715010251b0fceef47d1d2edde74adc">
+        <source>Плейсхолдеры решения (email)</source>
+        <target state="needs-translation">Плейсхолдеры решения (email)</target>
+      </trans-unit>
+      <trans-unit id="e146ee190285a65dabfab7f0daf10fc7">
+        <source>Email: тема отказа</source>
+        <target state="needs-translation">Email: тема отказа</target>
+      </trans-unit>
+      <trans-unit id="49e3d49642a1237db4601cdbb2aa271b">
+        <source>Тема письма пользователю при отказе в API-ключе.</source>
+        <target state="needs-translation">Тема письма пользователю при отказе в API-ключе.</target>
+      </trans-unit>
+      <trans-unit id="f01fc82457a121e86b02b6f091290371">
+        <source>Email: тело решения</source>
+        <target state="needs-translation">Email: тело решения</target>
+      </trans-unit>
+      <trans-unit id="7461f03c0942538dd2287535106d0938">
+        <source>HTML или текст письма пользователю при одобрении либо отказе в API-ключе.</source>
+        <target state="needs-translation">HTML или текст письма пользователю при одобрении либо отказе в API-ключе.</target>
+      </trans-unit>
+      <trans-unit id="280cb30ccc4701fda1f513c1800b8046">
+        <source>Неофициальное REST/SDK API для DLE: ключи, OAuth2 Bearer, /api/v2</source>
+        <target state="needs-translation">Неофициальное REST/SDK API для DLE: ключи, OAuth2 Bearer, /api/v2</target>
+      </trans-unit>
+      <trans-unit id="047f5653b183292396e67f14c8750b73">
+        <source>Главная</source>
+        <target state="needs-translation">Главная</target>
+      </trans-unit>
+      <trans-unit id="a2554f9d2dcd621bd95cf937a9b8e82e">
         <source>API-ключи</source>
         <target state="needs-translation">API-ключи</target>
       </trans-unit>
-      <trans-unit id="3">
+      <trans-unit id="2088c72f9ec21b42bc4494f90ff95622">
+        <source>Синхронизация с группами</source>
+        <target state="needs-translation">Синхронизация с группами</target>
+      </trans-unit>
+      <trans-unit id="35210af0ef1acf879d43a67ef503c901">
+        <source>Заявки на ключ</source>
+        <target state="needs-translation">Заявки на ключ</target>
+      </trans-unit>
+      <trans-unit id="622b232149687777737c95c5e807f88d">
         <source>OAuth-клиенты</source>
         <target state="needs-translation">OAuth-клиенты</target>
+      </trans-unit>
+      <trans-unit id="c919d65bd95698af8f15fa8133bf490d">
+        <source>Настройки</source>
+        <target state="needs-translation">Настройки</target>
+      </trans-unit>
+      <trans-unit id="593c9576a2a5b74de0d875b0af564132">
+        <source>Журнал изменений</source>
+        <target state="needs-translation">Журнал изменений</target>
+      </trans-unit>
+      <trans-unit id="73c378ecb92cd6a5308d949a5ce6d707">
+        <source>Список API-ключей</source>
+        <target state="needs-translation">Список API-ключей</target>
+      </trans-unit>
+      <trans-unit id="318150c53b2ec43a3ffef0f443596df1">
+        <source>Активен</source>
+        <target state="needs-translation">Активен</target>
+      </trans-unit>
+      <trans-unit id="f154d6cc8945d799f4b31ccc1e0019f5">
+        <source>Пользователь</source>
+        <target state="needs-translation">Пользователь</target>
+      </trans-unit>
+      <trans-unit id="fb3df31bf52df6c142a279ecdb6dd94c">
+        <source>Действия</source>
+        <target state="needs-translation">Действия</target>
+      </trans-unit>
+      <trans-unit id="e04af96afe53462f72f39331b209a810">
+        <source>Да</source>
+        <target state="needs-translation">Да</target>
+      </trans-unit>
+      <trans-unit id="18c92238f6f293b5a2f6b44648e0f1a5">
+        <source>Права</source>
+        <target state="needs-translation">Права</target>
+      </trans-unit>
+      <trans-unit id="b278285aeff5cffad70c9838b3566f5d">
+        <source>Отключить</source>
+        <target state="needs-translation">Отключить</target>
+      </trans-unit>
+      <trans-unit id="ed2bbfbc53d83d3ad81f7fd6485ac6e8">
+        <source>Удалить</source>
+        <target state="needs-translation">Удалить</target>
+      </trans-unit>
+      <trans-unit id="c376786a0e83d062aa372e40f3a21e99">
+        <source>Ключей пока нет</source>
+        <target state="needs-translation">Ключей пока нет</target>
+      </trans-unit>
+      <trans-unit id="90ac64e50c21767556c9f975347c67b0">
+        <source>Создать ключ</source>
+        <target state="needs-translation">Создать ключ</target>
+      </trans-unit>
+      <trans-unit id="16e52daf0a63bc48a659d870ffea3837">
+        <source>Показать форму</source>
+        <target state="needs-translation">Показать форму</target>
+      </trans-unit>
+      <trans-unit id="551f9f257dd6d561024e74253e6aff8a">
+        <source>Скрыть форму</source>
+        <target state="needs-translation">Скрыть форму</target>
+      </trans-unit>
+      <trans-unit id="677f1660d012fd5e6bb0d4338e2cb94a">
+        <source>Уровень доступа</source>
+        <target state="needs-translation">Уровень доступа</target>
+      </trans-unit>
+      <trans-unit id="54ac63ef65903c049d04a28c3d53fd6d">
+        <source>— вручную / без уровня —</source>
+        <target state="needs-translation">— вручную / без уровня —</target>
+      </trans-unit>
+      <trans-unit id="b2f787128a8cac8ab2e278d6ed52ac81">
+        <source>При выборе уровня флаги own_only/cheater берутся из уровня. Без уровня — матрица scopes ниже.</source>
+        <target state="needs-translation">При выборе уровня флаги own_only/cheater берутся из уровня. Без уровня — матрица scopes ниже.</target>
+      </trans-unit>
+      <trans-unit id="b059f7e15df06e3f864e61040ae3caba">
+        <source>Создать</source>
+        <target state="needs-translation">Создать</target>
+      </trans-unit>
+      <trans-unit id="74ea58b6a801f0dce4e5d34dbca034dc">
+        <source>Сохранить</source>
+        <target state="needs-translation">Сохранить</target>
+      </trans-unit>
+      <trans-unit id="987b33c664dce148f1d17f6eb9ab3e79">
+        <source>Отмена</source>
+        <target state="needs-translation">Отмена</target>
+      </trans-unit>
+      <trans-unit id="2d8f6f8eb76b067386b7e73da80fae29">
+        <source>Права доступа к таблицам (если уровень не задан или для legacy-ключей)</source>
+        <target state="needs-translation">Права доступа к таблицам (если уровень не задан или для legacy-ключей)</target>
+      </trans-unit>
+      <trans-unit id="13bed836697752748211dfc7c0a247b6">
+        <source>Чтение — просмотр; Запись — создание; Правка — изменение; Удаление — удаление. При уровне с cheater матрица игнорируется.</source>
+        <target state="needs-translation">Чтение — просмотр; Запись — создание; Правка — изменение; Удаление — удаление. При уровне с cheater матрица игнорируется.</target>
+      </trans-unit>
+      <trans-unit id="0f3bd19339feee5b5f8c47d0fcac3044">
+        <source>Таблица</source>
+        <target state="needs-translation">Таблица</target>
+      </trans-unit>
+      <trans-unit id="766841769ffba48d50b2fc11cc6bc31d">
+        <source>Чтение</source>
+        <target state="needs-translation">Чтение</target>
+      </trans-unit>
+      <trans-unit id="62c194a8210d4c1fb2ea019faabba498">
+        <source>Включить все</source>
+        <target state="needs-translation">Включить все</target>
+      </trans-unit>
+      <trans-unit id="c805385747bd4f7d39242e4c53ce4ec3">
+        <source>Запись</source>
+        <target state="needs-translation">Запись</target>
+      </trans-unit>
+      <trans-unit id="25840018cb3ef9fcb555863342bf31b5">
+        <source>Правка</source>
+        <target state="needs-translation">Правка</target>
+      </trans-unit>
+      <trans-unit id="dd62fe0c29f765b5f064f2fff1daf99f">
+        <source>Удаление</source>
+        <target state="needs-translation">Удаление</target>
+      </trans-unit>
+      <trans-unit id="2bc5ef7a233ded333dccda77a7bf779e">
+        <source>Список таблиц SchemaRegistry пуст</source>
+        <target state="needs-translation">Список таблиц SchemaRegistry пуст</target>
+      </trans-unit>
+      <trans-unit id="91cec165601cc787bb53791ff1b01f6a">
+        <source>Если группа не привязана — при самогенерации используется уровень по умолчанию из настроек; на ключах уровень задаётся вручную.</source>
+        <target state="needs-translation">Если группа не привязана — при самогенерации используется уровень по умолчанию из настроек; на ключах уровень задаётся вручную.</target>
+      </trans-unit>
+      <trans-unit id="bad493e162e52dd0c6c1a4d78adaaacc">
+        <source>Группа DLE → уровень доступа</source>
+        <target state="needs-translation">Группа DLE → уровень доступа</target>
+      </trans-unit>
+      <trans-unit id="99d9901bdd4656a93ffa5f6c1f50cc00">
+        <source>Группа</source>
+        <target state="needs-translation">Группа</target>
+      </trans-unit>
+      <trans-unit id="4eac77be9b5e06f8185bf22bbe98acb2">
+        <source>— не задано —</source>
+        <target state="needs-translation">— не задано —</target>
+      </trans-unit>
+      <trans-unit id="fb2b76f05a803f548c2d2234db0bcd8f">
+        <source>Группы не найдены</source>
+        <target state="needs-translation">Группы не найдены</target>
+      </trans-unit>
+      <trans-unit id="9a3c281393b364fb356df00dc87267bd">
+        <source>Эндпоинты Authorization Server</source>
+        <target state="needs-translation">Эндпоинты Authorization Server</target>
+      </trans-unit>
+      <trans-unit id="8cf4d7f9bb39575e2fc09e4074851ccc">
+        <source>Скопируйте URL для интеграции внешних OAuth-клиентов (DLE = IdP).</source>
+        <target state="needs-translation">Скопируйте URL для интеграции внешних OAuth-клиентов (DLE = IdP).</target>
+      </trans-unit>
+      <trans-unit id="eb04319b926ea1129e1b527e2bcc3231">
+        <source>Сохраните client_secret сейчас</source>
+        <target state="needs-translation">Сохраните client_secret сейчас</target>
+      </trans-unit>
+      <trans-unit id="33262181558451abf65451c1b6818456">
+        <source>он показывается один раз и больше не будет доступен.</source>
+        <target state="needs-translation">он показывается один раз и больше не будет доступен.</target>
+      </trans-unit>
+      <trans-unit id="1705d7cb70e0c9d8820e1b03eca70f91">
+        <source>Скрыть</source>
+        <target state="needs-translation">Скрыть</target>
+      </trans-unit>
+      <trans-unit id="d38d6d925c80a2267031f3f03d0a9070">
+        <source>Имя</source>
+        <target state="needs-translation">Имя</target>
+      </trans-unit>
+      <trans-unit id="47e2436e5560837160a70c64466ea22b">
+        <source>Изменить</source>
+        <target state="needs-translation">Изменить</target>
+      </trans-unit>
+      <trans-unit id="d911fc384981b482ef01782b6e5617ac">
+        <source>Клиентов пока нет</source>
+        <target state="needs-translation">Клиентов пока нет</target>
+      </trans-unit>
+      <trans-unit id="7821e25a35e59153e8ff77e4279f563c">
+        <source>Создать клиент</source>
+        <target state="needs-translation">Создать клиент</target>
+      </trans-unit>
+      <trans-unit id="786dbe2bf24dce6a00d2124dd5685692">
+        <source>OAuth-клиент выдаёт access_token для вызовов /api/v2. Права запросов берёт из выбранного API-ключа (scopes). После создания сохраните client_id и client_secret — секрет больше не показывается.</source>
+        <target state="needs-translation">OAuth-клиент выдаёт access_token для вызовов /api/v2. Права запросов берёт из выбранного API-ключа (scopes). После создания сохраните client_id и client_secret — секрет больше не показывается.</target>
+      </trans-unit>
+      <trans-unit id="1582be900696bb328f4c7531617cf92e">
+        <source>Редактирование: название, API-ключ, Redirect URI, grant types и активность. client_id не меняется; секрет — только через «Пересоздать client_secret».</source>
+        <target state="needs-translation">Редактирование: название, API-ключ, Redirect URI, grant types и активность. client_id не меняется; секрет — только через «Пересоздать client_secret».</target>
+      </trans-unit>
+      <trans-unit id="8c302d1508f8f1e0fbba5f0c7a27cff5">
+        <source>Идентификатор клиента не меняется. Секрет можно перевыпустить кнопкой ниже — старый сразу перестанет работать.</source>
+        <target state="needs-translation">Идентификатор клиента не меняется. Секрет можно перевыпустить кнопкой ниже — старый сразу перестанет работать.</target>
+      </trans-unit>
+      <trans-unit id="44d8438d6ff2fc25fda241c11d6646c4">
+        <source>Пересоздать client_secret</source>
+        <target state="needs-translation">Пересоздать client_secret</target>
+      </trans-unit>
+      <trans-unit id="6a7939134572282d12b926ffbe390017">
+        <source>Новый секрет покажется один раз над таблицей. Обновите его во всех приложениях, которые используют этого клиента.</source>
+        <target state="needs-translation">Новый секрет покажется один раз над таблицей. Обновите его во всех приложениях, которые используют этого клиента.</target>
+      </trans-unit>
+      <trans-unit id="602680ed8916dcc039882172ef089256">
+        <source>Название</source>
+        <target state="needs-translation">Название</target>
+      </trans-unit>
+      <trans-unit id="5fb25fd94dbbd0d502f810c54bec47cb">
+        <source>Напр. Mobile app, CI, Postman</source>
+        <target state="needs-translation">Напр. Mobile app, CI, Postman</target>
+      </trans-unit>
+      <trans-unit id="31db564340f86004a0f3c1c802c19dc2">
+        <source>Только для списка в админке. На выдачу токенов не влияет. Если пусто — подставится client_id.</source>
+        <target state="needs-translation">Только для списка в админке. На выдачу токенов не влияет. Если пусто — подставится client_id.</target>
+      </trans-unit>
+      <trans-unit id="edab92dd2f04324795f85e3ae18c4c79">
+        <source>— выберите —</source>
+        <target state="needs-translation">— выберите —</target>
+      </trans-unit>
+      <trans-unit id="1c156acd0f518139da700b4a24551023">
+        <source>Обязательно. Определяет, к каким таблицам и с какими правами (read/write/delete) сможет обращаться Bearer-токен этого клиента. Ключ создаётся на вкладке «Ключи».</source>
+        <target state="needs-translation">Обязательно. Определяет, к каким таблицам и с какими правами (read/write/delete) сможет обращаться Bearer-токен этого клиента. Ключ создаётся на вкладке «Ключи».</target>
+      </trans-unit>
+      <trans-unit id="27499763cc523271e74f32ff4f740a7f">
+        <source>Redirect URI</source>
+        <target state="needs-translation">Redirect URI</target>
+      </trans-unit>
+      <trans-unit id="9e5c617eb94a9760bf350592c80f2d47">
+        <source>Ссылка http(s). Нужна для grant authorization_code. Должна точно совпадать с redirect_uri при /oauth/authorize и обмене кода. Для password / client_credentials можно оставить пустым.</source>
+        <target state="needs-translation">Ссылка http(s). Нужна для grant authorization_code. Должна точно совпадать с redirect_uri при /oauth/authorize и обмене кода. Для password / client_credentials можно оставить пустым.</target>
+      </trans-unit>
+      <trans-unit id="3374dd7375ac6f5631056e3d23655de9">
+        <source>Grant types</source>
+        <target state="needs-translation">Grant types</target>
+      </trans-unit>
+      <trans-unit id="543531759b89f7ba3916e59e46bc7fd0">
+        <source>сервер-сервер без пользователя</source>
+        <target state="needs-translation">сервер-сервер без пользователя</target>
+      </trans-unit>
+      <trans-unit id="0b6b8277ef2355fac5cadaa68c618aa7">
+        <source>логин/пароль пользователя DLE</source>
+        <target state="needs-translation">логин/пароль пользователя DLE</target>
+      </trans-unit>
+      <trans-unit id="cb45ffda6c64744d5ad7f0401cf308a0">
+        <source>браузерный OAuth-код (нужен Redirect URI)</source>
+        <target state="needs-translation">браузерный OAuth-код (нужен Redirect URI)</target>
+      </trans-unit>
+      <trans-unit id="e271387340e54bd016b35db77b590222">
+        <source>обновление access_token</source>
+        <target state="needs-translation">обновление access_token</target>
+      </trans-unit>
+      <trans-unit id="2d46ee78a7f48afd524b4110fcc7c947">
+        <source>Какие способы получения токена разрешены этому клиенту. Хотя бы один обязателен.</source>
+        <target state="needs-translation">Какие способы получения токена разрешены этому клиенту. Хотя бы один обязателен.</target>
+      </trans-unit>
+      <trans-unit id="6f7bf970348284e91d473680f8e76a93">
+        <source>Неактивный клиент не сможет получать новые токены.</source>
+        <target state="needs-translation">Неактивный клиент не сможет получать новые токены.</target>
+      </trans-unit>
+      <trans-unit id="e2466cbc373eada76b79cd4ed4860040">
+        <source>Заявки на API-ключ</source>
+        <target state="needs-translation">Заявки на API-ключ</target>
+      </trans-unit>
+      <trans-unit id="7203f7a4ff564cb876e8db54c903dbfc">
+        <source>Статус</source>
+        <target state="needs-translation">Статус</target>
+      </trans-unit>
+      <trans-unit id="8cdd8bb771bcf038dfb2740fd50b332c">
+        <source>Дата</source>
+        <target state="needs-translation">Дата</target>
+      </trans-unit>
+      <trans-unit id="8b0d898668b06f06261165c453f137a2">
+        <source>Отклонить</source>
+        <target state="needs-translation">Отклонить</target>
+      </trans-unit>
+      <trans-unit id="d68e9c84a2e1289784857b6435beb680">
+        <source>Заявок нет</source>
+        <target state="needs-translation">Заявок нет</target>
+      </trans-unit>
+      <trans-unit id="98aae799e2a79168bd7d1e1f9275496a">
+        <source>Сорт.</source>
+        <target state="needs-translation">Сорт.</target>
+      </trans-unit>
+      <trans-unit id="96868b000512fd1a9fa73bc980bdea68">
+        <source>Премод.</source>
+        <target state="needs-translation">Премод.</target>
+      </trans-unit>
+      <trans-unit id="efc58331073c015dcb79d5fa10ea3774">
+        <source>Уровней пока нет</source>
+        <target state="needs-translation">Уровней пока нет</target>
+      </trans-unit>
+      <trans-unit id="3fac3a359cadcf9722826ce19a3c8683">
+        <source>Создать уровень</source>
+        <target state="needs-translation">Создать уровень</target>
+      </trans-unit>
+      <trans-unit id="d2fc7cb771a48b5e4eea417dbec4858c">
+        <source>Сортировка</source>
+        <target state="needs-translation">Сортировка</target>
+      </trans-unit>
+      <trans-unit id="0b79fb0eef6a6fde782704f895994d12">
+        <source>Премодерация заявок на ключ</source>
+        <target state="needs-translation">Премодерация заявок на ключ</target>
+      </trans-unit>
+      <trans-unit id="2f5ad093b530153cda12000302e1fa5f">
+        <source>Только свои записи</source>
+        <target state="needs-translation">Только свои записи</target>
+      </trans-unit>
+      <trans-unit id="79379e3d38e8e7a9d2b3fbf2bfd3d7a5">
+        <source>Полный доступ (cheater)</source>
+        <target state="needs-translation">Полный доступ (cheater)</target>
+      </trans-unit>
+      <trans-unit id="272678fdca99b792abcb70cdade0b1f1">
+        <source>Маскировать IP</source>
+        <target state="needs-translation">Маскировать IP</target>
+      </trans-unit>
+      <trans-unit id="43ca38323de27d133d4d6f8123e30233">
+        <source>Маскировать пароли/хеши</source>
+        <target state="needs-translation">Маскировать пароли/хеши</target>
+      </trans-unit>
+      <trans-unit id="0753721963b968eb6c39470ab5aedce0">
+        <source>Маскировать лишние ПДн</source>
+        <target state="needs-translation">Маскировать лишние ПДн</target>
+      </trans-unit>
+      <trans-unit id="220e66bf585a3791a575562cd71ea54e">
+        <source>Scopes уровня (read / write / edit / delete)</source>
+        <target state="needs-translation">Scopes уровня (read / write / edit / delete)</target>
+      </trans-unit>
+      <trans-unit id="7751fc085bbd9870e66e92b74088c6aa">
+        <source>API v2 (/api/v2) на CycleORM из DevCraft Admin.</source>
+        <target state="needs-translation">API v2 (/api/v2) на CycleORM из DevCraft Admin.</target>
+      </trans-unit>
+      <trans-unit id="7b8301d97cbed169060f7761cde2f681">
+        <source>OAuth2 Authorization Server: authorize, token, revoke; доступ только через Bearer.</source>
+        <target state="needs-translation">OAuth2 Authorization Server: authorize, token, revoke; доступ только через Bearer.</target>
+      </trans-unit>
+      <trans-unit id="a2a40614f129574e0f3ef03382f9fe20">
+        <source>credential_type api_key|auth|oauth_client; ресурсы только AuthToken; GET /me и /oauth/userinfo.</source>
+        <target state="needs-translation">credential_type api_key|auth|oauth_client; ресурсы только AuthToken; GET /me и /oauth/userinfo.</target>
+      </trans-unit>
+      <trans-unit id="d590ba7a9b9aa0b479caa4ebd386b512">
+        <source>OAuth AS discovery, authorize по сессии DLE, копируемые endpoint URL.</source>
+        <target state="needs-translation">OAuth AS discovery, authorize по сессии DLE, копируемые endpoint URL.</target>
+      </trans-unit>
+      <trans-unit id="99237d4bf6c5037f8f05c9ac1e6bb5e8">
+        <source>Уровни доступа, синхронизация с группами, заявки на ключ, профиль (public AJAX).</source>
+        <target state="needs-translation">Уровни доступа, синхронизация с группами, заявки на ключ, профиль (public AJAX).</target>
+      </trans-unit>
+      <trans-unit id="3b6f4f00be09ffca1e7f95ca30b14fba">
+        <source>DEMO_MODE / DLEAPI_SECURE из .env; email-шаблоны через install.xml.</source>
+        <target state="needs-translation">DEMO_MODE / DLEAPI_SECURE из .env; email-шаблоны через install.xml.</target>
+      </trans-unit>
+      <trans-unit id="ba6437c33fb4f02331ecf163c5a36ed5">
+        <source>Fluent-билдеры prepareNewPost / prepareNewUser / preparePlugin / prepareNewUsergroup (in-process и HTTP SDK).</source>
+        <target state="needs-translation">Fluent-билдеры prepareNewPost / prepareNewUser / preparePlugin / prepareNewUsergroup (in-process и HTTP SDK).</target>
+      </trans-unit>
+      <trans-unit id="3d7c5b9fdb9f7d8a58e81074f92fba17">
+        <source>Каталог Schema таблиц DLE в api/includes/Schemas.</source>
+        <target state="needs-translation">Каталог Schema таблиц DLE в api/includes/Schemas.</target>
+      </trans-unit>
+      <trans-unit id="6f3da2dd3a57420a552a1641eae524a1">
+        <source>OpenAPI (swagger-php) и документация OAD в mhdocs.</source>
+        <target state="needs-translation">OpenAPI (swagger-php) и документация OAD в mhdocs.</target>
+      </trans-unit>
+      <trans-unit id="623a8782fe35a2ab6149bbeda9a2e758">
+        <source>Загрузка файлов через штатный пайплайн DLE.</source>
+        <target state="needs-translation">Загрузка файлов через штатный пайплайн DLE.</target>
+      </trans-unit>
+      <trans-unit id="f871efc859ce5db43c898a1747e918be">
+        <source>Фильтр постов по одной категории при нескольких (FIND_IN_SET / issue #12).</source>
+        <target state="needs-translation">Фильтр постов по одной категории при нескольких (FIND_IN_SET / issue #12).</target>
+      </trans-unit>
+      <trans-unit id="d659aa87c97f8c3c1d1190cf2364aa1c">
+        <source>Админ-модуль DleApi для DevCraft Admin ≥ 200.4.0 (только конфигурация).</source>
+        <target state="needs-translation">Админ-модуль DleApi для DevCraft Admin ≥ 200.4.0 (только конфигурация).</target>
+      </trans-unit>
+      <trans-unit id="25d04bf52e51df31e299b51c66aed5eb">
+        <source>HTTP /table/{name}: интроспекция таблиц вне SchemaRegistry + TableScopeGuard.</source>
+        <target state="needs-translation">HTTP /table/{name}: интроспекция таблиц вне SchemaRegistry + TableScopeGuard.</target>
+      </trans-unit>
+      <trans-unit id="2ab8df5ac23f372f8c48f1b71e92e4b0">
+        <source>SDK facades: DcApi::news() / user() / comment() / conversation() / plugin() / file() / staticPage() / schema().</source>
+        <target state="needs-translation">SDK facades: DcApi::news() / user() / comment() / conversation() / plugin() / file() / staticPage() / schema().</target>
+      </trans-unit>
+      <trans-unit id="fe21d2c8591767a7abcbace9fae1ae2c">
+        <source>Fluent CRUD на AbstractTableSchema (with / create / save / delete / filter / fromArray).</source>
+        <target state="needs-translation">Fluent CRUD на AbstractTableSchema (with / create / save / delete / filter / fromArray).</target>
+      </trans-unit>
+      <trans-unit id="72d6c77d47330bb38ff22cc04d466527">
+        <source>GET-кэш TableQuery через CacheControl (dle_api_query, TTL).</source>
+        <target state="needs-translation">GET-кэш TableQuery через CacheControl (dle_api_query, TTL).</target>
+      </trans-unit>
+      <trans-unit id="4c72fa92baacc2862ee46e4398caaa03">
+        <source>Админка: multi получатели уведомлений, WYSIWYG для PM; panel-title через caption.</source>
+        <target state="needs-translation">Админка: multi получатели уведомлений, WYSIWYG для PM; panel-title через caption.</target>
+      </trans-unit>
+      <trans-unit id="8f6d236354f883e690f9650b85e9d309">
+        <source>Админка: FormPanel ключей/уровней/OAuth свёрнут на узком экране (Metro d-none / d-block-md).</source>
+        <target state="needs-translation">Админка: FormPanel ключей/уровней/OAuth свёрнут на узком экране (Metro d-none / d-block-md).</target>
+      </trans-unit>
+      <trans-unit id="3fead7e3ecd37494feabc16a8b93d46d">
+        <source>Совместимость с DLE 20.0 (xfields.json, dual category, conversations).</source>
+        <target state="needs-translation">Совместимость с DLE 20.0 (xfields.json, dual category, conversations).</target>
+      </trans-unit>
+      <trans-unit id="cc6aa4d1c1ec910dcca42890319ffaac">
+        <source>Таблицы api_keys / api_scope / OAuth создаются Cycle-миграциями DevCraft (Models + AbstractEntity), а не DDL в install.xml.</source>
+        <target state="needs-translation">Таблицы api_keys / api_scope / OAuth создаются Cycle-миграциями DevCraft (Models + AbstractEntity), а не DDL в install.xml.</target>
+      </trans-unit>
+      <trans-unit id="d482507710d4d7a8594907e99e4aed95">
+        <source>Scopes: колонка edit; own_only/cheater на уровне; trailing slash на всех маршрутах v2.</source>
+        <target state="needs-translation">Scopes: колонка edit; own_only/cheater на уровне; trailing slash на всех маршрутах v2.</target>
+      </trans-unit>
+      <trans-unit id="b320388ab703b437e5184aa0e294da46">
+        <source>OpenAPI: описание ApiError без PHPDoc {@see}; Schema без пометки install.php.</source>
+        <target state="needs-translation">OpenAPI: описание ApiError без PHPDoc {@see}; Schema без пометки install.php.</target>
+      </trans-unit>
+      <trans-unit id="30163ae737a851cf67186accf6629c0f">
+        <source>API v1 (Slim + Illuminate Capsule, X-Api-Key) полностью удалён.</source>
+        <target state="needs-translation">API v1 (Slim + Illuminate Capsule, X-Api-Key) полностью удалён.</target>
+      </trans-unit>
+      <trans-unit id="129b28f952bb412b405de5bafc350b63">
+        <source>Приём сырого API-ключа как Bearer на ресурсах /table.</source>
+        <target state="needs-translation">Приём сырого API-ключа как Bearer на ресурсах /table.</target>
+      </trans-unit>
+      <trans-unit id="3cc769b0b414754c7f99c806a4defe01">
+        <source>Оптимизация кода под PHP 8.2</source>
+        <target state="needs-translation">Оптимизация кода под PHP 8.2</target>
+      </trans-unit>
+      <trans-unit id="456ab85da22d93ca7a9323ea94f6439f">
+        <source>Минимально поддерживаемая версия DLE - 16.0</source>
+        <target state="needs-translation">Минимально поддерживаемая версия DLE - 16.0</target>
+      </trans-unit>
+      <trans-unit id="b0b7e7620d1bdecb968e6e531fa4f3f0">
+        <source>Изменён список алгоритмов на hash_hmac_algos</source>
+        <target state="needs-translation">Изменён список алгоритмов на hash_hmac_algos</target>
+      </trans-unit>
+      <trans-unit id="34017549dd46f79106fdf92e5604cf82">
+        <source>Убрана процедура проверки атрибута в таблице</source>
+        <target state="needs-translation">Убрана процедура проверки атрибута в таблице</target>
+      </trans-unit>
+      <trans-unit id="d4526f3514023fa9ad16b593e7b24c09">
+        <source>Оптимизирован код</source>
+        <target state="needs-translation">Оптимизирован код</target>
+      </trans-unit>
+      <trans-unit id="0b8a16c21b92489f5239b46e8e576986">
+        <source>Генерация ключа привязана к времени</source>
+        <target state="needs-translation">Генерация ключа привязана к времени</target>
+      </trans-unit>
+      <trans-unit id="27590f34864fc20c0c1b3907972a77fb">
+        <source>Добавлена возможность добавлять ключи независимо от пользователя =&gt; для этого нужно выбрать в меню пользователя "Гость / Неавторизованный"</source>
+        <target state="needs-translation">Добавлена возможность добавлять ключи независимо от пользователя =&gt; для этого нужно выбрать в меню пользователя "Гость / Неавторизованный"</target>
+      </trans-unit>
+      <trans-unit id="4851e78170368d0eb81a12e423637b31">
+        <source>Добавлена возможность генерировать свои рутеры на основе базы данных =&gt; читайте документацию</source>
+        <target state="needs-translation">Добавлена возможность генерировать свои рутеры на основе базы данных =&gt; читайте документацию</target>
+      </trans-unit>
+      <trans-unit id="c33028c371a67e250f4e7135c9915ce7">
+        <source>Обновлены данные для таблиц базы данных</source>
+        <target state="needs-translation">Обновлены данные для таблиц базы данных</target>
+      </trans-unit>
+      <trans-unit id="e3d3f31f9a03fc230ccd03675bced926">
+        <source>Обновлена документация API</source>
+        <target state="needs-translation">Обновлена документация API</target>
+      </trans-unit>
+      <trans-unit id="55dcf32eb93dd114d989a7f5279d3cbb">
+        <source>Минимальные требования к серверу поднял до минимально требуемой версии от DLE-News -&gt; 7.4, возможно не будет работать на версиях ниже 15.х</source>
+        <target state="needs-translation">Минимальные требования к серверу поднял до минимально требуемой версии от DLE-News -&gt; 7.4, возможно не будет работать на версиях ниже 15.х</target>
+      </trans-unit>
+      <trans-unit id="7e504a4c29530916c65060217f1d56f3">
+        <source>Безопасный вывод данных (IP, пароли и хэш суммы)</source>
+        <target state="needs-translation">Безопасный вывод данных (IP, пароли и хэш суммы)</target>
+      </trans-unit>
+      <trans-unit id="804ab8c6fa436bcf1ec5e348157354c3">
+        <source>Добавлена функция вывода только принадлежащих API-ключу записей</source>
+        <target state="needs-translation">Добавлена функция вывода только принадлежащих API-ключу записей</target>
+      </trans-unit>
+      <trans-unit id="39b0dc625c9b2e017cbf7fc978db2179">
+        <source>Добавлена функция массовых действий (удаление, (де-)активация, снятие / добавление ограничение, снятие / удаление администраторских ограничений)</source>
+        <target state="needs-translation">Добавлена функция массовых действий (удаление, (де-)активация, снятие / добавление ограничение, снятие / удаление администраторских ограничений)</target>
+      </trans-unit>
+      <trans-unit id="149b95eb57893cb07829708289747be1">
+        <source>Для удаления новостей была использована функция движка</source>
+        <target state="needs-translation">Для удаления новостей была использована функция движка</target>
+      </trans-unit>
+      <trans-unit id="f5c7f57de3088e45d97b8169f762641c">
+        <source>Для удаления комментариев была использована функция движка</source>
+        <target state="needs-translation">Для удаления комментариев была использована функция движка</target>
+      </trans-unit>
+      <trans-unit id="4c7a985451b053aa147b2d42ab424056">
+        <source>Изменил нумерование версий</source>
+        <target state="needs-translation">Изменил нумерование версий</target>
+      </trans-unit>
+      <trans-unit id="b8c4a964d0bcc34e7c49463d8bab7aee">
+        <source>composer настроил под версию PHP 5.6</source>
+        <target state="needs-translation">composer настроил под версию PHP 5.6</target>
+      </trans-unit>
+      <trans-unit id="b1dffc89e150eab383d77bf3c0c0fcb2">
+        <source>Были исправлены несколько багов, спасибо @jyarali</source>
+        <target state="needs-translation">Были исправлены несколько багов, спасибо @jyarali</target>
+      </trans-unit>
+      <trans-unit id="3e784918063ac04afd47ff6140775db7">
+        <source>Исправлена проверка ключей в базе данных</source>
+        <target state="needs-translation">Исправлена проверка ключей в базе данных</target>
+      </trans-unit>
+      <trans-unit id="2cd692f2268431ba81ef01d0d354f660">
+        <source>Добавлена проверка по длине значения для типа "string"</source>
+        <target state="needs-translation">Добавлена проверка по длине значения для типа "string"</target>
+      </trans-unit>
+      <trans-unit id="0b7607c5888f2960d0b4642ba7aafa4d">
+        <source>Массивы с ячейками таблиц были обновлены до значений DLE 14.1 (на ранние версии DLE это никак не влияет)</source>
+        <target state="needs-translation">Массивы с ячейками таблиц были обновлены до значений DLE 14.1 (на ранние версии DLE это никак не влияет)</target>
+      </trans-unit>
+      <trans-unit id="bca3678882a3623c1ff7251d95b373c8">
+        <source>Для пользователей был использован штатный API класс самой DLE, чтобы авторизовать и регистрировать пользователей</source>
+        <target state="needs-translation">Для пользователей был использован штатный API класс самой DLE, чтобы авторизовать и регистрировать пользователей</target>
+      </trans-unit>
+      <trans-unit id="f8f9c3ac31b891991e05db67962a697b">
+        <source>Для авторизации пользователей нужно при помощи метода POST указать следующий путь URL: api/v1/users/auth. В заголовке обязательно должны быть значения имя пользователя и его пароль в незакодированном виде.</source>
+        <target state="needs-translation">Для авторизации пользователей нужно при помощи метода POST указать следующий путь URL: api/v1/users/auth. В заголовке обязательно должны быть значения имя пользователя и его пароль в незакодированном виде.</target>
+      </trans-unit>
+      <trans-unit id="f6293a7a9f8c21dcf358bbb17daf7dcb">
+        <source>Для регистрации пользователя нужно при помощи метода POST указать следующий путь URL: api/v1/users/register. В заголовке нужно указать имя пользователя, пароль, электронную почту и ID группы пользователей.</source>
+        <target state="needs-translation">Для регистрации пользователя нужно при помощи метода POST указать следующий путь URL: api/v1/users/register. В заголовке нужно указать имя пользователя, пароль, электронную почту и ID группы пользователей.</target>
+      </trans-unit>
+      <trans-unit id="b9b4446757b6f47649fa79593110e06c">
+        <source>При регистрации и авторизации возвращается массив данных об этом пользователе</source>
+        <target state="needs-translation">При регистрации и авторизации возвращается массив данных об этом пользователе</target>
+      </trans-unit>
+      <trans-unit id="d0450584b162ab600b55f67b3bb5d07b">
+        <source>Первая стандартная версия</source>
+        <target state="needs-translation">Первая стандартная версия</target>
+      </trans-unit>
+      <trans-unit id="5bfc618791a9e5972cb5dd976359a9dc">
+        <source>гость</source>
+        <target state="needs-translation">гость</target>
+      </trans-unit>
+      <trans-unit id="ebe5cfa9bd87e7b3b2c7b0ed4a7d3616">
+        <source>DLE API</source>
+        <target state="needs-translation">DLE API</target>
+      </trans-unit>
+      <trans-unit id="2bcb26375ed3f4bc486d2348c5be37ed">
+        <source>Генерация ключа запрещена</source>
+        <target state="needs-translation">Генерация ключа запрещена</target>
+      </trans-unit>
+      <trans-unit id="d42352d3f3f16733ea26d597bae8e639">
+        <source>У вас уже есть активный API-ключ</source>
+        <target state="needs-translation">У вас уже есть активный API-ключ</target>
+      </trans-unit>
+      <trans-unit id="aba4cad0330a9598872cd83f54c143fb">
+        <source>Не задан уровень доступа по умолчанию</source>
+        <target state="needs-translation">Не задан уровень доступа по умолчанию</target>
+      </trans-unit>
+      <trans-unit id="abb736772a0341bd36a72d2e0a8753de">
+        <source>Заявка уже ожидает рассмотрения</source>
+        <target state="needs-translation">Заявка уже ожидает рассмотрения</target>
+      </trans-unit>
+      <trans-unit id="0bbe0bb07222ec0863caabb468fd021c">
+        <source>Заявка отправлена на модерацию</source>
+        <target state="needs-translation">Заявка отправлена на модерацию</target>
+      </trans-unit>
+      <trans-unit id="c6fd3c6a629b51b28c19e8495994f4ca">
+        <source>Ошибка</source>
+        <target state="needs-translation">Ошибка</target>
+      </trans-unit>
+      <trans-unit id="b364827ddd3619d4fcf05f21f1cfd055">
+        <source>Некорректный идентификатор</source>
+        <target state="needs-translation">Некорректный идентификатор</target>
+      </trans-unit>
+      <trans-unit id="f3991e3d929a99b9a0e8aec5b40cf3f1">
+        <source>Заявка не найдена</source>
+        <target state="needs-translation">Заявка не найдена</target>
+      </trans-unit>
+      <trans-unit id="3fd845f87f32c0adc36b8cb2f9d570ae">
+        <source>Заявка уже обработана</source>
+        <target state="needs-translation">Заявка уже обработана</target>
+      </trans-unit>
+      <trans-unit id="f032ab2cfc601790848d0fb32f963436">
+        <source>Одобрено</source>
+        <target state="needs-translation">Одобрено</target>
+      </trans-unit>
+      <trans-unit id="22c9a6fed5c73377cc7b17aed5d649df">
+        <source>Отклонено</source>
+        <target state="needs-translation">Отклонено</target>
+      </trans-unit>
+      <trans-unit id="0ff24eb4a4def6f7250214455a3ee1c8">
+        <source>Ключ создан</source>
+        <target state="needs-translation">Ключ создан</target>
+      </trans-unit>
+      <trans-unit id="7c5a814b584e7742613aa0805497ad0b">
+        <source>Redirect URI должен быть ссылкой http(s)</source>
+        <target state="needs-translation">Redirect URI должен быть ссылкой http(s)</target>
+      </trans-unit>
+      <trans-unit id="2a0cca36778a6618f84ee274c8e2293f">
+        <source>Выберите хотя бы один grant_type</source>
+        <target state="needs-translation">Выберите хотя бы один grant_type</target>
+      </trans-unit>
+      <trans-unit id="e2ce9b66e2524a3fea956007f5ad5530">
+        <source>Укажите действующий API-ключ</source>
+        <target state="needs-translation">Укажите действующий API-ключ</target>
+      </trans-unit>
+      <trans-unit id="efa1643096949c2c419f6ef317ed6d90">
+        <source>Клиент не найден</source>
+        <target state="needs-translation">Клиент не найден</target>
+      </trans-unit>
+      <trans-unit id="41d5f9605c2b601bbf4b4ef877a0e98a">
+        <source>Клиент сохранён</source>
+        <target state="needs-translation">Клиент сохранён</target>
+      </trans-unit>
+      <trans-unit id="89ddbf381d88d35624c8eb229cdf1c37">
+        <source>Синхронизация сохранена</source>
+        <target state="needs-translation">Синхронизация сохранена</target>
+      </trans-unit>
+      <trans-unit id="c82b4016f3b55b65d727fff8b4f3aa1d">
+        <source>Ключ не найден</source>
+        <target state="needs-translation">Ключ не найден</target>
+      </trans-unit>
+      <trans-unit id="790de3a759cd3fcca8fe2cc0585b091e">
+        <source>Схема настроек недоступна</source>
+        <target state="needs-translation">Схема настроек недоступна</target>
+      </trans-unit>
+      <trans-unit id="4617d14c7a1e0968548798378bfb28bc">
+        <source>Файл конфигурации недоступен для записи</source>
+        <target state="needs-translation">Файл конфигурации недоступен для записи</target>
+      </trans-unit>
+      <trans-unit id="4cd337bfca576ea71f9e38554058a5bd">
+        <source>Каталог конфигурации недоступен для записи</source>
+        <target state="needs-translation">Каталог конфигурации недоступен для записи</target>
+      </trans-unit>
+      <trans-unit id="834b5876f89b407a67f0b3ff11e2c9c5">
+        <source>Все поля недействительны</source>
+        <target state="needs-translation">Все поля недействительны</target>
+      </trans-unit>
+      <trans-unit id="8b54b4eeeef985eb232f5f6656eaac5c">
+        <source>Внимание</source>
+        <target state="needs-translation">Внимание</target>
+      </trans-unit>
+      <trans-unit id="cb276bbc0fc7a260a6419fd2bbeb0a74">
+        <source>Частичное сохранение с ошибками</source>
+        <target state="needs-translation">Частичное сохранение с ошибками</target>
+      </trans-unit>
+      <trans-unit id="54a59b19f9945c7a147b563b0d61c5ad">
+        <source>Сохранено</source>
+        <target state="needs-translation">Сохранено</target>
+      </trans-unit>
+      <trans-unit id="71295789c9ec3abd14741e5bb3396850">
+        <source>Ключ сохранён</source>
+        <target state="needs-translation">Ключ сохранён</target>
+      </trans-unit>
+      <trans-unit id="7a6813de10cc6240a305c5568dfb6554">
+        <source>Ключ удалён</source>
+        <target state="needs-translation">Ключ удалён</target>
+      </trans-unit>
+      <trans-unit id="e43c1f1233d74704442e85d73be94078">
+        <source>client_secret пересоздан</source>
+        <target state="needs-translation">client_secret пересоздан</target>
+      </trans-unit>
+      <trans-unit id="a68216ab632080866ea58c542b3473a0">
+        <source>Ключ включён</source>
+        <target state="needs-translation">Ключ включён</target>
+      </trans-unit>
+      <trans-unit id="2438b6f6c4ee2a28af6dd1df35f2a5e8">
+        <source>Ключ отключён</source>
+        <target state="needs-translation">Ключ отключён</target>
+      </trans-unit>
+      <trans-unit id="0c450c40f3e9bca781dd6f676691d793">
+        <source>Удалено</source>
+        <target state="needs-translation">Удалено</target>
+      </trans-unit>
+      <trans-unit id="97a9b4a19aabf31aa8ab1f293b0c7ed1">
+        <source>Требуется авторизация</source>
+        <target state="needs-translation">Требуется авторизация</target>
+      </trans-unit>
+      <trans-unit id="bac5b4b04bde8aee5e5320bfee8bd3d7">
+        <source>Недостаточно прав</source>
+        <target state="needs-translation">Недостаточно прав</target>
+      </trans-unit>
+      <trans-unit id="a5fdef37117dba3d1abd6b081a523e7f">
+        <source>Нельзя запрашивать ключ за другого пользователя</source>
+        <target state="needs-translation">Нельзя запрашивать ключ за другого пользователя</target>
+      </trans-unit>
+      <trans-unit id="b1fb87ebaf0f37635827dd929c8d2ee8">
+        <source>Не удалось</source>
+        <target state="needs-translation">Не удалось</target>
+      </trans-unit>
+      <trans-unit id="00cd9c5ad2b41896031206e18a102e2f">
+        <source>Недостаточно прав для модерации</source>
+        <target state="needs-translation">Недостаточно прав для модерации</target>
+      </trans-unit>
+      <trans-unit id="0cbbdf1986bbdc7b3c1f96fdb1cdb212">
+        <source>Заявка не найдена или уже обработана</source>
+        <target state="needs-translation">Заявка не найдена или уже обработана</target>
+      </trans-unit>
+      <trans-unit id="057b8e77fd4c3f8ca12c44e7e1d348f0">
+        <source>Уровень не найден</source>
+        <target state="needs-translation">Уровень не найден</target>
+      </trans-unit>
+      <trans-unit id="7d09c142803a607d0622dd0688f804a7">
+        <source>Укажите название уровня</source>
+        <target state="needs-translation">Укажите название уровня</target>
+      </trans-unit>
+      <trans-unit id="09482503642629f104e2ade70c12007d">
+        <source>OAuth-клиент создан</source>
+        <target state="needs-translation">OAuth-клиент создан</target>
+      </trans-unit>
+      <trans-unit id="bb90c6bb1ce3ce68a980bcffa5fdc540">
+        <source>Клиент удалён</source>
+        <target state="needs-translation">Клиент удалён</target>
+      </trans-unit>
+      <trans-unit id="0de733bff24bb8215fb1f0cc839d8db3">
+        <source>История изменений</source>
+        <target state="needs-translation">История изменений</target>
       </trans-unit>
     </body>
   </file>
