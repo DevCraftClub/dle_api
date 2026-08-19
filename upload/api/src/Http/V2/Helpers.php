@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use DLEPlugins;
-
 /**
  * Вспомогательные функции API v2.
  */
