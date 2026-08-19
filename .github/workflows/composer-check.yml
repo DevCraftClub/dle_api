@@ -33,7 +33,9 @@ jobs:
         run: composer validate --no-check-publish --strict
 
       - name: Install dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist --no-progress
+        run: |
+          rm -rf vendor
+          composer install --no-dev --no-interaction --prefer-dist --no-progress
 
       - name: PHP syntax smoke
         run: |
