@@ -16,12 +16,13 @@ use OpenApi\Annotations as OA;
 class PathParameter extends Parameter
 {
     /**
-     * @var string
+     * @inheritdoc
+     * This takes 'path' as the default location.
      */
     public $in = 'path';
 
     /**
-     * @var bool
+     * @inheritdoc
      */
     public $required = true;
 

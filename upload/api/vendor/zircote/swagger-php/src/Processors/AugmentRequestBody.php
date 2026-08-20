@@ -9,9 +9,9 @@ namespace OpenApi\Processors;
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Context;
+use OpenApi\Generator;
 use OpenApi\GeneratorAwareInterface;
 use OpenApi\GeneratorAwareTrait;
-use OpenApi\Undefined;
 
 /**
  * Use the RequestBody context to extract useful information and inject that into the annotation.
@@ -38,7 +38,7 @@ class AugmentRequestBody implements GeneratorAwareInterface
             }
 
             $context = $requestBody->_context;
-            if (Undefined::isDefault($requestBody->request)) {
+            if (Generator::isDefault($requestBody->request)) {
                 if ($context->is('class')) {
                     $requestBody->request = $requestBody->_context->class;
                 } elseif ($context->is('interface')) {
@@ -54,11 +54,11 @@ class AugmentRequestBody implements GeneratorAwareInterface
                 $schema = new OA\Schema(['_context' => new Context(['reflector' => $context->reflector], $context)]);
                 $this->generator->getTypeResolver()->augmentSchemaType($analysis, $schema, OA\RequestBody::class);
 
-                if (Undefined::isDefault($requestBody->ref)) {
+                if (Generator::isDefault($requestBody->ref)) {
                     $requestBody->ref = $schema->ref;
                 }
 
-                if (Undefined::isDefault($requestBody->required)) {
+                if (Generator::isDefault($requestBody->required)) {
                     $requestBody->required = !$schema->isNullable();
                 }
             }

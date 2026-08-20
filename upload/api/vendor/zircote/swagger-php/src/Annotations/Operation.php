@@ -6,9 +6,8 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Base class for <code>@OA\Get</code>,  <code>@OA\Post</code>,  <code>@OA\Put</code>,  etc.
@@ -26,16 +25,16 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var string
      */
-    public $path = Undefined::UNDEFINED;
+    public $path = Generator::UNDEFINED;
 
     /**
      * A list of tags for API documentation control.
      *
      * Tags can be used for logical grouping of operations by resources or any other qualifier.
      *
-     * @var list<string>
+     * @var string[]
      */
-    public $tags = Undefined::UNDEFINED;
+    public $tags = Generator::UNDEFINED;
 
     /**
      * Key in the OpenApi "Path Item Object" for this operation.
@@ -44,14 +43,14 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var string
      */
-    public $method = Undefined::UNDEFINED;
+    public $method = Generator::UNDEFINED;
 
     /**
      * A short summary of what the operation does.
      *
      * @var string
      */
-    public $summary = Undefined::UNDEFINED;
+    public $summary = Generator::UNDEFINED;
 
     /**
      * A verbose explanation of the operation behavior.
@@ -60,14 +59,14 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * Additional external documentation for this operation.
      *
      * @var ExternalDocumentation
      */
-    public $externalDocs = Undefined::UNDEFINED;
+    public $externalDocs = Generator::UNDEFINED;
 
     /**
      * Unique string used to identify the operation.
@@ -78,7 +77,7 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var string
      */
-    public $operationId = Undefined::UNDEFINED;
+    public $operationId = Generator::UNDEFINED;
 
     /**
      * A list of parameters that are applicable for this operation.
@@ -91,9 +90,9 @@ abstract class Operation extends AbstractAnnotation
      * The list can use the Reference Object to link to parameters that are defined at the OpenAPI Object's
      * components/parameters.
      *
-     * @var list<Parameter>
+     * @var Parameter[]
      */
-    public $parameters = Undefined::UNDEFINED;
+    public $parameters = Generator::UNDEFINED;
 
     /**
      * The request body applicable for this operation.
@@ -104,14 +103,14 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var RequestBody
      */
-    public $requestBody = Undefined::UNDEFINED;
+    public $requestBody = Generator::UNDEFINED;
 
     /**
      * The list of possible responses as they are returned from executing this operation.
      *
-     * @var list<Response>
+     * @var Response[]
      */
-    public $responses = Undefined::UNDEFINED;
+    public $responses = Generator::UNDEFINED;
 
     /**
      * A map of possible out-of band callbacks related to the parent operation.
@@ -124,7 +123,7 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var array
      */
-    public $callbacks = Undefined::UNDEFINED;
+    public $callbacks = Generator::UNDEFINED;
 
     /**
      * Declares this operation to be deprecated.
@@ -135,7 +134,7 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var bool
      */
-    public $deprecated = Undefined::UNDEFINED;
+    public $deprecated = Generator::UNDEFINED;
 
     /**
      * A declaration of which security mechanisms can be used for this operation.
@@ -149,7 +148,7 @@ abstract class Operation extends AbstractAnnotation
      *
      * @var array
      */
-    public $security = Undefined::UNDEFINED;
+    public $security = Generator::UNDEFINED;
 
     /**
      * An alternative server array to service this operation.
@@ -157,9 +156,9 @@ abstract class Operation extends AbstractAnnotation
      * If an alternative server object is specified at the Path Item Object or Root level, it will be overridden by
      * this value.
      *
-     * @var list<Server>
+     * @var Server[]
      */
-    public $servers = Undefined::UNDEFINED;
+    public $servers = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -191,7 +190,11 @@ abstract class Operation extends AbstractAnnotation
         Attachable::class => ['attachables'],
     ];
 
-    public function jsonSerialize(): \stdClass
+    /**
+     * @inheritdoc
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         $data = parent::jsonSerialize();
 
@@ -208,33 +211,39 @@ abstract class Operation extends AbstractAnnotation
         return $data;
     }
 
-    #[\Override]
-    public function validate(?Analysis $analysis = null, string $version = OpenApi::DEFAULT_VERSION, ?object $context = null): bool
+    /**
+     * @inheritdoc
+     */
+    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
     {
-        $isValid = parent::validate($analysis, $version, $context);
+        if (in_array($this, $skip, true)) {
+            return true;
+        }
 
-        if (!Undefined::isDefault($this->responses)) {
+        $valid = parent::validate($stack, $skip, $ref, $context);
+
+        if (!Generator::isDefault($this->responses)) {
             foreach ($this->responses as $response) {
-                if (!Undefined::isDefault($response->response) && $response->response !== 'default' && preg_match('/^([12345]{1}\d{2})|([12345]{1}XX)$/', (string) $response->response) === 0) {
+                if (!Generator::isDefault($response->response) && $response->response !== 'default' && preg_match('/^([12345]{1}\d{2})|([12345]{1}XX)$/', (string) $response->response) === 0) {
                     $this->_context->logger->warning('Invalid value "' . $response->response . '" for ' . $response->identity([]) . '->response, expecting "default", a HTTP Status Code or HTTP Status Code range definition in ' . $response->_context);
-                    $isValid = false;
+                    $valid = false;
                 }
             }
         }
 
-        if (!Undefined::isDefault($this->operationId)) {
+        if (is_object($context) && !Generator::isDefault($this->operationId)) {
             if (!property_exists($context, 'operationIds')) {
                 $context->operationIds = [];
             }
 
             if (in_array($this->operationId, $context->operationIds)) {
                 $this->_context->logger->warning('operationId must be unique. Duplicate value found: "' . $this->operationId . '"');
-                $isValid = false;
+                $valid = false;
             }
 
             $context->operationIds[] = $this->operationId;
         }
 
-        return $isValid;
+        return $valid;
     }
 }

@@ -7,35 +7,34 @@
 namespace OpenApi\Attributes;
 
 use OpenApi\Annotations as OA;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class Tag extends OA\Tag
 {
     /**
      * @param array<string,mixed>|null $x
-     * @param list<Attachable>|null    $attachables
+     * @param Attachable[]|null        $attachables
      */
     public function __construct(
         ?string $name = null,
-        ?string $description = Undefined::UNDEFINED,
-        ?string $summary = Undefined::UNDEFINED,
+        ?string $description = Generator::UNDEFINED,
+        ?string $summary = Generator::UNDEFINED,
         ?string $parent = null,
         ?string $kind = null,
         ?ExternalDocumentation $externalDocs = null,
-
-        // abstract annotation
+        // annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
         parent::__construct([
-                'name' => $name ?? Undefined::UNDEFINED,
+                'name' => $name ?? Generator::UNDEFINED,
                 'description' => $description,
                 'summary' => $summary,
-                'parent' => $parent ?? Undefined::UNDEFINED,
-                'kind' => $kind ?? Undefined::UNDEFINED,
-                'x' => $x ?? Undefined::UNDEFINED,
-                'attachables' => $attachables ?? Undefined::UNDEFINED,
+                'parent' => $parent ?? Generator::UNDEFINED,
+                'kind' => $kind ?? Generator::UNDEFINED,
+                'x' => $x ?? Generator::UNDEFINED,
+                'attachables' => $attachables ?? Generator::UNDEFINED,
                 'value' => $this->combine($externalDocs),
             ]);
     }

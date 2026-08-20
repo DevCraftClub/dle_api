@@ -12,7 +12,7 @@ namespace OpenApi\Annotations;
 class Patch extends Operation
 {
     /**
-     * @var string
+     * @inheritdoc
      */
     public $method = 'patch';
 

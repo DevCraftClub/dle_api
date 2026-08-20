@@ -8,7 +8,7 @@ namespace OpenApi\Annotations;
 
 use OpenApi\Attributes\JsonContent;
 use OpenApi\Attributes\XmlContent;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Describes a single request body.
@@ -26,14 +26,14 @@ class RequestBody extends AbstractAnnotation
      *
      * @var string|class-string|object
      */
-    public $ref = Undefined::UNDEFINED;
+    public $ref = Generator::UNDEFINED;
 
     /**
      * The key into Components->requestBodies array.
      *
      * @var string
      */
-    public $request = Undefined::UNDEFINED;
+    public $request = Generator::UNDEFINED;
 
     /**
      * A brief description of the parameter.
@@ -44,7 +44,7 @@ class RequestBody extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * Determines whether this parameter is mandatory.
@@ -54,7 +54,7 @@ class RequestBody extends AbstractAnnotation
      *
      * @var bool
      */
-    public $required = Undefined::UNDEFINED;
+    public $required = Generator::UNDEFINED;
 
     /**
      * The content of the request body.
@@ -64,7 +64,7 @@ class RequestBody extends AbstractAnnotation
      *
      * @var array<MediaType|JsonContent|XmlContent>|MediaType|JsonContent|XmlContent|Attachable
      */
-    public $content = Undefined::UNDEFINED;
+    public $content = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -96,7 +96,11 @@ class RequestBody extends AbstractAnnotation
         Attachable::class => ['attachables'],
     ];
 
-    public function jsonSerialize(): \stdClass
+    /**
+     * @inheritdoc
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         $data = parent::jsonSerialize();
 

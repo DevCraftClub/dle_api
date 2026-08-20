@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * The object provides metadata about the API.
@@ -24,7 +24,7 @@ class Info extends AbstractAnnotation
      *
      * @var string
      */
-    public $title = Undefined::UNDEFINED;
+    public $title = Generator::UNDEFINED;
 
     /**
      * A short description of the application.
@@ -33,7 +33,7 @@ class Info extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * An URL to the Terms of Service for the API.
@@ -42,28 +42,28 @@ class Info extends AbstractAnnotation
      *
      * @var string
      */
-    public $termsOfService = Undefined::UNDEFINED;
+    public $termsOfService = Generator::UNDEFINED;
 
     /**
      * The contact information for the exposed API.
      *
      * @var Contact
      */
-    public $contact = Undefined::UNDEFINED;
+    public $contact = Generator::UNDEFINED;
 
     /**
      * The license information for the exposed API.
      *
      * @var License
      */
-    public $license = Undefined::UNDEFINED;
+    public $license = Generator::UNDEFINED;
 
     /**
      * The version of the OpenAPI document (which is distinct from the OpenAPI Specification version or the API implementation version).
      *
      * @var string
      */
-    public $version = Undefined::UNDEFINED;
+    public $version = Generator::UNDEFINED;
 
     /**
      * @inheritdoc

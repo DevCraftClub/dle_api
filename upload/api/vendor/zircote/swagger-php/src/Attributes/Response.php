@@ -7,37 +7,36 @@
 namespace OpenApi\Attributes;
 
 use OpenApi\Annotations as OA;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class Response extends OA\Response
 {
     /**
      * @param string|class-string|object|null                                                                $ref
-     * @param list<Header>                                                                                   $headers
+     * @param Header[]                                                                                       $headers
      * @param MediaType|JsonContent|XmlContent|Attachable|array<MediaType|JsonContent|XmlContent|Attachable> $content
-     * @param list<Link>                                                                                     $links
+     * @param Link[]                                                                                         $links
      * @param array<string,mixed>|null                                                                       $x
-     * @param list<Attachable>|null                                                                          $attachables
+     * @param Attachable[]|null                                                                              $attachables
      */
     public function __construct(
         string|object|null $ref = null,
         int|string|null $response = null,
-        ?string $description = Undefined::UNDEFINED,
+        ?string $description = Generator::UNDEFINED,
         ?array $headers = null,
         MediaType|JsonContent|XmlContent|Attachable|array|null $content = null,
         ?array $links = null,
-
-        // abstract annotation
+        // annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
         parent::__construct([
-            'ref' => $ref ?? Undefined::UNDEFINED,
-            'response' => $response ?? Undefined::UNDEFINED,
+            'ref' => $ref ?? Generator::UNDEFINED,
+            'response' => $response ?? Generator::UNDEFINED,
             'description' => $description,
-            'x' => $x ?? Undefined::UNDEFINED,
-            'attachables' => $attachables ?? Undefined::UNDEFINED,
+            'x' => $x ?? Generator::UNDEFINED,
+            'attachables' => $attachables ?? Generator::UNDEFINED,
             'value' => $this->combine($headers, $content, $links),
         ]);
     }

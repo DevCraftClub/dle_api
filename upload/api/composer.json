@@ -1,7 +1,7 @@
 {
 	"name": "devcraftclub/dle-api",
 	"description": "Неофициальное REST API для DataLife Engine",
-	"license": "AGPL-3.0-or-later",
+	"license": "GPL-3.0-only",
 	"require": {
 		"ext-json": "*",
 		"ext-pdo": "*",
@@ -11,7 +11,7 @@
 		"php-di/php-di": "^7.0",
 		"slim/psr7": "^1.7",
 		"slim/slim": "^4.14",
-		"zircote/swagger-php": "^6.5"
+		"zircote/swagger-php": "^5.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -37,7 +37,7 @@
 	},
 	"scripts": {
 		"openapi": [
-			"@php vendor/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"
+			"@php vendor/zircote/swagger-php/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"
 		]
 	},
 	"config": {

@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Describes the operations available on a single path.
@@ -25,84 +25,84 @@ class PathItem extends AbstractAnnotation
      *
      * @var string|class-string|object
      */
-    public $ref = Undefined::UNDEFINED;
+    public $ref = Generator::UNDEFINED;
 
     /**
      * An optional, string summary, intended to apply to all operations in this path.
      *
      * @var string
      */
-    public $summary = Undefined::UNDEFINED;
+    public $summary = Generator::UNDEFINED;
 
     /**
      * An optional, string description, intended to apply to all operations in this path.
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * Key for the Path Object (OpenApi->paths array).
      *
      * @var string
      */
-    public $path = Undefined::UNDEFINED;
+    public $path = Generator::UNDEFINED;
 
     /**
      * A definition of a GET operation on this path.
      *
      * @var Get
      */
-    public $get = Undefined::UNDEFINED;
+    public $get = Generator::UNDEFINED;
 
     /**
      * A definition of a PUT operation on this path.
      *
      * @var Put
      */
-    public $put = Undefined::UNDEFINED;
+    public $put = Generator::UNDEFINED;
 
     /**
      * A definition of a POST operation on this path.
      *
      * @var Post
      */
-    public $post = Undefined::UNDEFINED;
+    public $post = Generator::UNDEFINED;
 
     /**
      * A definition of a DELETE operation on this path.
      *
      * @var Delete
      */
-    public $delete = Undefined::UNDEFINED;
+    public $delete = Generator::UNDEFINED;
 
     /**
      * A definition of a OPTIONS operation on this path.
      *
      * @var Options
      */
-    public $options = Undefined::UNDEFINED;
+    public $options = Generator::UNDEFINED;
 
     /**
      * A definition of a HEAD operation on this path.
      *
      * @var Head
      */
-    public $head = Undefined::UNDEFINED;
+    public $head = Generator::UNDEFINED;
 
     /**
      * A definition of a PATCH operation on this path.
      *
      * @var Patch
      */
-    public $patch = Undefined::UNDEFINED;
+    public $patch = Generator::UNDEFINED;
 
     /**
      * A definition of a TRACE operation on this path.
      *
      * @var Trace
      */
-    public $trace = Undefined::UNDEFINED;
+    public $trace = Generator::UNDEFINED;
 
     /**
      * A definition of a QUERY operation on this path.
@@ -110,14 +110,14 @@ class PathItem extends AbstractAnnotation
      * @since OpenAPI 3.2.0
      * @var Query
      */
-    public $query = Undefined::UNDEFINED;
+    public $query = Generator::UNDEFINED;
 
     /**
      * An alternative server array to service all operations in this path.
      *
-     * @var list<Server>
+     * @var Server[]
      */
-    public $servers = Undefined::UNDEFINED;
+    public $servers = Generator::UNDEFINED;
 
     /**
      * A list of parameters that are applicable for all the operations described under this path.
@@ -127,9 +127,9 @@ class PathItem extends AbstractAnnotation
      * A unique parameter is defined by a combination of a name and location.
      * The list can use the Reference Object to link to parameters that are defined at the OpenAPI Object's components/parameters.
      *
-     * @var list<Parameter>
+     * @var Parameter[]
      */
-    public $parameters = Undefined::UNDEFINED;
+    public $parameters = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -168,13 +168,13 @@ class PathItem extends AbstractAnnotation
     /**
      * Returns a list of all operations (all methods) for this path item.
      *
-     * @return list<Operation>
+     * @return Operation[]
      */
     public function operations(): array
     {
         $operations = [];
         foreach (PathItem::$_nested as $className => $property) {
-            if (is_subclass_of($className, Operation::class) && !Undefined::isDefault($this->{$property})) {
+            if (is_subclass_of($className, Operation::class) && !Generator::isDefault($this->{$property})) {
                 $operations[] = $this->{$property};
             }
         }

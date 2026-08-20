@@ -25,16 +25,16 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
 
     public function isSupported(): bool
     {
-        return true;
+        return \PHP_VERSION_ID >= 80100;
     }
 
     public function build(\Reflector $reflector, Context $context): array
     {
-        if (!$this->isSupported()) {
+        if (!$this->isSupported() || !method_exists($reflector, 'getAttributes')) {
             return [];
         }
 
-        if ($reflector instanceof \ReflectionProperty && $reflector->isPromoted()) {
+        if ($reflector instanceof \ReflectionProperty && method_exists($reflector, 'isPromoted') && $reflector->isPromoted()) {
             // handled via __construct() parameter
             return [];
         }
@@ -42,7 +42,7 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
         // no proper way to inject
         Generator::$context = $context;
 
-        /** @var list<OA\AbstractAnnotation> $annotations */
+        /** @var OA\AbstractAnnotation[] $annotations */
         $annotations = [];
         try {
             $attributeName = $this->ignoreOtherAttributes
@@ -73,7 +73,7 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
                             /** @var OA\Property|OAT\Parameter|OA\RequestBody $instance */
                             $instance = $attribute->newInstance();
                             $instance->_context = new Context([
-                                'nested' => null,
+                                'nested' => false,
                                 'property' => $rp->getName(),
                                 'reflector' => $rp,
                             ], $context);
@@ -95,14 +95,7 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
                                 } else {
                                     $instance->_context->property = $rp->getName();
                                 }
-                            } elseif ($instance instanceof OAT\Parameter) {
-                                if (method_exists($rp, 'getDocComment')) {
-                                    if ($comment = $rp->getDocComment()) {
-                                        $instance->_context->comment = $comment;
-                                    }
-                                }
                             }
-
                             $annotations[] = $instance;
                         }
                     }
@@ -113,9 +106,10 @@ class AttributeAnnotationFactory implements AnnotationFactoryInterface
         }
 
         // merge backwards into parents...
-        $isParent = static function (OA\AbstractAnnotation $annotation, OA\AbstractAnnotation $possibleParent): bool {
+        $isParent = function (OA\AbstractAnnotation $annotation, OA\AbstractAnnotation $possibleParent): bool {
             // regular annotation hierarchy
             $explicitParent = null !== $possibleParent->matchNested($annotation) && !$annotation instanceof OA\Attachable;
+
             $isParentAllowed = false;
             // support Attachable subclasses
             if ($isAttachable = $annotation instanceof OA\Attachable) {

@@ -95,6 +95,24 @@
 		}
 	}
 
+	function placeholderHost(field) {
+		return field.closest('.dc-field-widget') || field.parentNode;
+	}
+
+	function insertPlaceholderList(field, wrap) {
+		var host = placeholderHost(field);
+		var feedback = host && host.querySelector ? host.querySelector(':scope > .invalid_feedback') : null;
+		if (feedback) {
+			feedback.insertAdjacentElement('beforebegin', wrap);
+			return;
+		}
+		if (host && host !== field) {
+			host.appendChild(wrap);
+			return;
+		}
+		field.insertAdjacentElement('afterend', wrap);
+	}
+
 	function renderPlaceholderLists() {
 		document.querySelectorAll('[data-dleapi-placeholders]').forEach(function (field) {
 			var placeholders = parsePlaceholderList(field);
@@ -121,7 +139,7 @@
 				wrap.appendChild(btn);
 			});
 
-			field.insertAdjacentElement('afterend', wrap);
+			insertPlaceholderList(field, wrap);
 		});
 	}
 
@@ -367,9 +385,9 @@
 			'<td>' + yesNo(data.active !== false && data.active !== 0) + '</td>' +
 			'<td data-user-id="' + (data.user_id != null ? data.user_id : 0) + '">' + escText(data.user_label || userLabel(data.user_id)) + '</td>' +
 			'<td>' +
-				'<button type="button" class="button small" data-dleapi-edit-key="' + data.id + '">' + t('Права') + '</button> ' +
-				'<button type="button" class="button small" data-dleapi-toggle-key="' + data.id + '" data-active="0">' + t('Отключить') + '</button> ' +
-				'<button type="button" class="button alert small" data-dleapi-delete-key="' + data.id + '">' + t('Удалить') + '</button>' +
+			'<button type="button" class="button small" data-dleapi-edit-key="' + data.id + '">' + t('Права') + '</button> ' +
+			'<button type="button" class="button small" data-dleapi-toggle-key="' + data.id + '" data-active="0">' + t('Отключить') + '</button> ' +
+			'<button type="button" class="button alert small" data-dleapi-delete-key="' + data.id + '">' + t('Удалить') + '</button>' +
 			'</td>';
 		tbody.insertBefore(tr, tbody.firstChild);
 	}
@@ -507,23 +525,38 @@
 				);
 			}
 		}
+		function fallback() {
+			var helper = document.createElement('textarea');
+			helper.value = text;
+			helper.setAttribute('readonly', 'readonly');
+			helper.style.position = 'fixed';
+			helper.style.opacity = '0';
+			helper.style.pointerEvents = 'none';
+			document.body.appendChild(helper);
+			helper.focus();
+			helper.select();
+			var ok = false;
+			try {
+				ok = document.execCommand('copy');
+			} catch (e) {
+				ok = false;
+			}
+			document.body.removeChild(helper);
+			if (!ok && el) {
+				el.focus();
+				el.select();
+			}
+			done(ok);
+		}
 		if (navigator.clipboard && navigator.clipboard.writeText) {
 			navigator.clipboard.writeText(text).then(function () {
 				done(true);
 			}).catch(function () {
-				if (el) {
-					el.focus();
-					el.select();
-				}
-				done(false);
+				fallback();
 			});
 			return;
 		}
-		if (el) {
-			el.focus();
-			el.select();
-		}
-		done(false);
+		fallback();
 	}
 
 	function prependOauthRow(data) {
@@ -548,8 +581,8 @@
 			'<td><code>' + escapeHtml(data.api_key_preview || '—') + '</code></td>' +
 			'<td>' + yesNo(data.active !== false && data.active !== 0) + '</td>' +
 			'<td>' +
-				'<button type="button" class="button small" data-dleapi-edit-oauth="' + data.id + '">' + t('Изменить') + '</button> ' +
-				'<button type="button" class="button alert small" data-dleapi-delete-oauth="' + data.id + '">' + t('Удалить') + '</button>' +
+			'<button type="button" class="button small" data-dleapi-edit-oauth="' + data.id + '">' + t('Изменить') + '</button> ' +
+			'<button type="button" class="button alert small" data-dleapi-delete-oauth="' + data.id + '">' + t('Удалить') + '</button>' +
 			'</td>';
 		tbody.insertBefore(tr, tbody.firstChild);
 	}

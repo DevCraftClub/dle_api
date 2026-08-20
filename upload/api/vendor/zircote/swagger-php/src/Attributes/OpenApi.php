@@ -7,18 +7,18 @@
 namespace OpenApi\Attributes;
 
 use OpenApi\Annotations as OA;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class OpenApi extends OA\OpenApi
 {
     /**
-     * @param list<Server>|null        $servers
-     * @param list<Tag>|null           $tags
-     * @param array<PathItem>|null     $paths
-     * @param list<Webhook>|null       $webhooks
+     * @param Server[]|null            $servers
+     * @param Tag[]|null               $tags
+     * @param PathItem[]|null          $paths
+     * @param Webhook[]|null           $webhooks
      * @param array<string,mixed>|null $x
-     * @param list<Attachable>|null    $attachables
+     * @param Attachable[]|null        $attachables
      */
     public function __construct(
         string $openapi = self::DEFAULT_VERSION,
@@ -30,16 +30,15 @@ class OpenApi extends OA\OpenApi
         ?array $paths = null,
         ?Components $components = null,
         ?array $webhooks = null,
-
-        // abstract annotation
+        // annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
         parent::__construct([
                 'openapi' => $openapi,
-                'security' => $security ?? Undefined::UNDEFINED,
-                'x' => $x ?? Undefined::UNDEFINED,
-                'attachables' => $attachables ?? Undefined::UNDEFINED,
+                'security' => $security ?? Generator::UNDEFINED,
+                'x' => $x ?? Generator::UNDEFINED,
+                'attachables' => $attachables ?? Generator::UNDEFINED,
                 'value' => $this->combine($info, $servers, $tags, $externalDocs, $paths, $components, $webhooks),
             ]);
     }

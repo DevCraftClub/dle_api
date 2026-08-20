@@ -69,11 +69,6 @@ composer lint
 composer cs
 ```
 
-### Validate generated specs with Redocly
-```shell
-composer redocly
-```
-
 ### Run dev server for local development of `gh-pages`
 ```shell
 composer docs:dev

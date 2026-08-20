@@ -9,7 +9,7 @@ namespace OpenApi\Processors;
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Context;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Split JsonContent into Schema and MediaType.
@@ -18,6 +18,7 @@ class MergeJsonContent
 {
     public function __invoke(Analysis $analysis): void
     {
+        /** @var OA\JsonContent[] $annotations */
         $annotations = $analysis->getAnnotationsOfType(OA\JsonContent::class);
 
         foreach ($annotations as $jsonContent) {
@@ -30,7 +31,7 @@ class MergeJsonContent
                 }
                 continue;
             }
-            if (Undefined::isDefault($parent->content)) {
+            if (Generator::isDefault($parent->content)) {
                 $parent->content = [];
             }
             $parent->content['application/json'] = $mediaType = new OA\MediaType([
@@ -44,17 +45,14 @@ class MergeJsonContent
             if (!$parent instanceof OA\Parameter) {
                 $parent->content['application/json']->mediaType = 'application/json';
             }
-            $jsonContent->example = Undefined::UNDEFINED;
-            $jsonContent->examples = Undefined::UNDEFINED;
-            /* @phpstan-ignore assign.propertyType */
-            $jsonContent->encoding = Undefined::UNDEFINED;
-            $jsonContent->_context = new Context(['nested' => $mediaType, 'generated' => true], $mediaType->_context);
+            $jsonContent->example = Generator::UNDEFINED;
+            $jsonContent->examples = Generator::UNDEFINED;
+            $jsonContent->encoding = Generator::UNDEFINED;
 
             $index = array_search($jsonContent, $parent->_unmerged, true);
             if ($index !== false) {
                 array_splice($parent->_unmerged, $index, 1);
             }
-            $analysis->removeAnnotation($jsonContent);
         }
     }
 }

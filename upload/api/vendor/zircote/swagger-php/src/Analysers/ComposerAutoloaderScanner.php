@@ -19,17 +19,17 @@ class ComposerAutoloaderScanner
     /**
      * Collect all classes/interfaces/traits known by composer.
      *
-     * @param list<string> $namespaces
+     * @param array<string> $namespaces
      *
-     * @return list<string>
+     * @return array<string>
      */
     public function scan(array $namespaces): array
     {
         $units = [];
-        if (($autoloader = static::getComposerAutoloader()) instanceof ClassLoader) {
+        if ($autoloader = static::getComposerAutoloader()) {
             foreach (array_keys($autoloader->getClassMap()) as $unit) {
                 foreach ($namespaces as $namespace) {
-                    if (str_starts_with($unit, $namespace)) {
+                    if (0 === strpos($unit, $namespace)) {
                         $units[] = $unit;
                         break;
                     }

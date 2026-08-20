@@ -12,7 +12,7 @@ namespace OpenApi\Annotations;
 class Trace extends Operation
 {
     /**
-     * @var string
+     * @inheritdoc
      */
     public $method = 'trace';
 

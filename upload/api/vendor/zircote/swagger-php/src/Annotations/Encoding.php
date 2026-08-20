@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * A single encoding definition applied to a single schema property.
@@ -22,36 +22,36 @@ class Encoding extends AbstractAnnotation
      *
      * @var string
      */
-    public $property = Undefined::UNDEFINED;
+    public $property = Generator::UNDEFINED;
 
     /**
      * The content type.
      *
      * @var string
      */
-    public $contentType = Undefined::UNDEFINED;
+    public $contentType = Generator::UNDEFINED;
 
     /**
      * Additional headers.
      *
-     * @var list<Header>
+     * @var Header[]
      */
-    public $headers = Undefined::UNDEFINED;
+    public $headers = Generator::UNDEFINED;
 
     /**
      * @var string
      */
-    public $style = Undefined::UNDEFINED;
+    public $style = Generator::UNDEFINED;
 
     /**
      * @var bool
      */
-    public $explode = Undefined::UNDEFINED;
+    public $explode = Generator::UNDEFINED;
 
     /**
      * @var bool
      */
-    public $allowReserved = Undefined::UNDEFINED;
+    public $allowReserved = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -78,7 +78,11 @@ class Encoding extends AbstractAnnotation
         'contentType' => 'string',
     ];
 
-    public function jsonSerialize(): \stdClass
+    /**
+     * @inheritdoc
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         $data = parent::jsonSerialize();
 

@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * @Annotation
@@ -18,12 +18,12 @@ class Property extends Schema
      *
      * @var string
      */
-    public $property = Undefined::UNDEFINED;
+    public $property = Generator::UNDEFINED;
 
     /**
      * @var Encoding
      */
-    public $encoding = Undefined::UNDEFINED;
+    public $encoding = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -45,14 +45,17 @@ class Property extends Schema
         Items::class => 'items',
         Property::class => ['properties', 'property'],
         ExternalDocumentation::class => 'externalDocs',
-        Examples::class => ['examples', 'example'],
         Xml::class => 'xml',
         AdditionalProperties::class => 'additionalProperties',
         Encoding::class => 'encoding',
         Attachable::class => ['attachables'],
     ];
 
-    public function jsonSerialize(): \stdClass
+    /**
+     * @inheritdoc
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         $data = parent::jsonSerialize();
 

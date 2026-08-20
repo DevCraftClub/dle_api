@@ -7,7 +7,8 @@
 namespace OpenApi\Processors;
 
 use OpenApi\Analysis;
-use OpenApi\Undefined;
+use OpenApi\Generator;
+use OpenApi\Processors\Concerns\AnnotationTrait;
 
 /**
  * Allows to filter endpoints based on tags and/or path.
@@ -18,53 +19,19 @@ use OpenApi\Undefined;
  */
 class PathFilter
 {
-    use Concerns\AnnotationTrait;
+    use AnnotationTrait;
 
     protected array $tags;
 
     protected array $paths;
 
-    public function __construct(array $tags = [], array $paths = [])
+    protected bool $recurseCleanup;
+
+    public function __construct(array $tags = [], array $paths = [], bool $recurseCleanup = false)
     {
         $this->tags = $tags;
         $this->paths = $paths;
-    }
-
-    public function __invoke(Analysis $analysis): void
-    {
-        if (($this->tags || $this->paths) && !Undefined::isDefault($analysis->openapi->paths)) {
-            $filtered = [];
-            foreach ($analysis->openapi->paths as $pathItem) {
-                $matched = null;
-                foreach ($this->tags as $pattern) {
-                    foreach ($pathItem->operations() as $operation) {
-                        if (!Undefined::isDefault($operation->tags)) {
-                            foreach ($operation->tags as $tag) {
-                                if (preg_match($pattern, $tag)) {
-                                    $matched = $pathItem;
-                                    break 3;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                foreach ($this->paths as $pattern) {
-                    if (preg_match($pattern, $pathItem->path)) {
-                        $matched = $pathItem;
-                        break;
-                    }
-                }
-
-                if ($matched) {
-                    $filtered[] = $matched;
-                } else {
-                    $this->removeAnnotationRecursive($analysis, $pathItem);
-                }
-            }
-
-            $analysis->openapi->paths = $filtered;
-        }
+        $this->recurseCleanup = $recurseCleanup;
     }
 
     public function getTags(): array
@@ -99,5 +66,55 @@ class PathFilter
         $this->paths = $paths;
 
         return $this;
+    }
+
+    public function isRecurseCleanup(): bool
+    {
+        return $this->recurseCleanup;
+    }
+
+    /**
+     * Flag to do a recursive cleanup of unused paths and their nested annotations.
+     */
+    public function setRecurseCleanup(bool $recurseCleanup): void
+    {
+        $this->recurseCleanup = $recurseCleanup;
+    }
+
+    public function __invoke(Analysis $analysis): void
+    {
+        if (($this->tags || $this->paths) && !Generator::isDefault($analysis->openapi->paths)) {
+            $filtered = [];
+            foreach ($analysis->openapi->paths as $pathItem) {
+                $matched = null;
+                foreach ($this->tags as $pattern) {
+                    foreach ($pathItem->operations() as $operation) {
+                        if (!Generator::isDefault($operation->tags)) {
+                            foreach ($operation->tags as $tag) {
+                                if (preg_match($pattern, $tag)) {
+                                    $matched = $pathItem;
+                                    break 3;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach ($this->paths as $pattern) {
+                    if (preg_match($pattern, $pathItem->path)) {
+                        $matched = $pathItem;
+                        break;
+                    }
+                }
+
+                if ($matched) {
+                    $filtered[] = $matched;
+                } else {
+                    $this->removeAnnotation($analysis->annotations, $pathItem, $this->recurseCleanup);
+                }
+            }
+
+            $analysis->openapi->paths = $filtered;
+        }
     }
 }

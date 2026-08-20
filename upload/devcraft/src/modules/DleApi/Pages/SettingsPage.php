@@ -18,7 +18,7 @@ use DevCraft\Modules\DleApi\Services\KeyNotifyDelivery;
 final class SettingsPage extends AbstractPage implements SettingsPageInterface {
 
 	public function handle(): array {
-		global $config, $dle_login_hash;
+		global $config, $dle_login_hash, $lang;
 
 		$this->addBreadcrumb(__('Настройки'));
 
@@ -51,6 +51,7 @@ final class SettingsPage extends AbstractPage implements SettingsPageInterface {
 				'pm_wysiwyg'       => !empty($config['allow_pm_wysiwyg']),
 				'pm_editor_script' => $this->buildPmEditorScript(),
 				'dle_login_hash'   => (string) ($dle_login_hash ?? ''),
+				'dle_lang_code'    => (string) (($lang['language_code'] ?? 'ru')),
 			],
 		];
 	}

@@ -6,8 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Analysis;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Describes a single response from an API Operation, including design-time,
@@ -26,7 +25,7 @@ class Response extends AbstractAnnotation
      *
      * @var string|class-string|object
      */
-    public $ref = Undefined::UNDEFINED;
+    public $ref = Generator::UNDEFINED;
 
     /**
      * The key into Operations->responses array.
@@ -35,7 +34,7 @@ class Response extends AbstractAnnotation
      *
      * @var string|int
      */
-    public $response = Undefined::UNDEFINED;
+    public $response = Generator::UNDEFINED;
 
     /**
      * A short description of the response.
@@ -44,7 +43,7 @@ class Response extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * Maps a header name to its definition.
@@ -55,9 +54,9 @@ class Response extends AbstractAnnotation
      *
      * @see [RFC7230](https://tools.ietf.org/html/rfc7230#page-22)
      *
-     * @var list<Header>
+     * @var Header[]
      */
-    public $headers = Undefined::UNDEFINED;
+    public $headers = Generator::UNDEFINED;
 
     /**
      * A map containing descriptions of potential response payloads.
@@ -69,7 +68,7 @@ class Response extends AbstractAnnotation
      *
      * @var MediaType|JsonContent|XmlContent|Attachable|array<MediaType|JsonContent|XmlContent|Attachable>
      */
-    public $content = Undefined::UNDEFINED;
+    public $content = Generator::UNDEFINED;
 
     /**
      * A map of operations links that can be followed from the response.
@@ -77,9 +76,9 @@ class Response extends AbstractAnnotation
      * The key of the map is a short name for the link, following the naming constraints of the names for Component
      * Objects.
      *
-     * @var list<Link>
+     * @var Link[]
      */
-    public $links = Undefined::UNDEFINED;
+    public $links = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -114,16 +113,18 @@ class Response extends AbstractAnnotation
         Trace::class,
     ];
 
-    #[\Override]
-    public function validate(?Analysis $analysis = null, string $version = OpenApi::DEFAULT_VERSION, ?object $context = null): bool
+    /**
+     * @inheritdoc
+     */
+    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
     {
-        $isValid = parent::validate($analysis, $version, $context);
+        $valid = parent::validate($stack, $skip, $ref, $context);
 
-        if (Undefined::isDefault($this->description) && Undefined::isDefault($this->ref)) {
-            $this->_context->logger->warning($this->identity() . ' One of description or ref is required in ' . $this->_context);
-            $isValid = false;
+        if (Generator::isDefault($this->description) && Generator::isDefault($this->ref)) {
+            $this->_context->logger->warning($this->identity() . ' One of description or ref is required in ' . $this->_context->getDebugLocation());
+            $valid = false;
         }
 
-        return $isValid;
+        return $valid;
     }
 }

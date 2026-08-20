@@ -12,7 +12,7 @@ namespace OpenApi\Annotations;
 class Head extends Operation
 {
     /**
-     * @var string
+     * @inheritdoc
      */
     public $method = 'head';
 

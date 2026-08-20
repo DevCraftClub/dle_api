@@ -8,7 +8,7 @@ namespace OpenApi\Processors;
 
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Checks if the annotation has a summary and/or description property
@@ -59,9 +59,9 @@ class DocBlockDescriptions
      */
     protected function description(OA\AbstractAnnotation $annotation): void
     {
-        if (!Undefined::isDefault($annotation->description)) {
+        if (!Generator::isDefault($annotation->description)) {
             if ($annotation->description === null) {
-                $annotation->description = Undefined::UNDEFINED;
+                $annotation->description = Generator::UNDEFINED;
             }
 
             return;
@@ -75,16 +75,16 @@ class DocBlockDescriptions
      */
     protected function summaryAndDescription(OA\AbstractAnnotation $annotation): void
     {
-        $ignoreSummary = !Undefined::isDefault($annotation->summary);
-        $ignoreDescription = !Undefined::isDefault($annotation->description);
+        $ignoreSummary = !Generator::isDefault($annotation->summary);
+        $ignoreDescription = !Generator::isDefault($annotation->description);
 
         if ($annotation->summary === null) {
             $ignoreSummary = true;
-            $annotation->summary = Undefined::UNDEFINED;
+            $annotation->summary = Generator::UNDEFINED;
         }
 
         if ($annotation->description === null) {
-            $annotation->description = Undefined::UNDEFINED;
+            $annotation->description = Generator::UNDEFINED;
             $ignoreDescription = true;
         }
 

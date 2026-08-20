@@ -14,7 +14,8 @@ namespace OpenApi\Annotations;
 class CookieParameter extends Parameter
 {
     /**
-     * @var string
+     * @inheritdoc
+     * This takes 'cookie' as the default location.
      */
     public $in = 'cookie';
 }

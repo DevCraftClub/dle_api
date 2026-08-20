@@ -12,7 +12,7 @@ namespace OpenApi\Annotations;
 class Put extends Operation
 {
     /**
-     * @var string
+     * @inheritdoc
      */
     public $method = 'put';
 

@@ -52,7 +52,7 @@ class DocBlockParser
      *
      * @param string $comment a T_DOC_COMMENT
      *
-     * @return list<OA\AbstractAnnotation|object>
+     * @return array<OA\AbstractAnnotation|object>
      */
     public function fromComment(string $comment, Context $context): array
     {

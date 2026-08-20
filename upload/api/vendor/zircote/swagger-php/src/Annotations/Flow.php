@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Configuration details for a supported OAuth flow.
@@ -24,7 +24,7 @@ class Flow extends AbstractAnnotation
      *
      * @var string
      */
-    public $authorizationUrl = Undefined::UNDEFINED;
+    public $authorizationUrl = Generator::UNDEFINED;
 
     /**
      * The token URL to be used for this flow.
@@ -33,7 +33,7 @@ class Flow extends AbstractAnnotation
      *
      * @var string
      */
-    public $tokenUrl = Undefined::UNDEFINED;
+    public $tokenUrl = Generator::UNDEFINED;
 
     /**
      * The URL to be used for obtaining refresh tokens.
@@ -42,7 +42,7 @@ class Flow extends AbstractAnnotation
      *
      * @var string
      */
-    public $refreshUrl = Undefined::UNDEFINED;
+    public $refreshUrl = Generator::UNDEFINED;
 
     /**
      * Flow name.
@@ -51,7 +51,7 @@ class Flow extends AbstractAnnotation
      *
      * @var 'authorizationCode'|'clientCredentials'|'implicit'|'password'
      */
-    public $flow = Undefined::UNDEFINED;
+    public $flow = Generator::UNDEFINED;
 
     /**
      * The available scopes for the OAuth2 security scheme.
@@ -60,7 +60,7 @@ class Flow extends AbstractAnnotation
      *
      * @var array
      */
-    public $scopes = Undefined::UNDEFINED;
+    public $scopes = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -91,7 +91,11 @@ class Flow extends AbstractAnnotation
         Attachable::class => ['attachables'],
     ];
 
-    public function jsonSerialize(): \stdClass
+    /**
+     * @inheritdoc
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         if ($this->scopes === []) {
             $this->scopes = new \stdClass();

@@ -10,7 +10,7 @@ trait GeneratorAwareTrait
 {
     protected ?Generator $generator = null;
 
-    public function setGenerator(Generator $generator): static
+    public function setGenerator(Generator $generator)
     {
         $this->generator = $generator;
 

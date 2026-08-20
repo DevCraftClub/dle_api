@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Allows referencing an external resource for extended documentation.
@@ -22,14 +22,14 @@ class ExternalDocumentation extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * The URL for the target documentation.
      *
      * @var string
      */
-    public $url = Undefined::UNDEFINED;
+    public $url = Generator::UNDEFINED;
 
     /**
      * @inheritdoc

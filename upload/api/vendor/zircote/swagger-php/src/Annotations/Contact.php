@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Contact information for the exposed API.
@@ -22,21 +22,21 @@ class Contact extends AbstractAnnotation
      *
      * @var string
      */
-    public $name = Undefined::UNDEFINED;
+    public $name = Generator::UNDEFINED;
 
     /**
      * The URL pointing to the contact information.
      *
      * @var string
      */
-    public $url = Undefined::UNDEFINED;
+    public $url = Generator::UNDEFINED;
 
     /**
      * The email address of the contact person/organization.
      *
      * @var string
      */
-    public $email = Undefined::UNDEFINED;
+    public $email = Generator::UNDEFINED;
 
     /**
      * @inheritdoc

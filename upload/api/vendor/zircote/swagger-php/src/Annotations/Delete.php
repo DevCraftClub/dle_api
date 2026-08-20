@@ -12,7 +12,7 @@ namespace OpenApi\Annotations;
 class Delete extends Operation
 {
     /**
-     * @var string
+     * @inheritdoc
      */
     public $method = 'delete';
 

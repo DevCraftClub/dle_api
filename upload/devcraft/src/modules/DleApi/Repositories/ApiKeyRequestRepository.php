@@ -42,10 +42,10 @@ final class ApiKeyRequestRepository extends AbstractRepository {
 	public function findPendingByUser(int $userId): ?ApiKeyRequest {
 		/** @var ApiKeyRequest|null $e */
 		$e = $this->select()
-			->where('user_id', $userId)
-			->where('status', 'pending')
-			->orderBy('id', 'DESC')
-			->fetchOne();
+		          ->where('user_id', $userId)
+		          ->where('status', 'pending')
+		          ->orderBy('id', 'DESC')
+		          ->fetchOne();
 
 		return $e;
 	}
@@ -53,9 +53,9 @@ final class ApiKeyRequestRepository extends AbstractRepository {
 	public function latestByUser(int $userId): ?ApiKeyRequest {
 		/** @var ApiKeyRequest|null $e */
 		$e = $this->select()
-			->where('user_id', $userId)
-			->orderBy('id', 'DESC')
-			->fetchOne();
+		          ->where('user_id', $userId)
+		          ->orderBy('id', 'DESC')
+		          ->fetchOne();
 
 		return $e;
 	}

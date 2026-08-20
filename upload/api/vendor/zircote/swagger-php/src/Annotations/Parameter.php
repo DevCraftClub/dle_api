@@ -6,8 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Analysis;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Describes a single operation parameter.
@@ -27,14 +26,14 @@ class Parameter extends AbstractAnnotation
      *
      * @var string|class-string|object
      */
-    public $ref = Undefined::UNDEFINED;
+    public $ref = Generator::UNDEFINED;
 
     /**
      * The key into <code>Components::parameters</code> or <code>PathItem::parameters</code> array.
      *
      * @var string
      */
-    public $parameter = Undefined::UNDEFINED;
+    public $parameter = Generator::UNDEFINED;
 
     /**
      * The (case-sensitive) name of the parameter.
@@ -46,7 +45,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var string
      */
-    public $name = Undefined::UNDEFINED;
+    public $name = Generator::UNDEFINED;
 
     /**
      * The location of the parameter.
@@ -55,7 +54,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var string
      */
-    public $in = Undefined::UNDEFINED;
+    public $in = Generator::UNDEFINED;
 
     /**
      * A brief description of the parameter.
@@ -66,7 +65,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * Determines whether this parameter is mandatory.
@@ -76,14 +75,14 @@ class Parameter extends AbstractAnnotation
      *
      * @var bool
      */
-    public $required = Undefined::UNDEFINED;
+    public $required = Generator::UNDEFINED;
 
     /**
      * Specifies that a parameter is deprecated and should be transitioned out of usage.
      *
      * @var bool
      */
-    public $deprecated = Undefined::UNDEFINED;
+    public $deprecated = Generator::UNDEFINED;
 
     /**
      * Sets the ability to pass empty-valued parameters.
@@ -96,7 +95,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var bool
      */
-    public $allowEmptyValue = Undefined::UNDEFINED;
+    public $allowEmptyValue = Generator::UNDEFINED;
 
     /**
      * Describes how the parameter value will be serialized depending on the type of the parameter value.
@@ -105,7 +104,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var string
      */
-    public $style = Undefined::UNDEFINED;
+    public $style = Generator::UNDEFINED;
 
     /**
      * When this is true, parameter values of type array or object generate separate parameters for each value of the array or key-value pair of the map.
@@ -117,7 +116,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var bool
      */
-    public $explode = Undefined::UNDEFINED;
+    public $explode = Generator::UNDEFINED;
 
     /**
      * Determines whether the parameter value should allow reserved characters, as defined by RFC3986 :/?#[]@!$&'()*+,;= to be included without percent-encoding.
@@ -128,14 +127,14 @@ class Parameter extends AbstractAnnotation
      *
      * @var bool
      */
-    public $allowReserved = Undefined::UNDEFINED;
+    public $allowReserved = Generator::UNDEFINED;
 
     /**
      * The schema defining the type used for the parameter.
      *
      * @var Schema
      */
-    public $schema = Undefined::UNDEFINED;
+    public $schema = Generator::UNDEFINED;
 
     /**
      * Example of the media type.
@@ -144,10 +143,8 @@ class Parameter extends AbstractAnnotation
      * The example object is mutually exclusive of the examples object.
      * Furthermore, if referencing a schema which contains an example, the example value shall override the example provided by the schema.
      * To represent examples of media types that cannot naturally be represented in JSON or YAML, a string value can contain the example with escaping where necessary.
-     *
-     * @var mixed
      */
-    public $example = Undefined::UNDEFINED;
+    public $example = Generator::UNDEFINED;
 
     /**
      * Examples of the parameter.
@@ -158,7 +155,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var array<Examples>
      */
-    public $examples = Undefined::UNDEFINED;
+    public $examples = Generator::UNDEFINED;
 
     /**
      * A map containing the representations for the parameter.
@@ -168,25 +165,21 @@ class Parameter extends AbstractAnnotation
      *
      * @var array<MediaType>|JsonContent|XmlContent|Attachable
      */
-    public $content = Undefined::UNDEFINED;
+    public $content = Generator::UNDEFINED;
 
     /**
      * Path-style parameters defined by RFC6570.
      *
      * @see [RFC6570](https://tools.ietf.org/html/rfc6570#section-3.2.7)
-     *
-     * @var string
      */
-    public $matrix = Undefined::UNDEFINED;
+    public $matrix = Generator::UNDEFINED;
 
     /**
      * Label style parameters defined by RFC6570.
      *
      * @see [RFC6570](https://tools.ietf.org/html/rfc6570#section-3.2.5)
-     *
-     * @var string
      */
-    public $label = Undefined::UNDEFINED;
+    public $label = Generator::UNDEFINED;
 
     /**
      * Form style parameters defined by RFC6570.
@@ -194,10 +187,8 @@ class Parameter extends AbstractAnnotation
      * This option replaces collectionFormat with a csv (when explode is false) or multi (when explode is true) value from OpenAPI 2.0.
      *
      * @see [RFC6570](https://tools.ietf.org/html/rfc6570#section-3.2.8)
-     *
-     * @var mixed
      */
-    public $form = Undefined::UNDEFINED;
+    public $form = Generator::UNDEFINED;
 
     /**
      * Simple style parameters defined by RFC6570.
@@ -208,7 +199,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var array
      */
-    public $simple = Undefined::UNDEFINED;
+    public $simple = Generator::UNDEFINED;
 
     /**
      * Space separated array values.
@@ -217,7 +208,7 @@ class Parameter extends AbstractAnnotation
      *
      * @var array
      */
-    public $spaceDelimited = Undefined::UNDEFINED;
+    public $spaceDelimited = Generator::UNDEFINED;
 
     /**
      * Pipe separated array values.
@@ -226,14 +217,12 @@ class Parameter extends AbstractAnnotation
      *
      * @var array
      */
-    public $pipeDelimited = Undefined::UNDEFINED;
+    public $pipeDelimited = Generator::UNDEFINED;
 
     /**
      * Provides a simple way of rendering nested objects using form parameters.
-     *
-     * @var mixed
      */
-    public $deepObject = Undefined::UNDEFINED;
+    public $deepObject = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -277,21 +266,27 @@ class Parameter extends AbstractAnnotation
         Trace::class,
     ];
 
-    #[\Override]
-    public function validate(?Analysis $analysis = null, string $version = OpenApi::DEFAULT_VERSION, ?object $context = null): bool
+    /**
+     * @inheritdoc
+     */
+    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
     {
-        $isValid = parent::validate($analysis, $version, $context);
+        if (in_array($this, $skip, true)) {
+            return true;
+        }
 
-        if (Undefined::isDefault($this->ref)) {
+        $valid = parent::validate($stack, $skip, $ref, $context);
+
+        if (Generator::isDefault($this->ref)) {
             if ($this->in === 'body') {
-                if (Undefined::isDefault($this->schema)) {
+                if (Generator::isDefault($this->schema)) {
                     $this->_context->logger->warning('Field "schema" is required when ' . $this->identity() . ' is in "' . $this->in . '" in ' . $this->_context);
-                    $isValid = false;
+                    $valid = false;
                 }
             }
         }
 
-        return $isValid;
+        return $valid;
     }
 
     #[\Override]

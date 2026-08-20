@@ -6,23 +6,23 @@
 
 namespace OpenApi\Attributes;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 trait OperationTrait
 {
     /**
-     * @param list<Server>             $servers
-     * @param list<string>             $tags
-     * @param list<Parameter>          $parameters
-     * @param list<Response>           $responses
+     * @param Server[]                 $servers
+     * @param string[]                 $tags
+     * @param Parameter[]              $parameters
+     * @param Response[]               $responses
      * @param array<string,mixed>|null $x
-     * @param list<Attachable>|null    $attachables
+     * @param Attachable[]|null        $attachables
      */
     public function __construct(
         ?string $path = null,
         ?string $operationId = null,
-        ?string $description = Undefined::UNDEFINED,
-        ?string $summary = Undefined::UNDEFINED,
+        ?string $description = Generator::UNDEFINED,
+        ?string $summary = Generator::UNDEFINED,
         ?array $security = null,
         ?array $servers = null,
         ?RequestBody $requestBody = null,
@@ -32,23 +32,22 @@ trait OperationTrait
         ?array $callbacks = null,
         ?ExternalDocumentation $externalDocs = null,
         ?bool $deprecated = null,
-
-        // abstract annotation
+        // annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
         parent::__construct([
-                'path' => $path ?? Undefined::UNDEFINED,
-                'operationId' => $operationId ?? Undefined::UNDEFINED,
+                'path' => $path ?? Generator::UNDEFINED,
+                'operationId' => $operationId ?? Generator::UNDEFINED,
                 'description' => $description,
                 'summary' => $summary,
-                'security' => $security ?? Undefined::UNDEFINED,
-                'servers' => $servers ?? Undefined::UNDEFINED,
-                'tags' => $tags ?? Undefined::UNDEFINED,
-                'callbacks' => $callbacks ?? Undefined::UNDEFINED,
-                'deprecated' => $deprecated ?? Undefined::UNDEFINED,
-                'x' => $x ?? Undefined::UNDEFINED,
-                'attachables' => $attachables ?? Undefined::UNDEFINED,
+                'security' => $security ?? Generator::UNDEFINED,
+                'servers' => $servers ?? Generator::UNDEFINED,
+                'tags' => $tags ?? Generator::UNDEFINED,
+                'callbacks' => $callbacks ?? Generator::UNDEFINED,
+                'deprecated' => $deprecated ?? Generator::UNDEFINED,
+                'x' => $x ?? Generator::UNDEFINED,
+                'attachables' => $attachables ?? Generator::UNDEFINED,
                 'value' => $this->combine($requestBody, $responses, $parameters, $externalDocs),
             ]);
     }

@@ -7,34 +7,33 @@
 namespace OpenApi\Attributes;
 
 use OpenApi\Annotations as OA;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Info extends OA\Info
 {
     /**
      * @param array<string,mixed>|null $x
-     * @param list<Attachable>|null    $attachables
+     * @param Attachable[]|null        $attachables
      */
     public function __construct(
         ?string $version = null,
-        ?string $description = Undefined::UNDEFINED,
+        ?string $description = Generator::UNDEFINED,
         ?string $title = null,
         ?string $termsOfService = null,
         ?Contact $contact = null,
         ?License $license = null,
-
-        // abstract annotation
+        // annotation
         ?array $x = null,
         ?array $attachables = null
     ) {
         parent::__construct([
-                'version' => $version ?? Undefined::UNDEFINED,
+                'version' => $version ?? Generator::UNDEFINED,
                 'description' => $description,
-                'title' => $title ?? Undefined::UNDEFINED,
-                'termsOfService' => $termsOfService ?? Undefined::UNDEFINED,
-                'x' => $x ?? Undefined::UNDEFINED,
-                'attachables' => $attachables ?? Undefined::UNDEFINED,
+                'title' => $title ?? Generator::UNDEFINED,
+                'termsOfService' => $termsOfService ?? Generator::UNDEFINED,
+                'x' => $x ?? Generator::UNDEFINED,
+                'attachables' => $attachables ?? Generator::UNDEFINED,
                 'value' => $this->combine($contact, $license),
             ]);
     }

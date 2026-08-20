@@ -8,7 +8,7 @@ namespace OpenApi\Processors;
 
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * Use the property context to extract useful information and inject that into the annotation.
@@ -17,12 +17,13 @@ class AugmentDiscriminators
 {
     public function __invoke(Analysis $analysis): void
     {
+        /** @var OA\Discriminator[] $discriminators */
         $discriminators = $analysis->getAnnotationsOfType(OA\Discriminator::class);
 
         foreach ($discriminators as $discriminator) {
-            if (!Undefined::isDefault($discriminator->mapping)) {
+            if (!Generator::isDefault($discriminator->mapping)) {
                 foreach ($discriminator->mapping as $value => $type) {
-                    if (is_string($type) && $typeSchema = $analysis->getAnnotationForSource($type)) {
+                    if (is_string($type) && $typeSchema = $analysis->getSchemaForSource($type)) {
                         $discriminator->mapping[$value] = OA\Components::ref($typeSchema);
                     }
                 }

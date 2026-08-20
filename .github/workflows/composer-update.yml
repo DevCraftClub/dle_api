@@ -31,7 +31,9 @@ jobs:
           coverage: none
 
       - name: Run composer update
-        run: composer update --no-dev --no-interaction --prefer-dist --no-progress
+        run: |
+          rm -rf vendor
+          composer update --no-dev --no-interaction --prefer-dist --no-progress
 
       - name: Open PR if lock file changed
         uses: peter-evans/create-pull-request@v8

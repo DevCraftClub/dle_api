@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * An object representing a server.
@@ -26,7 +26,7 @@ class Server extends AbstractAnnotation
      *
      * @var string
      */
-    public $url = Undefined::UNDEFINED;
+    public $url = Generator::UNDEFINED;
 
     /**
      * An optional string describing the host designated by the URL.
@@ -35,16 +35,16 @@ class Server extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * A map between a variable name and its value.
      *
      * The value is used for substitution in the server's URL template.
      *
-     * @var list<ServerVariable>
+     * @var ServerVariable[]
      */
-    public $variables = Undefined::UNDEFINED;
+    public $variables = Generator::UNDEFINED;
 
     /**
      * @inheritdoc

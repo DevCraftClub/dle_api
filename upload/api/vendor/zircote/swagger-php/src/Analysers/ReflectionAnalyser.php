@@ -12,24 +12,24 @@ use OpenApi\Context;
 use OpenApi\Generator;
 use OpenApi\GeneratorAwareTrait;
 use OpenApi\OpenApiException;
-use OpenApi\Utils\TokenScanner;
 
 /**
  * OpenApi analyser using reflection.
  *
  * Can read either PHP <code>DocBlock</code>s or <code>Attribute</code>s.
  *
- * Due to the nature of reflection, this requires all related classes to be auto-loadable.
+ * Due to the nature of reflection this requires all related classes
+ * to be auto-loadable.
  */
 class ReflectionAnalyser implements AnalyserInterface
 {
     use GeneratorAwareTrait;
 
-    /** @var list<AnnotationFactoryInterface> */
+    /** @var AnnotationFactoryInterface[] */
     protected array $annotationFactories = [];
 
     /**
-     * @param list<AnnotationFactoryInterface> $annotationFactories
+     * @param array<AnnotationFactoryInterface> $annotationFactories
      */
     public function __construct(array $annotationFactories = [])
     {
@@ -44,15 +44,13 @@ class ReflectionAnalyser implements AnalyserInterface
         }
     }
 
-    public function setGenerator(Generator $generator): static
+    public function setGenerator(Generator $generator): void
     {
         $this->generator = $generator;
 
         foreach ($this->annotationFactories as $annotationFactory) {
             $annotationFactory->setGenerator($generator);
         }
-
-        return $this;
     }
 
     public function fromFile(string $filename, Context $context): Analysis
@@ -94,9 +92,7 @@ class ReflectionAnalyser implements AnalyserInterface
         }
 
         $rc = new \ReflectionClass($fqdn);
-        $contextType = $rc->isInterface()
-            ? 'interface'
-            : ($rc->isTrait() ? 'trait' : ($rc->isEnum() ? 'enum' : 'class'));
+        $contextType = $rc->isInterface() ? 'interface' : ($rc->isTrait() ? 'trait' : ((method_exists($rc, 'isEnum') && $rc->isEnum()) ? 'enum' : 'class'));
         $context = new Context([
             $contextType => $rc->getShortName(),
             'namespace' => $rc->getNamespaceName() ?: null,
@@ -118,7 +114,7 @@ class ReflectionAnalyser implements AnalyserInterface
             'methods' => [],
             'context' => $context,
         ];
-        $normaliseClass = static fn (string $name): string => '\\' . ltrim($name, '\\');
+        $normaliseClass = fn (string $name): string => '\\' . ltrim($name, '\\');
         if ($parentClass = $rc->getParentClass()) {
             $definition['extends'] = $normaliseClass($parentClass->getName());
         }

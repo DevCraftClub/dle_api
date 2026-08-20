@@ -2,7 +2,7 @@
 <dleplugin>
 	<name>DLE-API</name>
 	<description>Неофициальное REST API для CMS DLE</description>
-	<icon></icon>
+	<icon>/devcraft/src/modules/DleApi/Public/icon.png</icon>
 	<version>200.1.0</version>
 	<dleversion>20.0</dleversion>
 	<versioncompare>greater</versioncompare>
@@ -208,7 +208,7 @@ INSERT INTO {prefix}_email (name, template, use_html) VALUES
 </html>', 1)
 ON DUPLICATE KEY UPDATE template=VALUES(template), use_html=VALUES(use_html);
 ]]></mysqlupgrade>
-	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.1.0', 'Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.', '/devcraft/src/modules/DleApi/Public/icon.png', 1) ON DUPLICATE KEY UPDATE title='DLE-API v200.1.0', descr='Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.';]]></mysqlenable>
+	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.2.0', 'Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.', '/devcraft/src/modules/DleApi/Public/icon.png', 1) ON DUPLICATE KEY UPDATE title='DLE-API v200.2.0', descr='Неофициальное API для DLE. Управление ключами, уровнями и OAuth2.';]]></mysqlenable>
 	<mysqldisable><![CDATA[DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi']]></mysqldisable>
 	<mysqldelete><![CDATA[
 DROP TABLE IF EXISTS {prefix}_api_oauth_refresh_tokens;
@@ -229,9 +229,7 @@ DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';
 	<phpenable><![CDATA[]]></phpenable>
 	<phpdisable><![CDATA[]]></phpdisable>
 	<phpdelete><![CDATA[]]></phpdelete>
-	<notice><![CDATA[Документация: https://readme.devcraft.club/dev/dle_api/install/
-API v2: /api/v2 — Authorization: Bearer &lt;AuthToken&gt;.
-.env: DEMO_MODE=false, DLEAPI_SECURE=false]]></notice>
+	<notice><![CDATA[Документация: https://readme.devcraft.club/dev/dle/dle_api/200.1.0/install]]></notice>
 	<file name="engine/init.php">
 		<operation action="after">
 			<searchcode><![CDATA[// DevCraft Init: Stop]]></searchcode>

@@ -6,7 +6,7 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
 
 /**
  * @Annotation
@@ -20,21 +20,21 @@ class Examples extends AbstractAnnotation
      *
      * @var string|class-string|object
      */
-    public $ref = Undefined::UNDEFINED;
+    public $ref = Generator::UNDEFINED;
 
     /**
      * The key into <code>#/components/examples</code>.
      *
      * @var string
      */
-    public $example = Undefined::UNDEFINED;
+    public $example = Generator::UNDEFINED;
 
     /**
      * Short description for the example.
      *
      * @var string
      */
-    public $summary = Undefined::UNDEFINED;
+    public $summary = Generator::UNDEFINED;
 
     /**
      * Embedded literal example.
@@ -46,7 +46,7 @@ class Examples extends AbstractAnnotation
      *
      * @var string
      */
-    public $description = Undefined::UNDEFINED;
+    public $description = Generator::UNDEFINED;
 
     /**
      * Embedded literal example.
@@ -58,7 +58,7 @@ class Examples extends AbstractAnnotation
      *
      * @var int|string|array
      */
-    public $value = Undefined::UNDEFINED;
+    public $value = Generator::UNDEFINED;
 
     /**
      * An URL that points to the literal example.
@@ -70,7 +70,7 @@ class Examples extends AbstractAnnotation
      *
      * @var string
      */
-    public $externalValue = Undefined::UNDEFINED;
+    public $externalValue = Generator::UNDEFINED;
 
     public static $_types = [
         'summary' => 'string',
@@ -81,13 +81,10 @@ class Examples extends AbstractAnnotation
     public static $_required = ['summary'];
 
     public static $_parents = [
-        AdditionalProperties::class,
         Components::class,
-        Items::class,
         Schema::class,
         Parameter::class,
         PathParameter::class,
-        Property::class,
         MediaType::class,
         JsonContent::class,
         XmlContent::class,

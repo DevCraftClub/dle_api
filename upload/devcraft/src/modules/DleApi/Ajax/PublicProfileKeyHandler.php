@@ -25,7 +25,7 @@ use DevCraft\Modules\DleApi\Services\ProfileKeyService;
 final class PublicProfileKeyHandler implements AjaxHandlerInterface {
 
 	public function handle(AjaxRequest $request): ResponseInterface {
-		global $is_logged, $member_id;
+		global $is_logged, $member_id, $user_group;
 
 		if(empty($is_logged) || !is_array($member_id ?? null)) {
 			return JsonResponse::fail(__('Ошибка'), __('Требуется авторизация'), 'auth', 401);
@@ -38,7 +38,7 @@ final class PublicProfileKeyHandler implements AjaxHandlerInterface {
 
 		$action = (string) ($request->data['action'] ?? 'status');
 		$cfg    = DleApiConfig::all();
-		$isAdmin = (int) ($member_id['user_group'] ?? 0) === 1;
+		$isAdmin = $this->canModerate((array) $member_id, is_array($user_group ?? null) ? $user_group : []);
 		$targetUserId = (int) ($request->data['profile_user_id'] ?? $viewerId);
 		if($targetUserId < 1) {
 			$targetUserId = $viewerId;
@@ -118,6 +118,19 @@ final class PublicProfileKeyHandler implements AjaxHandlerInterface {
 	}
 
 	/**
+	 * @param array<string, mixed> $member
+	 * @param array<int|string, array<string, mixed>> $groups
+	 */
+	private function canModerate(array $member, array $groups): bool {
+		$groupId = (int) ($member['user_group'] ?? 0);
+		$group   = $groups[$groupId] ?? [];
+
+		return $groupId === 1
+		       || !empty($group['allow_all_edit'])
+		       || !empty($group['allow_admin']);
+	}
+
+	/**
 	 * @param array<string, mixed> $cfg
 	 * @return array<string, mixed>
 	 */
@@ -165,10 +178,8 @@ final class PublicProfileKeyHandler implements AjaxHandlerInterface {
 			return null;
 		}
 
-		$plain = DleApiConfig::isDemoMode() ? '***' : $key->api;
-		$masked = strlen($plain) > 8
-			? substr($plain, 0, 4) . str_repeat('*', max(4, strlen($plain) - 8)) . substr($plain, -4)
-			: str_repeat('*', max(4, strlen($plain)));
+		$plain = $key->api;
+		$masked = '***';
 
 		return [
 			'id'         => $key->id(),

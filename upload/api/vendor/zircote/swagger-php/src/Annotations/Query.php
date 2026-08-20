@@ -14,7 +14,7 @@ namespace OpenApi\Annotations;
 class Query extends Operation
 {
     /**
-     * @var string
+     * @inheritdoc
      */
     public $method = 'query';
 

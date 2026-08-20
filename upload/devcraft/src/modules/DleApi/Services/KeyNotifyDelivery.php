@@ -58,8 +58,8 @@ HTML;
 		$cfg['email_request_subject'] = (string) ($cfg['email_request_subject'] ?? self::defaultRequestSubject());
 		$cfg['email_approve_subject'] = (string) ($cfg['email_approve_subject'] ?? self::defaultApproveSubject());
 		$cfg['email_deny_subject']    = (string) ($cfg['email_deny_subject'] ?? self::defaultDenySubject());
-		$cfg['email_request_body']    = (string) ($cfg['email_request_body'] ?? self::defaultRequestEmailTemplate());
-		$cfg['email_decision_body']   = (string) ($cfg['email_decision_body'] ?? self::defaultDecisionEmailTemplate());
+		$cfg['email_request_body']    = self::decodeHtmlBody((string) ($cfg['email_request_body'] ?? self::defaultRequestEmailTemplate()));
+		$cfg['email_decision_body']   = self::decodeHtmlBody((string) ($cfg['email_decision_body'] ?? self::defaultDecisionEmailTemplate()));
 
 		return $cfg;
 	}
@@ -87,10 +87,10 @@ HTML;
 		);
 
 		if(isset($request['template']) && $request['template'] !== '') {
-			$cfg['email_request_body'] = (string) $request['template'];
+			$cfg['email_request_body'] = self::decodeHtmlBody((string) $request['template']);
 		}
 		if(isset($decision['template']) && $decision['template'] !== '') {
-			$cfg['email_decision_body'] = (string) $decision['template'];
+			$cfg['email_decision_body'] = self::decodeHtmlBody((string) $decision['template']);
 		}
 
 		return $cfg;
@@ -127,6 +127,7 @@ HTML;
 	 * @param array<string, string> $vars
 	 */
 	public function notifyRequest(array $userIds, array $vars): void {
+		$vars = $this->enrichVars($vars);
 		$cfg = self::applyEditorDefaults(DleApiConfig::all());
 		try {
 			if(!empty($cfg['notify_request_email'])) {
@@ -150,6 +151,7 @@ HTML;
 	 * @param array<string, string> $vars
 	 */
 	public function notifyDecision(int $userId, bool $approved, array $vars): void {
+		$vars = $this->enrichVars($vars);
 		$cfg = self::applyEditorDefaults(DleApiConfig::all());
 		try {
 			if(!empty($cfg['notify_decision_email'])) {
@@ -192,9 +194,9 @@ HTML;
 		}
 		$site = rtrim((string) ($config['http_home_url'] ?? '/'), '/');
 		$vars = [
-			'{%site_url%}' => $site,
-			'{%api_key%}'  => (string) ($vars['{%api_key%}'] ?? ''),
-		] + $vars;
+			        '{%site_url%}' => $site,
+			        '{%api_key%}'  => (string) ($vars['{%api_key%}'] ?? ''),
+		        ] + $vars;
 
 		$mail = new \dle_mail($config, !empty($row['use_html']));
 		$body = $this->apply($row['template'], $vars);
@@ -205,8 +207,8 @@ HTML;
 				continue;
 			}
 			$mail->send((string) $u['email'], $subj, $this->apply($body, [
-				'{%username%}' => (string) ($u['name'] ?? ''),
-			] + $vars));
+				                                                             '{%username%}' => (string) ($u['name'] ?? ''),
+			                                                             ] + $vars));
 		}
 	}
 
@@ -292,6 +294,33 @@ HTML;
 		return str_replace(array_keys($vars), array_values($vars), $tpl);
 	}
 
+	/**
+	 * @param array<string, string> $vars
+	 * @return array<string, string>
+	 */
+	private function enrichVars(array $vars): array {
+		if(($vars['{%username%}'] ?? '') !== '') {
+			return $vars;
+		}
+
+		$userId = (int) ($vars['{%user_id%}'] ?? 0);
+		if($userId < 1) {
+			return $vars;
+		}
+
+		$table = (defined('USERPREFIX') ? USERPREFIX : 'dle') . '_users';
+		$row   = Application::instance()->database()->query(
+			'SELECT name FROM ' . $table . ' WHERE user_id = :id',
+			['id' => $userId],
+		)->fetchAll();
+		$name = trim((string) ($row[0]['name'] ?? ''));
+		if($name !== '') {
+			$vars['{%username%}'] = $name;
+		}
+
+		return $vars;
+	}
+
 	private static function upsertEmailTemplate(string $name, string $template, bool $useHtml): void {
 		global $db;
 
@@ -314,6 +343,13 @@ HTML;
 		$db->query(
 			"INSERT INTO " . PREFIX . "_email (name, template, use_html) VALUES ('{$nameSql}', '{$templateSql}', '{$useHtmlSql}')"
 		);
+	}
+
+	/**
+	 * Декодирует HTML-сущности для отображения в ACE.
+	 */
+	private static function decodeHtmlBody(string $value): string {
+		return htmlspecialchars_decode($value, ENT_QUOTES|ENT_HTML5);
 	}
 
 }

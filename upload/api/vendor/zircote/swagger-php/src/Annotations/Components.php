@@ -6,7 +6,8 @@
 
 namespace OpenApi\Annotations;
 
-use OpenApi\Undefined;
+use OpenApi\Generator;
+use OpenApi\Util;
 
 /**
  * Holds a set of reusable objects for different aspects of the OA.
@@ -34,63 +35,63 @@ class Components extends AbstractAnnotation
      *
      * @var array<Schema|\OpenApi\Attributes\Schema>
      */
-    public $schemas = Undefined::UNDEFINED;
+    public $schemas = Generator::UNDEFINED;
 
     /**
      * Reusable Responses.
      *
-     * @var list<Response>
+     * @var Response[]
      */
-    public $responses = Undefined::UNDEFINED;
+    public $responses = Generator::UNDEFINED;
 
     /**
      * Reusable Parameters.
      *
-     * @var list<Parameter>
+     * @var Parameter[]
      */
-    public $parameters = Undefined::UNDEFINED;
+    public $parameters = Generator::UNDEFINED;
 
     /**
      * Reusable Examples.
      *
      * @var array<Examples>
      */
-    public $examples = Undefined::UNDEFINED;
+    public $examples = Generator::UNDEFINED;
 
     /**
      * Reusable Request Bodies.
      *
-     * @var list<RequestBody>
+     * @var RequestBody[]
      */
-    public $requestBodies = Undefined::UNDEFINED;
+    public $requestBodies = Generator::UNDEFINED;
 
     /**
      * Reusable Headers.
      *
-     * @var list<Header>
+     * @var Header[]
      */
-    public $headers = Undefined::UNDEFINED;
+    public $headers = Generator::UNDEFINED;
 
     /**
      * Reusable Security Schemes.
      *
-     * @var list<SecurityScheme>
+     * @var SecurityScheme[]
      */
-    public $securitySchemes = Undefined::UNDEFINED;
+    public $securitySchemes = Generator::UNDEFINED;
 
     /**
      * Reusable Links.
      *
-     * @var list<Link>
+     * @var Link[]
      */
-    public $links = Undefined::UNDEFINED;
+    public $links = Generator::UNDEFINED;
 
     /**
      * Reusable Callbacks.
      *
      * @var array
      */
-    public $callbacks = Undefined::UNDEFINED;
+    public $callbacks = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -122,7 +123,7 @@ class Components extends AbstractAnnotation
      */
     public static function componentTypes(): array
     {
-        return array_filter(array_keys(self::$_nested), static fn (string $value): bool => $value !== Attachable::class);
+        return array_filter(array_keys(self::$_nested), fn (string $value): bool => $value !== Attachable::class);
     }
 
     /**
@@ -150,28 +151,6 @@ class Components extends AbstractAnnotation
             $name = $component;
         }
 
-        return self::COMPONENTS_PREFIX . $type . '/' . ($encode ? static::refEncode((string) $name) : $name);
-    }
-
-    /**
-     * Escapes the special characters "/" and "~".
-     *
-     * https://swagger.io/docs/specification/using-ref/
-     * https://tools.ietf.org/html/rfc6901#page-3
-     */
-    public static function refEncode(string $raw): string
-    {
-        return str_replace('/', '~1', str_replace('~', '~0', $raw));
-    }
-
-    /**
-     * Converted the escaped characters "~1" and "~" back to "/" and "~".
-     *
-     * https://swagger.io/docs/specification/using-ref/
-     * https://tools.ietf.org/html/rfc6901#page-3
-     */
-    public static function refDecode(string $encoded): string
-    {
-        return str_replace('~1', '/', str_replace('~0', '~', $encoded));
+        return self::COMPONENTS_PREFIX . $type . '/' . ($encode ? Util::refEncode((string) $name) : $name);
     }
 }
