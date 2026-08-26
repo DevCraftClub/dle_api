@@ -11,6 +11,7 @@ use DevCraft\Modules\DleApi\Models\ApiKey;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiKeyRepository;
 use DevCraft\Modules\DleApi\Services\ScopeTableCatalog;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Страница управления API-ключами.
@@ -31,7 +32,7 @@ final class KeysPage extends AbstractPage {
 		}
 
 		$userNames = [];
-		foreach(Application::instance()->dleData()->users() as $row) {
+		foreach(DleDataService::users() as $row) {
 			$id = (int) ($row['user_id'] ?? 0);
 			if($id < 1) {
 				continue;
@@ -75,7 +76,7 @@ final class KeysPage extends AbstractPage {
 			['id' => 0, 'label' => '0 — ' . __('гость')],
 		];
 
-		foreach(Application::instance()->dleData()->users() as $row) {
+		foreach(DleDataService::users() as $row) {
 			$id = (int) ($row['user_id'] ?? 0);
 
 			if($id < 1) {

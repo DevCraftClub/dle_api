@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace DevCraft\Modules\DleApi\Services;
 
 use DevCraft\Core\Application;
+use DevCraft\Builders\QueryBuilder;
+use DevCraft\Core\Support\DleDataService;
 use DLEPlugins;
 use Throwable;
 
@@ -79,12 +81,16 @@ HTML;
 			return $cfg;
 		}
 
-		$request = $db->super_query(
-			"SELECT template FROM " . PREFIX . "_email WHERE name='" . $db->safesql(self::REQUEST_TEMPLATE_NAME) . "' LIMIT 1"
-		);
-		$decision = $db->super_query(
-			"SELECT template FROM " . PREFIX . "_email WHERE name='" . $db->safesql(self::DECISION_TEMPLATE_NAME) . "' LIMIT 1"
-		);
+		$request = QueryBuilder::create('email')
+			->withColumns(['template'])
+			->withConditionsItem('name', self::REQUEST_TEMPLATE_NAME)
+			->withLimit(1)
+			->first();
+		$decision = QueryBuilder::create('email')
+			->withColumns(['template'])
+			->withConditionsItem('name', self::DECISION_TEMPLATE_NAME)
+			->withLimit(1)
+			->first();
 
 		if(isset($request['template']) && $request['template'] !== '') {
 			$cfg['email_request_body'] = self::decodeHtmlBody((string) $request['template']);
@@ -185,7 +191,10 @@ HTML;
 			return;
 		}
 
-		$row = $db->super_query("SELECT * FROM " . PREFIX . "_email WHERE name='" . $db->safesql($name) . "' LIMIT 1");
+		$row = QueryBuilder::create('email')
+			->withConditionsItem('name', $name)
+			->withLimit(1)
+			->first();
 		if(empty($row['template'])) {
 			return;
 		}
@@ -194,21 +203,21 @@ HTML;
 		}
 		$site = rtrim((string) ($config['http_home_url'] ?? '/'), '/');
 		$vars = [
-			        '{%site_url%}' => $site,
-			        '{%api_key%}'  => (string) ($vars['{%api_key%}'] ?? ''),
-		        ] + $vars;
+			'{%site_url%}' => $site,
+			'{%api_key%}'  => (string) ($vars['{%api_key%}'] ?? ''),
+		] + $vars;
 
 		$mail = new \dle_mail($config, !empty($row['use_html']));
 		$body = $this->apply($row['template'], $vars);
 		$subj = $this->apply((string) ($vars['{%subject%}'] ?? __('DLE API')), $vars);
 		foreach($userIds as $uid) {
-			$u = $db->super_query('SELECT email, name FROM ' . USERPREFIX . '_users WHERE user_id=' . (int) $uid);
+			$u = DleDataService::user(id: (int) $uid);
 			if(empty($u['email'])) {
 				continue;
 			}
 			$mail->send((string) $u['email'], $subj, $this->apply($body, [
-				                                                             '{%username%}' => (string) ($u['name'] ?? ''),
-			                                                             ] + $vars));
+				'{%username%}' => (string) ($u['name'] ?? ''),
+			] + $vars));
 		}
 	}
 
@@ -330,7 +339,11 @@ HTML;
 
 		$nameSql     = $db->safesql($name);
 		$templateSql = $db->safesql($template);
-		$exists      = $db->super_query("SELECT id FROM " . PREFIX . "_email WHERE name='{$nameSql}' LIMIT 1");
+		$exists      = QueryBuilder::create('email')
+			->withColumns(['id'])
+			->withConditionsItem('name', $name)
+			->withLimit(1)
+			->first();
 		$useHtmlSql  = $useHtml ? '1' : '0';
 
 		if(!empty($exists['id'])) {
