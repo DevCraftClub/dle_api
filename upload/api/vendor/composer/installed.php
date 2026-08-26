@@ -3,7 +3,7 @@
         'name' => 'devcraftclub/dle-api',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '0e0679287be9bcf1be4741fd8a7e48e12e8a3723',
+        'reference' => 'f7eabb7b0bd02241e7ce5741655c1b5160f71fb7',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'devcraftclub/dle-api' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '0e0679287be9bcf1be4741fd8a7e48e12e8a3723',
+            'reference' => 'f7eabb7b0bd02241e7ce5741655c1b5160f71fb7',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
