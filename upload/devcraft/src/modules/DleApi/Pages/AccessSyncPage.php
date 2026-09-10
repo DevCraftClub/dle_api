@@ -10,6 +10,7 @@ use DevCraft\Modules\DleApi\Models\ApiAccessLevel;
 use DevCraft\Modules\DleApi\Models\ApiAccessLevelGroup;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelGroupRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Синхронизация групп DLE ↔ уровни доступа.
@@ -30,7 +31,7 @@ final class AccessSyncPage extends AbstractPage {
 		}
 
 		$groups = [];
-		foreach(Application::instance()->dleData()->groups() as $id => $name) {
+		foreach(DleDataService::groups() as $id => $name) {
 			$id = (int) $id;
 			if($id < 1) {
 				continue;

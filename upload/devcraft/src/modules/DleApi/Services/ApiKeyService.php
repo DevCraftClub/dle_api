@@ -12,6 +12,7 @@ use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiKeyRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiScopeRepository;
 use RuntimeException;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Создание и обновление API-ключей вместе с матрицей scope.
@@ -152,7 +153,7 @@ final class ApiKeyService {
 		if($userId < 1) {
 			return __('гость');
 		}
-		foreach(Application::instance()->dleData()->users() as $row) {
+		foreach(DleDataService::users() as $row) {
 			if((int) ($row['user_id'] ?? 0) !== $userId) {
 				continue;
 			}
