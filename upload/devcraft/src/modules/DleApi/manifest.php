@@ -3,6 +3,11 @@
 declare(strict_types=1);
 
 use DevCraft\Types\AdminLink;
+use DevCraft\Types\ModuleManifest;
+use DevCraft\Builders\ComposerTypeBuilder;
+use DevCraft\Builders\ModuleAssetsBuilder;
+use DevCraft\Builders\ModuleManifestBuilder;
+use DevCraft\Builders\ModuleAjaxConfigBuilder;
 use DevCraft\Modules\DleApi\Pages\KeysPage;
 use DevCraft\Modules\DleApi\Pages\OauthPage;
 use DevCraft\Modules\DleApi\Pages\SettingsPage;
@@ -30,28 +35,27 @@ use DevCraft\Modules\DleApi\Ajax\DeleteAccessLevelHandler;
 use DevCraft\Modules\DleApi\Ajax\RegenerateOauthClientSecretHandler;
 
 /**
- * Манифест модуля DLE API.
+ * Манифест модуля DLE API (fluent ModuleManifestBuilder).
  *
- * @return array<string, mixed>
+ * @package    DevCraft
+ * @since      200.1.0
+ * @subpackage Modules.DleApi
+ *
+ * @return ModuleManifest
  */
-return [
-	'mod'               => 'dleapi',
-	'code'              => 'dleapi',
-	'crowdinName'       => 'dle-api',
-	'crowdinStatId'     => '16830581-921125',
-	'composer_required' => [
-		['name' => 'league/oauth2-server', 'minVersion' => '^9.0', 'hardRequired' => true],
-	],
-	'meta'              => [
-		'name'        => 'DLE API',
-		'version'     => '200.1.1',
-		'description' => __('Неофициальное REST/SDK API для DLE: ключи, OAuth2 Bearer, /api/v2'),
-		'icon'        => 'mif-embed2',
-		'docsLink'    => 'https://readme.devcraft.club/dev/dle/dle_api/200.1.1/getting_started',
-		'siteLink'    => 'https://devcraft.club/downloads/dle-api.20/',
-		'siteId'      => 20,
-	],
-	'menu'              => [
+return ModuleManifestBuilder::create()
+	->mod('dleapi')
+	->code('dleapi')
+	->crowdinName('dle-api')
+	->crowdinStatId('16830581-921125')
+	->name('DLE API')
+	->version('200.1.1')
+	->description(__('Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2'))
+	->icon('mif-embed2')
+	->docsLink('https://readme.devcraft.club/dev/dle/dle_api/200.1.1/getting_started')
+	->siteLink('https://devcraft.club/downloads/dle-api.20/')
+	->siteId(20)
+	->menu([
 		AdminLink::page(__('Главная'), 'dashboard', DashboardPage::class, 'mif-home', 'dleapi'),
 		AdminLink::page(__('API-ключи'), 'keys', KeysPage::class, 'mif-key', 'dleapi'),
 		AdminLink::page(__('Уровни доступа'), 'access', AccessLevelsPage::class, 'mif-security', 'dleapi'),
@@ -60,36 +64,32 @@ return [
 		AdminLink::page(__('OAuth-клиенты'), 'oauth', OauthPage::class, 'mif-lock', 'dleapi'),
 		AdminLink::page(__('Настройки'), 'settings', SettingsPage::class, 'mif-cog', 'dleapi'),
 		AdminLink::page(__('Журнал изменений'), 'changelog', ChangelogPage::class, 'mif-library', 'dleapi'),
-	],
-	'ajax'              => [
-		'controller' => 'admin',
-		'methods'    => [
-			'settings'                       => SettingsHandler::class,
-			'create_key'                     => CreateKeyHandler::class,
-			'update_key'                     => UpdateKeyHandler::class,
-			'get_key'                        => GetKeyHandler::class,
-			'delete_key'                     => DeleteKeyHandler::class,
-			'toggle_key'                     => ToggleKeyHandler::class,
-			'create_oauth_client'            => CreateOauthClientHandler::class,
-			'update_oauth_client'            => UpdateOauthClientHandler::class,
-			'get_oauth_client'               => GetOauthClientHandler::class,
-			'regenerate_oauth_client_secret' => RegenerateOauthClientSecretHandler::class,
-			'delete_oauth_client'            => DeleteOauthClientHandler::class,
-			'save_access_level'              => SaveAccessLevelHandler::class,
-			'get_access_level'               => GetAccessLevelHandler::class,
-			'delete_access_level'            => DeleteAccessLevelHandler::class,
-			'save_access_sync'               => SaveAccessSyncHandler::class,
-			'decide_key_request'             => DecideKeyRequestHandler::class,
-		],
-		'public'     => [
-			'profile_key' => [
-				'handler'     => PublicProfileKeyHandler::class,
-				'allow_guest' => false,
-			],
-		],
-	],
-	'changelog'         => require DLEPlugins::Check(__DIR__ . '/changelog.data.php'),
-	'assets'            => [
-		'js' => ['dleapi.js'],
-	],
-];
+	])
+	->ajax(
+		ModuleAjaxConfigBuilder::create('admin')
+			->methods([
+				'settings'                       => SettingsHandler::class,
+				'create_key'                     => CreateKeyHandler::class,
+				'update_key'                     => UpdateKeyHandler::class,
+				'get_key'                        => GetKeyHandler::class,
+				'delete_key'                     => DeleteKeyHandler::class,
+				'toggle_key'                     => ToggleKeyHandler::class,
+				'create_oauth_client'            => CreateOauthClientHandler::class,
+				'update_oauth_client'            => UpdateOauthClientHandler::class,
+				'get_oauth_client'               => GetOauthClientHandler::class,
+				'regenerate_oauth_client_secret' => RegenerateOauthClientSecretHandler::class,
+				'delete_oauth_client'            => DeleteOauthClientHandler::class,
+				'save_access_level'              => SaveAccessLevelHandler::class,
+				'get_access_level'               => GetAccessLevelHandler::class,
+				'delete_access_level'            => DeleteAccessLevelHandler::class,
+				'save_access_sync'               => SaveAccessSyncHandler::class,
+				'decide_key_request'             => DecideKeyRequestHandler::class,
+			])
+			->publicMethod('profile_key', PublicProfileKeyHandler::class)
+	)
+	->composerRequired([
+		ComposerTypeBuilder::create('league/oauth2-server')->minVersion('^9.0')->hardRequired()->build(),
+	])
+	->changelog(require DLEPlugins::Check(__DIR__ . '/changelog.data.php'))
+	->assets(ModuleAssetsBuilder::create()->js('dleapi.js'))
+	->build(__DIR__);
