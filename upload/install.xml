@@ -3,7 +3,7 @@
 	<name>DLE-API</name>
 	<description>Неофициальное REST API для CMS DLE</description>
 	<icon>/devcraft/src/modules/DleApi/Public/icon.png</icon>
-	<version>200.1.0</version>
+	<version>200.1.1</version>
 	<dleversion>20.0</dleversion>
 	<versioncompare>greater</versioncompare>
 	<upgradeurl></upgradeurl>
@@ -229,33 +229,7 @@ DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';
 	<phpenable><![CDATA[]]></phpenable>
 	<phpdisable><![CDATA[]]></phpdisable>
 	<phpdelete><![CDATA[]]></phpdelete>
-	<notice><![CDATA[Документация: https://readme.devcraft.club/dev/dle/dle_api/200.1.0/install]]></notice>
-	<file name="engine/init.php">
-		<operation action="after">
-			<searchcode><![CDATA[// DevCraft Init: Stop]]></searchcode>
-			<replacecode><![CDATA[
-// DC DLE API: Start
-if (is_file(ROOT_DIR . '/api/sdk/bootstrap.php')) {
-	require_once DLEPlugins::Check(ROOT_DIR . '/api/sdk/bootstrap.php');
-}
-// DC DLE API: Stop
-]]></replacecode>
-			<enabled>1</enabled>
-		</operation>
-	</file>
-	<file name="engine/inc/include/init.php">
-		<operation action="after">
-			<searchcode><![CDATA[// DevCraft Init: Stop]]></searchcode>
-			<replacecode><![CDATA[
-// DC DLE API: Start
-if (is_file(ROOT_DIR . '/api/sdk/bootstrap.php')) {
-	require_once DLEPlugins::Check(ROOT_DIR . '/api/sdk/bootstrap.php');
-}
-// DC DLE API: Stop
-]]></replacecode>
-			<enabled>1</enabled>
-		</operation>
-	</file>
+	<notice><![CDATA[Документация: https://readme.devcraft.club/dev/dle/dle_api/200.1.1/install]]></notice>
 	<file name="engine/inc/email.php">
 		<operation action="after">
 			<searchcode><![CDATA[	$twofactor_html = isset($_POST['twofactor_html']) ? intval( $_POST['twofactor_html'] ) : 0;

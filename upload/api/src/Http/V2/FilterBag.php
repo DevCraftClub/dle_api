@@ -87,7 +87,7 @@ final class FilterBag {
 	 *     sort: string
 	 * } $parsed
 	 */
-	public static function apply(\DleApi\Fluent\TableQuery $query, array $parsed): \DleApi\Fluent\TableQuery {
+	public static function apply(\DevCraft\Dle\Fluent\TableQuery $query, array $parsed): \DevCraft\Dle\Fluent\TableQuery {
 		foreach($parsed['where'] as $col => $val) {
 			$query->where($col, $val);
 		}

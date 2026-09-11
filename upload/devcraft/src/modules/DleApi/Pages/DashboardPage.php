@@ -46,7 +46,7 @@ final class DashboardPage extends AbstractPage {
 				'dashboard'  => [
 					'app'              => [
 						'name'        => (string) ($meta['name'] ?? 'DLE API'),
-						'version'     => (string) ($meta['version'] ?? '200.1.0'),
+						'version'     => (string) ($meta['version'] ?? '200.1.1'),
 						'description' => (string) ($meta['description'] ?? ''),
 						'icon'        => (string) ($meta['icon'] ?? ''),
 						'docs_link'   => (string) ($meta['docsLink'] ?? ''),

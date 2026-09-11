@@ -8,7 +8,7 @@ use DevCraft\Core\Application;
 use DevCraft\Modules\DleApi\Models\ApiAccessLevel;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
 use DevCraft\Modules\DleApi\Services\DleApiConfig;
-use DleApi\Sdk\SdkException;
+use DevCraft\Dle\Sdk\SdkException;
 
 /**
  * Маскирование чувствительных полей в ответах CRUD.

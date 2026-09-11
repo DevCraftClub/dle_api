@@ -9,6 +9,23 @@ declare(strict_types=1);
  */
 return [
 	[
+		'version' => '200.1.1',
+		'date'    => '2026-09-10',
+		'changes' => [
+			'fixed' => [
+				__('При SQLSTATE[42S02] на api_*: нужен DevCraft Admin ≥ 200.4.1 (GenerateMigrations при пересборке схемы); сброс cycle_orm_schema.ser и повторный заход в модуль.'),
+			],
+			'changed' => [
+				__('Зависимость: DevCraft Admin ≥ 200.4.1 для авто-создания таблиц api_* после установки ядра.'),
+				__('In-process SDK (Schema / Fluent / Xfield / DcApi) переехал в DevCraft Admin (devcraft/src/sdk/dle/); пакет API стал его потребителем. Фасад DcApi и контракт /api/v2 не изменились.'),
+				__('Namespace SDK: DleApi\\{Schema,Fluent,Xfield,Sdk} → DevCraft\\Dle\\... Старые имена работают через алиасы классов (уйдут в следующем мажоре). Namespace DleApi\\Http и DleApi\\OpenApi остались в пакете API.'),
+			],
+			'removed' => [
+				__('api/sdk/bootstrap.php и вставки в engine/init.php: SDK поднимается через devcraft/init.php.'),
+			],
+		],
+	],
+	[
 		'version' => '200.1.0',
 		'date'    => '2026-07-21',
 		'changes' => [
@@ -34,7 +51,7 @@ return [
 			],
 			'changed' => [
 				__('Совместимость с DLE 20.0 (xfields.json, dual category, conversations).'),
-				__('Таблицы api_keys / api_scope / OAuth создаются Cycle-миграциями DevCraft (Models + AbstractEntity), а не DDL в install.xml.'),
+				__('Таблицы api_keys / api_scope / api_access_levels / OAuth создаются Cycle-миграциями DevCraft (Models + AbstractEntity), а не DDL в install.xml.'),
 				__('Scopes: колонка edit; own_only/cheater на уровне; trailing slash на всех маршрутах v2.'),
 				__('OpenAPI: описание ApiError без PHPDoc {@see}; Schema без пометки install.php.'),
 			],

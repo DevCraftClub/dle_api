@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DleApi\Http\V2\Table;
 
-use DleApi\Schema\IntrospectedTableSchema;
-use DleApi\Schema\SchemaRegistry;
-use DleApi\Schema\TableSchemaInterface;
+use DevCraft\Dle\Schema\IntrospectedTableSchema;
+use DevCraft\Dle\Schema\SchemaRegistry;
+use DevCraft\Dle\Schema\TableSchemaInterface;
 
 /**
  * Резолвер схемы только для HTTP /table/{name} (не патчит SchemaRegistry::get).

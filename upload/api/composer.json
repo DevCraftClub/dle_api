@@ -15,16 +15,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"DleApi\\": "src/",
-			"JetBrains\\PhpStorm\\": "src/Support/PhpStorm/"
-		},
-		"classmap": [
-			"sdk/DcApi.php"
-		],
-		"files": [
-			"src/Fluent/DcDatabase.php",
-			"src/Fluent/functions.php"
-		]
+			"DleApi\\": "src/"
+		}
 	},
 	"require-dev": {
 		"guzzlehttp/guzzle": "^8.0",
@@ -37,7 +29,7 @@
 	},
 	"scripts": {
 		"openapi": [
-			"@php vendor/zircote/swagger-php/bin/openapi -b vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ./src/Schema ./src/Xfield/Schema"
+			"@php vendor/zircote/swagger-php/bin/openapi -b ../devcraft/vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ../devcraft/src/sdk/dle/Schema ../devcraft/src/sdk/dle/Xfield/Schema"
 		]
 	},
 	"config": {

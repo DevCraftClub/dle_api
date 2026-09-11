@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace DleApi\Http\V2\Controller;
 
-use DleApi\Fluent\TableQuery;
+use DevCraft\Dle\Fluent\TableQuery;
 use DleApi\Http\V2\Auth\SecureFieldMasker;
 use DleApi\Http\V2\Auth\TableScopeGuard;
 use DleApi\Http\V2\FilterBag;
 use DleApi\Http\V2\JsonResponder;
 use DleApi\Http\V2\Support\TableBodyHydrator;
 use DleApi\Http\V2\Table\HttpTableSchemaResolver;
-use DleApi\Schema\IntrospectedTableSchema;
-use DleApi\Sdk\SdkException;
+use DevCraft\Dle\Schema\IntrospectedTableSchema;
+use DevCraft\Dle\Sdk\SdkException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Throwable;

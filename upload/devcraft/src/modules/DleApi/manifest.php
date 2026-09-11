@@ -44,10 +44,10 @@ return [
 	],
 	'meta'              => [
 		'name'        => 'DLE API',
-		'version'     => '200.1.0',
+		'version'     => '200.1.1',
 		'description' => __('Неофициальное REST/SDK API для DLE: ключи, OAuth2 Bearer, /api/v2'),
 		'icon'        => 'mif-embed2',
-		'docsLink'    => 'https://readme.devcraft.club/dev/dle/dle_api/200.1.0/getting_started',
+		'docsLink'    => 'https://readme.devcraft.club/dev/dle/dle_api/200.1.1/getting_started',
 		'siteLink'    => 'https://devcraft.club/downloads/dle-api.20/',
 		'siteId'      => 20,
 	],
