@@ -29,7 +29,7 @@
 	},
 	"scripts": {
 		"openapi": [
-			"@php vendor/zircote/swagger-php/bin/openapi -b ../devcraft/vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ../devcraft/src/sdk/dle/Schema ../devcraft/src/sdk/dle/Xfield/Schema"
+			"@php scripts/generate-openapi.php"
 		]
 	},
 	"config": {

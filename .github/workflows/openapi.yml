@@ -9,6 +9,8 @@ on:
     - 'upload/api/composer.json'
     - 'upload/api/composer.lock'
     - '.github/workflows/openapi.yml'
+    - '.github/scripts/fetch-admin-sdk.sh'
+    - 'upload/api/scripts/**'
 
 permissions:
   contents: write
@@ -37,6 +39,9 @@ jobs:
         composer install --no-dev --no-interaction --prefer-dist --no-progress
 
     - name: Generate openapi.yaml
+      env:
+        DLE_ADMIN_SDK: ${{ runner.temp }}/dle-admin-sdk
+        ADMIN_DOWNLOAD_URL: https://devcraft.club/downloads/devcraft-admin-panel.4/download
       run: composer openapi
 
     - name: Open PR if spec changed
@@ -49,6 +54,8 @@ jobs:
         title: 'chore(openapi): regenerate openapi.yaml'
         body: |
           Автоматическая регенерация `apidata/openapi.yaml` из PHP-атрибутов.
+
+          Модели Schema — из последней версии [DevCraft Admin](https://devcraft.club/downloads/devcraft-admin-panel.4/download).
 
           Триггер: `${{ github.event_name }}`
         labels: documentation

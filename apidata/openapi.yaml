@@ -1406,7 +1406,7 @@ components:
           type: integer
         schema_org:
           description: 'Колонка category.schema_org'
-          type: integer
+          type: string
         disable_index:
           description: 'Колонка category.disable_index'
           type: integer
@@ -1788,6 +1788,71 @@ components:
         lostid:
           description: 'Колонка lostdb.lostid'
           type: string
+      type: object
+    MailCampaignUsers:
+      description: 'Схема таблицы `mail_campaign_users`.'
+      properties:
+        campaign_id:
+          description: 'ID кампании (mail_campaign_users.campaign_id)'
+          type: integer
+        user_id:
+          description: 'ID пользователя (mail_campaign_users.user_id)'
+          type: integer
+      type: object
+    MailCampaigns:
+      description: 'Схема таблицы `mail_campaigns`.'
+      properties:
+        id:
+          description: 'Первичный ключ (mail_campaigns.id)'
+          type: integer
+        type:
+          description: 'Колонка mail_campaigns.type'
+          type: integer
+        enabled:
+          description: 'Колонка mail_campaigns.enabled'
+          type: integer
+        send_method:
+          description: 'Колонка mail_campaigns.send_method'
+          type: integer
+        sender_id:
+          description: 'ID отправителя (mail_campaigns.sender_id)'
+          type: integer
+        title:
+          description: 'Заголовок (mail_campaigns.title)'
+          type: string
+        message:
+          description: 'Текст сообщения (mail_campaigns.message)'
+          type: string
+        users_per_pass:
+          description: 'Колонка mail_campaigns.users_per_pass'
+          type: integer
+        send_interval:
+          description: 'Колонка mail_campaigns.send_interval'
+          type: integer
+        start_date:
+          description: 'Колонка mail_campaigns.start_date'
+          type: integer
+        total_users:
+          description: 'Колонка mail_campaigns.total_users'
+          type: integer
+        user_groups:
+          description: 'Колонка mail_campaigns.user_groups'
+          type: string
+        reg_date_from:
+          description: 'Колонка mail_campaigns.reg_date_from'
+          type: integer
+        reg_date_to:
+          description: 'Колонка mail_campaigns.reg_date_to'
+          type: integer
+        last_visit_from:
+          description: 'Колонка mail_campaigns.last_visit_from'
+          type: integer
+        last_visit_to:
+          description: 'Колонка mail_campaigns.last_visit_to'
+          type: integer
+        allow_mail:
+          description: 'Колонка mail_campaigns.allow_mail'
+          type: integer
       type: object
     MailLog:
       description: 'Схема таблицы `mail_log`.'
@@ -2348,8 +2413,8 @@ components:
           description: 'Колонка rss.cookie'
           type: string
         category:
-          description: 'CSV id или all (таблица rss.category)'
-          type: string
+          description: 'ID категории (rss.category)'
+          type: integer
         lastdate:
           description: 'Колонка rss.lastdate'
           type: integer
@@ -2560,7 +2625,7 @@ components:
           type: integer
         name:
           description: 'Имя (storage.name)'
-          type: integer
+          type: string
         type:
           description: 'Колонка storage.type'
           type: integer
@@ -2684,6 +2749,10 @@ components:
           $ref: '#/components/schemas/Lostdb'
         -
           $ref: '#/components/schemas/MailLog'
+        -
+          $ref: '#/components/schemas/MailCampaigns'
+        -
+          $ref: '#/components/schemas/MailCampaignUsers'
         -
           $ref: '#/components/schemas/Metatags'
         -
@@ -3360,7 +3429,7 @@ components:
           type: integer
         date:
           description: 'Дата/время (vote.date)'
-          type: integer
+          type: string
         title:
           description: 'Заголовок (vote.title)'
           type: string
