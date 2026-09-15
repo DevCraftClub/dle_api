@@ -10,6 +10,7 @@ use DevCraft\Modules\DleApi\Models\ApiAccessLevel;
 use DevCraft\Modules\DleApi\Models\ApiKeyRequest;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiKeyRequestRepository;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Заявки пользователей на API-ключ.
@@ -30,7 +31,7 @@ final class KeyRequestsPage extends AbstractPage {
 		}
 
 		$userNames = [];
-		foreach(Application::instance()->dleData()->users() as $row) {
+		foreach(DleDataService::users() as $row) {
 			$id = (int) ($row['user_id'] ?? 0);
 			if($id < 1) {
 				continue;

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DevCraft\Modules\DleApi\Pages;
 
+use DevCraft\Modules\DleApi\DleApiIdentity;
+
 use DLEPlugins;
 use DevCraft\Core\Application;
 use DevCraft\Core\Config\Paths;
@@ -11,6 +13,7 @@ use DevCraft\Core\Support\DataManager;
 use DevCraft\Core\Abstracts\AbstractPage;
 use DevCraft\Core\Interfaces\SettingsPageInterface;
 use DevCraft\Modules\DleApi\Services\KeyNotifyDelivery;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Настройки DLE API.
@@ -25,7 +28,7 @@ final class SettingsPage extends AbstractPage implements SettingsPageInterface {
 		$configFile = Paths::config() . '/dleapi.json';
 
 		if(!is_file($configFile)) {
-			DataManager::saveConfig('dleapi', [
+			DataManager::saveConfig(DleApiIdentity::code(), [
 				'algo'      => 'sha256',
 				'secret'    => '',
 				'length'    => 32,
@@ -34,10 +37,10 @@ final class SettingsPage extends AbstractPage implements SettingsPageInterface {
 			]);
 		}
 
-		$current = DataManager::getConfig('dleapi');
+		$current = DataManager::getConfig(DleApiIdentity::code());
 		$merged  = KeyNotifyDelivery::loadEditorConfig(is_array($current) ? $current : []);
 		if(!is_array($current) || $merged !== $current) {
-			DataManager::saveConfig('dleapi', $merged);
+			DataManager::saveConfig(DleApiIdentity::code(), $merged);
 		}
 
 		$dleHome = rtrim((string) ($config['http_home_url'] ?? '/'), '/') . '/';
@@ -57,11 +60,10 @@ final class SettingsPage extends AbstractPage implements SettingsPageInterface {
 	}
 
 	public function supplementFormData(): array {
-		$dleData = Application::instance()->dleData();
 		$groups  = [];
 		$users   = [];
 
-		foreach($dleData->groups() as $id => $name) {
+		foreach(DleDataService::groups() as $id => $name) {
 			$id = (int) $id;
 			if($id < 1) {
 				continue;
@@ -69,7 +71,7 @@ final class SettingsPage extends AbstractPage implements SettingsPageInterface {
 			$groups[(string) $id] = (string) $name;
 		}
 
-		foreach($dleData->users() as $row) {
+		foreach(DleDataService::users() as $row) {
 			$id    = (string) ((int) ($row['user_id'] ?? 0));
 			$name  = trim((string) ($row['name'] ?? ''));
 			$email = trim((string) ($row['email'] ?? ''));

@@ -9,6 +9,7 @@ use DevCraft\Modules\DleApi\Models\ApiAccessLevel;
 use DevCraft\Modules\DleApi\Models\ApiAccessLevelGroup;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelGroupRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
+use DevCraft\Core\Support\DleDataService;
 
 /**
  * Резолв уровня доступа: группа DLE → map → default из настроек.
@@ -30,8 +31,8 @@ final class AccessLevelResolver {
 		if($userId < 1) {
 			return $this->defaultLevel();
 		}
-		global $db;
-		$row = $db->super_query('SELECT user_group FROM ' . USERPREFIX . '_users WHERE user_id=' . (int) $userId);
+
+		$row = DleDataService::user(id: $userId);
 
 		return $this->forUserGroup((int) ($row['user_group'] ?? 0));
 	}
