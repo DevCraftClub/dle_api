@@ -91,5 +91,6 @@ return ModuleManifestBuilder::create()
 		ComposerTypeBuilder::create('league/oauth2-server')->minVersion('^9.0')->hardRequired()->build(),
 	])
 	->changelog(require DLEPlugins::Check(__DIR__ . '/changelog.data.php'))
+		// siteAssets не объявлен: Public JS только для админки; глобальная оболочка — через Admin {devcraft*} / siteAssets при появлении theme-global файлов.
 	->assets(ModuleAssetsBuilder::create()->js('dleapi.js'))
 	->build(__DIR__);
