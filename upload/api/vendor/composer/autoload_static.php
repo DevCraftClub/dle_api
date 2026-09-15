@@ -16,8 +16,6 @@ class ComposerStaticInite77d48595e9f9bb29fb530f5885e1fc3
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'b33e3d135e5d9e47d845c576147bda89' => __DIR__ . '/..' . '/php-di/php-di/src/functions.php',
-        'b70400944000c6698ff6479dc00126b8' => __DIR__ . '/../..' . '/src/Fluent/DcDatabase.php',
-        '71674beb5e5001e83d84a5ebf9b2cd11' => __DIR__ . '/../..' . '/src/Fluent/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -66,10 +64,6 @@ class ComposerStaticInite77d48595e9f9bb29fb530f5885e1fc3
             'League\\Event\\' => 13,
             'Lcobucci\\JWT\\' => 13,
             'Laravel\\SerializableClosure\\' => 28,
-        ),
-        'J' =>
-        array (
-            'JetBrains\\PhpStorm\\' => 19,
         ),
         'I' =>
         array (
@@ -204,10 +198,6 @@ class ComposerStaticInite77d48595e9f9bb29fb530f5885e1fc3
         array (
             0 => __DIR__ . '/..' . '/laravel/serializable-closure/src',
         ),
-        'JetBrains\\PhpStorm\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/src/Support/PhpStorm',
-        ),
         'Invoker\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-di/invoker/src',
@@ -236,7 +226,6 @@ class ComposerStaticInite77d48595e9f9bb29fb530f5885e1fc3
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'DcApi' => __DIR__ . '/../..' . '/sdk/DcApi.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
     );
 

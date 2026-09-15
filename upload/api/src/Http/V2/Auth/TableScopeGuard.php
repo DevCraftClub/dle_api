@@ -11,7 +11,7 @@ use DevCraft\Modules\DleApi\Models\ApiScope;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiAccessLevelScopeRepository;
 use DevCraft\Modules\DleApi\Repositories\ApiScopeRepository;
-use DleApi\Sdk\SdkException;
+use DevCraft\Dle\Sdk\SdkException;
 use JetBrains\PhpStorm\ExpectedValues;
 
 /**

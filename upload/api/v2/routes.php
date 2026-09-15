@@ -19,8 +19,6 @@ use DleApi\Http\V2\Controller\XfieldController;
 use DleApi\Http\V2\Middleware\ApiKeyAuthMiddleware;
 use DleApi\Http\V2\Middleware\BearerAuthMiddleware;
 
-require_once DLEPlugins::Check(API_ROOT . '/src/Fluent/functions.php');
-
 $app->group('', function (RouteCollectorProxy $group) {
 	$oauth = new OauthController();
 	$group->post('/oauth/token[/]', [$oauth, 'token']);

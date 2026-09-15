@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: 'DLE API'
   description: 'Неофициальное REST API для DataLife Engine 20.0. Поверхность: /api/v2. Ресурсы: Authorization: Bearer <AuthToken>. Выдача: POST /oauth/token с credential_type=api_key|auth|oauth_client или grant_type. Discovery: /.well-known/oauth-authorization-server. Identity: GET /me и /oauth/userinfo. Проверка сырого ключа: GET /key/check.'
-  version: 200.1.0
+  version: 200.1.1
 servers:
   -
     url: '{apiBase}'
@@ -1106,12 +1106,12 @@ paths:
             application/json:
               schema:
                 properties:
-                  version: { type: string, example: 200.1.0 }
+                  version: { type: string, example: 200.1.1 }
                   api: { type: string, example: v2 }
                   auth: { type: string, example: Bearer }
                 type: object
               example:
-                version: 200.1.0
+                version: 200.1.1
                 api: v2
                 auth: Bearer
       security: []

@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace DleApi\OpenApi;
 
-use DleApi\Schema\ConversationsSchema;
-use DleApi\Schema\PluginsSchema;
-use DleApi\Schema\PostSchema;
-use DleApi\Schema\TableRowUnion;
-use DleApi\Schema\UsergroupsSchema;
-use DleApi\Schema\UsersSchema;
-use DleApi\Xfield\Schema\PostXfieldField;
-use DleApi\Xfield\Schema\PostXfieldsCatalog;
-use DleApi\Xfield\Schema\UserXfieldsCatalog;
+use DevCraft\Dle\Schema\ConversationsSchema;
+use DevCraft\Dle\Schema\PluginsSchema;
+use DevCraft\Dle\Schema\PostSchema;
+use DevCraft\Dle\Schema\TableRowUnion;
+use DevCraft\Dle\Schema\UsergroupsSchema;
+use DevCraft\Dle\Schema\UsersSchema;
+use DevCraft\Dle\Xfield\Schema\PostXfieldField;
+use DevCraft\Dle\Xfield\Schema\PostXfieldsCatalog;
+use DevCraft\Dle\Xfield\Schema\UserXfieldsCatalog;
 use OpenApi\Attributes as OA;
 
 /**
  * Корневое описание OpenAPI для DLE API v2.
  */
 #[OA\Info(
-	version: '200.1.0',
+	version: '200.1.1',
 	title: 'DLE API',
 	description: 'Неофициальное REST API для DataLife Engine 20.0. Поверхность: /api/v2. Ресурсы: Authorization: Bearer <AuthToken>. Выдача: POST /oauth/token с credential_type=api_key|auth|oauth_client или grant_type. Discovery: /.well-known/oauth-authorization-server. Identity: GET /me и /oauth/userinfo. Проверка сырого ключа: GET /key/check.',
 )]
@@ -830,11 +830,11 @@ final class Document {
 		description: 'OK',
 		content: new OA\JsonContent(
 			properties: [
-				new OA\Property(property: 'version', type: 'string', example: '200.1.0'),
+				new OA\Property(property: 'version', type: 'string', example: '200.1.1'),
 				new OA\Property(property: 'api', type: 'string', example: 'v2'),
 				new OA\Property(property: 'auth', type: 'string', example: 'Bearer'),
 			],
-			example: ['version' => '200.1.0', 'api' => 'v2', 'auth' => 'Bearer'],
+			example: ['version' => '200.1.1', 'api' => 'v2', 'auth' => 'Bearer'],
 		),
 	)]
 	public function health(): void {}

@@ -15,6 +15,4 @@ return array(
     '253c157292f75eb38082b5acb06f3f01' => $vendorDir . '/nikic/fast-route/src/functions.php',
     '7b11c4dc42b3b3023073cb14e519683c' => $vendorDir . '/ralouphie/getallheaders/src/getallheaders.php',
     'b33e3d135e5d9e47d845c576147bda89' => $vendorDir . '/php-di/php-di/src/functions.php',
-    'b70400944000c6698ff6479dc00126b8' => $baseDir . '/src/Fluent/DcDatabase.php',
-    '71674beb5e5001e83d84a5ebf9b2cd11' => $baseDir . '/src/Fluent/functions.php',
 );

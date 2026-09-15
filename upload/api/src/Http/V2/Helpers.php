@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 /**
  * Вспомогательные функции API v2.
+ *
+ * Функции `dle_api_*` уровня БД живут в SDK DevCraft Admin
+ * (`devcraft/src/sdk/dle/Fluent/DcDatabase.php`) и подключаются в Bootstrap.
  */
-
-require_once DLEPlugins::Check(dirname(__DIR__, 2) . '/Fluent/DcDatabase.php');
 
 /**
  * Парсит CSV категорий в массив id.

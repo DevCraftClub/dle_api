@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace DleApi\Http\V2\Controller;
 
 use DleApi\Http\V2\JsonResponder;
-use DleApi\Xfield\XfieldDefinitionNormalizer;
-use DleApi\Xfield\XfieldStore;
-use DleApi\Xfield\XfieldTypeSpec;
-use DleApi\Xfield\XfieldValidationException;
-use DleApi\Xfield\XfieldValueEncoder;
+use DevCraft\Dle\Xfield\XfieldDefinitionNormalizer;
+use DevCraft\Dle\Xfield\XfieldStore;
+use DevCraft\Dle\Xfield\XfieldTypeSpec;
+use DevCraft\Dle\Xfield\XfieldValidationException;
+use DevCraft\Dle\Xfield\XfieldValueEncoder;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Throwable;

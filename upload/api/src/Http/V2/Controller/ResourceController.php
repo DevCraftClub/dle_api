@@ -7,8 +7,8 @@ namespace DleApi\Http\V2\Controller;
 use DleApi\Http\V2\JsonResponder;
 use DleApi\Http\V2\Support\TableBodyHydrator;
 use DleApi\Http\V2\FilterBag;
-use DleApi\Fluent\TableQuery;
-use DleApi\Schema\SchemaRegistry;
+use DevCraft\Dle\Fluent\TableQuery;
+use DevCraft\Dle\Schema\SchemaRegistry;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Throwable;
@@ -121,7 +121,7 @@ final class ResourceController {
 
 	public function health(Request $_request, Response $_response): Response {
 		return JsonResponder::ok([
-			'version' => '200.1.0',
+			'version' => '200.1.1',
 			'api'     => 'v2',
 			'auth'    => 'Bearer',
 		]);

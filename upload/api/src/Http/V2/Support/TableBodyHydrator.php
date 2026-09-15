@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace DleApi\Http\V2\Support;
 
-use DleApi\Fluent\RelationMap;
-use DleApi\Fluent\TableBuilder;
-use DleApi\Schema\SchemaRegistry;
-use function DleApi\Fluent\prepare;
+use DevCraft\Dle\Fluent\RelationMap;
+use DevCraft\Dle\Fluent\TableBuilder;
+use DevCraft\Dle\Schema\SchemaRegistry;
+use function DevCraft\Dle\Fluent\prepare;
 
 /**
  * Собирает TableBuilder из JSON-тела (колонки + nested child tables).
