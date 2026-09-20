@@ -1,7 +1,7 @@
 {
 	"name": "devcraftclub/dle-api",
 	"description": "Неофициальное REST API для DataLife Engine",
-	"license": "GPL-3.0-only",
+	"license": "MIT",
 	"require": {
 		"ext-json": "*",
 		"ext-pdo": "*",
@@ -29,7 +29,7 @@
 	},
 	"scripts": {
 		"openapi": [
-			"@php vendor/zircote/swagger-php/bin/openapi -b ../devcraft/vendor/autoload.php -o ../../apidata/openapi.yaml -f yaml ./src/OpenApi ../devcraft/src/sdk/dle/Schema ../devcraft/src/sdk/dle/Xfield/Schema"
+			"@php scripts/generate-openapi.php"
 		]
 	},
 	"config": {

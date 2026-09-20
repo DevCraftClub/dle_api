@@ -8,6 +8,8 @@ use DevCraft\Builders\ComposerTypeBuilder;
 use DevCraft\Builders\ModuleAssetsBuilder;
 use DevCraft\Builders\ModuleManifestBuilder;
 use DevCraft\Builders\ModuleAjaxConfigBuilder;
+use DevCraft\Builders\ModuleSiteAssetsBuilder;
+use DevCraft\Modules\DleApi\DleApiIdentity;
 use DevCraft\Modules\DleApi\Pages\KeysPage;
 use DevCraft\Modules\DleApi\Pages\OauthPage;
 use DevCraft\Modules\DleApi\Pages\SettingsPage;
@@ -44,26 +46,26 @@ use DevCraft\Modules\DleApi\Ajax\RegenerateOauthClientSecretHandler;
  * @return ModuleManifest
  */
 return ModuleManifestBuilder::create()
-	->mod('dleapi')
-	->code('dleapi')
+	->mod(DleApiIdentity::mod())
+	->code(DleApiIdentity::code())
 	->crowdinName('dle-api')
 	->crowdinStatId('16830581-921125')
 	->name('DLE API')
 	->version('200.1.1')
 	->description(__('Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2'))
 	->icon('mif-embed2')
-	->docsLink('https://readme.devcraft.club/dev/dle/dle_api/200.1.1/getting_started')
+	->docsLink('https://readme.devcraft.club/latest/dev/dle_api/install/')
 	->siteLink('https://devcraft.club/downloads/dle-api.20/')
 	->siteId(20)
 	->menu([
-		AdminLink::page(__('Главная'), 'dashboard', DashboardPage::class, 'mif-home', 'dleapi'),
-		AdminLink::page(__('API-ключи'), 'keys', KeysPage::class, 'mif-key', 'dleapi'),
-		AdminLink::page(__('Уровни доступа'), 'access', AccessLevelsPage::class, 'mif-security', 'dleapi'),
-		AdminLink::page(__('Синхронизация с группами'), 'access_sync', AccessSyncPage::class, 'mif-users', 'dleapi'),
-		AdminLink::page(__('Заявки на ключ'), 'key_requests', KeyRequestsPage::class, 'mif-mail', 'dleapi'),
-		AdminLink::page(__('OAuth-клиенты'), 'oauth', OauthPage::class, 'mif-lock', 'dleapi'),
-		AdminLink::page(__('Настройки'), 'settings', SettingsPage::class, 'mif-cog', 'dleapi'),
-		AdminLink::page(__('Журнал изменений'), 'changelog', ChangelogPage::class, 'mif-library', 'dleapi'),
+		AdminLink::page(__('Главная'), 'dashboard', DashboardPage::class, 'mif-home', DleApiIdentity::mod()),
+		AdminLink::page(__('API-ключи'), 'keys', KeysPage::class, 'mif-key', DleApiIdentity::mod()),
+		AdminLink::page(__('Уровни доступа'), 'access', AccessLevelsPage::class, 'mif-security', DleApiIdentity::mod()),
+		AdminLink::page(__('Синхронизация с группами'), 'access_sync', AccessSyncPage::class, 'mif-users', DleApiIdentity::mod()),
+		AdminLink::page(__('Заявки на ключ'), 'key_requests', KeyRequestsPage::class, 'mif-mail', DleApiIdentity::mod()),
+		AdminLink::page(__('OAuth-клиенты'), 'oauth', OauthPage::class, 'mif-lock', DleApiIdentity::mod()),
+		AdminLink::page(__('Настройки'), 'settings', SettingsPage::class, 'mif-cog', DleApiIdentity::mod()),
+		AdminLink::page(__('Журнал изменений'), 'changelog', ChangelogPage::class, 'mif-library', DleApiIdentity::mod()),
 	])
 	->ajax(
 		ModuleAjaxConfigBuilder::create('admin')
@@ -91,6 +93,14 @@ return ModuleManifestBuilder::create()
 		ComposerTypeBuilder::create('league/oauth2-server')->minVersion('^9.0')->hardRequired()->build(),
 	])
 	->changelog(require DLEPlugins::Check(__DIR__ . '/changelog.data.php'))
-		// siteAssets не объявлен: Public JS только для админки; глобальная оболочка — через Admin {devcraft*} / siteAssets при появлении theme-global файлов.
 	->assets(ModuleAssetsBuilder::create()->js('dleapi.js'))
+	->siteAssets(
+		ModuleSiteAssetsBuilder::create()
+			->css('dleapi_profile.css', available: ['userinfo'])
+			->js(
+				'dleapi_profile.js',
+				dependsOn: ['devcraft/src/templates/core/assets/js/dc_public.js'],
+				available: ['userinfo'],
+			)
+	)
 	->build(__DIR__);
