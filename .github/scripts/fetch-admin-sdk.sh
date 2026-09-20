@@ -2,10 +2,11 @@
 # Скачивает текущий zip DevCraft Admin с витрины и кладёт sdk/dle (модели Schema).
 # /download отдаёт GitHub-снимок репозитория: mhadmin-rel-{версия}.zip
 # (корень архива mhadmin-rel-200.4.1/upload/devcraft/src/sdk/dle).
-# Env: ADMIN_DOWNLOAD_URL, DLE_ADMIN_SDK (каталог назначения = …/sdk/dle)
+# Env: ADMIN_DOWNLOAD_URL, ADMIN_ARCHIVE_URL, DLE_ADMIN_SDK, GITHUB_TOKEN
 set -eu
 
 URL="${ADMIN_DOWNLOAD_URL:-https://devcraft.club/downloads/devcraft-admin-panel.4/download}"
+FALLBACK="${ADMIN_ARCHIVE_URL:-https://github.com/DevCraftClub/mhadmin/archive/refs/heads/rel/200.4.1.zip}"
 DEST="${DLE_ADMIN_SDK:-}"
 
 if [ -z "$DEST" ]; then
@@ -13,31 +14,49 @@ if [ -z "$DEST" ]; then
 	exit 1
 fi
 
+if ! command -v unzip >/dev/null 2>&1; then
+	echo "Admin SDK: нет unzip" >&2
+	exit 1
+fi
+
 TMP="$(mktemp -d)"
 cleanup() { rm -rf "$TMP"; }
 trap cleanup EXIT
 
-echo "Admin SDK: скачиваю ${URL}" >&2
-# -J: имя файла из Content-Disposition → mhadmin-rel-200.4.1.zip
-(
-	cd "$TMP"
-	curl -fsSL --retry 3 --retry-delay 2 -L -J -O "$URL"
-)
+ZIP="$TMP/admin.zip"
 
-ZIP="$(find "$TMP" -maxdepth 1 -type f \( -name '*.zip' -o -name '*.ZIP' \) | head -n 1)"
-if [ -z "$ZIP" ]; then
-	echo "Admin SDK: zip не появился в ${TMP}" >&2
-	ls -la "$TMP" >&2 || true
-	exit 1
+curl_zip() {
+	src="$1"
+	echo "Admin SDK: скачиваю ${src}" >&2
+	# Фиксированное имя: -J/-O на CI часто даёт файл «download» без .zip.
+	if [ -n "${GITHUB_TOKEN:-}" ] && printf '%s' "$src" | grep -q 'github.com'; then
+		curl -fsSL --retry 3 --retry-delay 2 -L \
+			-H "Authorization: Bearer ${GITHUB_TOKEN}" \
+			-o "$ZIP" "$src"
+	else
+		curl -fsSL --retry 3 --retry-delay 2 -L -o "$ZIP" "$src"
+	fi
+}
+
+zip_ok() {
+	[ -s "$ZIP" ] && unzip -t "$ZIP" >/dev/null 2>&1
+}
+
+if ! curl_zip "$URL" || ! zip_ok; then
+	echo "Admin SDK: витрина не zip, пробую снимок GitHub" >&2
+	head -c 160 "$ZIP" >&2 || true
+	echo >&2
+	curl_zip "$FALLBACK"
 fi
 
-echo "Admin SDK: файл $(basename "$ZIP")" >&2
-
-if ! unzip -t "$ZIP" >/dev/null 2>&1; then
+if ! zip_ok; then
 	echo "Admin SDK: ответ не zip (Cloudflare / вход?)" >&2
+	ls -la "$TMP" >&2 || true
 	head -c 200 "$ZIP" >&2 || true
 	exit 1
 fi
+
+echo "Admin SDK: файл $(wc -c < "$ZIP") байт" >&2
 
 unzip -q "$ZIP" -d "$TMP/unpack"
 

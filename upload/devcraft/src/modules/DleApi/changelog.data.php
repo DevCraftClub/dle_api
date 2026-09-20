@@ -12,14 +12,18 @@ use DevCraft\Types\Changelog;
  */
 return [
 	ChangelogBuilder::create('200.1.1')
-		->date('2026-09-10')
+		->date('2026-09-20')
 		->changed([
 			__('Зависимость: DevCraft Admin ≥ 200.4.1 для авто-создания таблиц api_* после установки ядра.'),
 			__('In-process SDK (Schema / Fluent / Xfield / DcApi) переехал в DevCraft Admin (devcraft/src/sdk/dle/); пакет API стал его потребителем. Фасад DcApi и контракт /api/v2 не изменились.'),
 			__('Namespace SDK: DleApi\{Schema,Fluent,Xfield,Sdk} → DevCraft\Dle\... Старые имена работают через алиасы классов (уйдут в следующем мажоре). Namespace DleApi\Http и DleApi\OpenApi остались в пакете API.'),
+			__('install.xml: иконка — путь к Public/icon.png, allow_groups 1,2, notice — страница плагина и документация.'),
+			__('Блок профиля: Controller/show_dleapi_profile.php; CSS/JS — Public/ + siteAssets на userinfo.'),
 		])
 		->removed([
 			__('api/sdk/bootstrap.php и вставки в engine/init.php: SDK поднимается через devcraft/init.php.'),
+			__('Файл engine/modules/devcraft/dleapi_profile.php и CSS/JS профиля в теме.'),
+			__('Автопосев dleapi.json при открытии настроек, если файла нет.'),
 		])
 		->fixed([
 			__('При SQLSTATE[42S02] на api_*: нужен DevCraft Admin ≥ 200.4.1 (GenerateMigrations при пересборке схемы); сброс cycle_orm_schema.ser и повторный заход в модуль.'),

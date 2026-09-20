@@ -2,7 +2,7 @@
 <dleplugin>
 	<name>DLE-API</name>
 	<description>Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2</description>
-	<icon>/devcraft/src/modules/DleApi/Public/icon.png</icon>
+	<icon>devcraft/src/modules/DleApi/Public/icon.png</icon>
 	<version>200.1.1</version>
 	<dleversion>20.0</dleversion>
 	<versioncompare>greater</versioncompare>
@@ -106,7 +106,8 @@ INSERT INTO {prefix}_email (name, template, use_html) VALUES
   </table>
 </body>
 </html>', 1)
-ON DUPLICATE KEY UPDATE template=VALUES(template), use_html=VALUES(use_html);]]></mysqlinstall>
+ON DUPLICATE KEY UPDATE template=VALUES(template), use_html=VALUES(use_html);
+INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.1.1', 'Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', 'devcraft/src/modules/DleApi/Public/icon.png', '1,2') ON DUPLICATE KEY UPDATE title='DLE-API v200.1.1', descr='Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', icon='devcraft/src/modules/DleApi/Public/icon.png', allow_groups='1,2';]]></mysqlinstall>
 	<mysqlupgrade><![CDATA[ALTER TABLE {prefix}_email MODIFY name varchar(64) NOT NULL;
 INSERT INTO {prefix}_email (name, template, use_html) VALUES
 ('dleapi_key_request', '<!DOCTYPE html>
@@ -204,9 +205,9 @@ INSERT INTO {prefix}_email (name, template, use_html) VALUES
 </body>
 </html>', 1)
 ON DUPLICATE KEY UPDATE template=VALUES(template), use_html=VALUES(use_html);
-INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.1.1', 'Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', '/devcraft/src/modules/DleApi/Public/icon.png', 1) ON DUPLICATE KEY UPDATE title='DLE-API v200.1.1', descr='Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', icon='/devcraft/src/modules/DleApi/Public/icon.png';
+INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.1.1', 'Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', 'devcraft/src/modules/DleApi/Public/icon.png', '1,2') ON DUPLICATE KEY UPDATE title='DLE-API v200.1.1', descr='Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', icon='devcraft/src/modules/DleApi/Public/icon.png', allow_groups='1,2';
 ]]></mysqlupgrade>
-	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.1.1', 'Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', '/devcraft/src/modules/DleApi/Public/icon.png', 1) ON DUPLICATE KEY UPDATE title='DLE-API v200.1.1', descr='Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', icon='/devcraft/src/modules/DleApi/Public/icon.png';]]></mysqlenable>
+	<mysqlenable><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('dleapi', 'DLE-API v200.1.1', 'Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', 'devcraft/src/modules/DleApi/Public/icon.png', '1,2') ON DUPLICATE KEY UPDATE title='DLE-API v200.1.1', descr='Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2', icon='devcraft/src/modules/DleApi/Public/icon.png', allow_groups='1,2';]]></mysqlenable>
 	<mysqldisable><![CDATA[DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi']]></mysqldisable>
 	<mysqldelete><![CDATA[DROP TABLE IF EXISTS {prefix}_api_oauth_refresh_tokens;
 DROP TABLE IF EXISTS {prefix}_api_oauth_access_tokens;
@@ -225,7 +226,7 @@ DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';]]></mysqldelete>
 	<phpenable><![CDATA[]]></phpenable>
 	<phpdisable><![CDATA[]]></phpdisable>
 	<phpdelete><![CDATA[]]></phpdelete>
-	<notice><![CDATA[Документация: https://readme.devcraft.club/dev/dle/dle_api/200.1.1/install]]></notice>
+	<notice><![CDATA[<ul><li><b>Ссылка на плагин</b>: <a href="https://devcraft.club/downloads/dle-api.20/" target="_blank">перейти</a></li><li><b>Документация</b>: <a href="https://readme.devcraft.club/latest/dev/dle_api/install/" target="_blank">перейти</a></li></ul>]]></notice>
 	<file name="engine/inc/email.php">
 		<operation action="after">
 			<searchcode><![CDATA[	$twofactor_html = isset($_POST['twofactor_html']) ? intval( $_POST['twofactor_html'] ) : 0;
@@ -233,17 +234,21 @@ DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';]]></mysqldelete>
 			<replacecode><![CDATA[	$twofactor_html = isset($_POST['twofactor_html']) ? intval( $_POST['twofactor_html'] ) : 0;
 	$twofactor_text = isset($_POST['twofactor_text']) ? $db->safesql( $_POST['twofactor_text'] ) : '';
 
+	// DevCraft DleApi: start
 	$dleapi_key_request_html = isset($_POST['dleapi_key_request_html']) ? intval( $_POST['dleapi_key_request_html'] ) : 0;
 	$dleapi_key_request_text = isset($_POST['dleapi_key_request_text']) ? $db->safesql( $_POST['dleapi_key_request_text'] ) : '';
 	$dleapi_key_decision_html = isset($_POST['dleapi_key_decision_html']) ? intval( $_POST['dleapi_key_decision_html'] ) : 0;
-	$dleapi_key_decision_text = isset($_POST['dleapi_key_decision_text']) ? $db->safesql( $_POST['dleapi_key_decision_text'] ) : '';]]></replacecode>
+	$dleapi_key_decision_text = isset($_POST['dleapi_key_decision_text']) ? $db->safesql( $_POST['dleapi_key_decision_text'] ) : '';
+	// DevCraft DleApi: end]]></replacecode>
 			<enabled>1</enabled>
 		</operation>
 		<operation action="after">
 			<searchcode><![CDATA[	$db->query( "UPDATE " . PREFIX . "_email SET template='$twofactor_text', use_html='$twofactor_html' WHERE name='twofactor'" );]]></searchcode>
 			<replacecode><![CDATA[	$db->query( "UPDATE " . PREFIX . "_email SET template='$twofactor_text', use_html='$twofactor_html' WHERE name='twofactor'" );
+	// DevCraft DleApi: start
 	$db->query( "UPDATE " . PREFIX . "_email SET template='$dleapi_key_request_text', use_html='$dleapi_key_request_html' WHERE name='dleapi_key_request'" );
-	$db->query( "UPDATE " . PREFIX . "_email SET template='$dleapi_key_decision_text', use_html='$dleapi_key_decision_html' WHERE name='dleapi_key_decision'" );]]></replacecode>
+	$db->query( "UPDATE " . PREFIX . "_email SET template='$dleapi_key_decision_text', use_html='$dleapi_key_decision_html' WHERE name='dleapi_key_decision'" );
+	// DevCraft DleApi: end]]></replacecode>
 			<enabled>1</enabled>
 		</operation>
 		<operation action="after">
@@ -265,6 +270,7 @@ DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';]]></mysqldelete>
     </div>
   </div>
 
+  <!-- DevCraft DleApi: start -->
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse_dleapi_req">
@@ -290,10 +296,11 @@ DELETE FROM {prefix}_admin_sections WHERE `name` = 'dleapi';]]></mysqldelete>
       <div class="accordion-inner">
         Теги: {%username%}, {%user_id%}, {%api_key%}, {%subject%}<br /><br />
 		<textarea dir="auto" class="classic html_editor" rows="15" style="width:100%;" name="dleapi_key_decision_text">{$mail_template['dleapi_key_decision']}</textarea>
-		<div class="checkbox"><label><input class="icheck" type="checkbox" id="dleapi_key_decision_html" name="dleapi_key_decision_html" value="1" {$use_html['dleapi_key_decision']}>{$lang['email_use_html']}</label></div>
+        <div class="checkbox"><label><input class="icheck" type="checkbox" id="dleapi_key_decision_html" name="dleapi_key_decision_html" value="1" {$use_html['dleapi_key_decision']}>{$lang['email_use_html']}</label></div>
       </div>
     </div>
   </div>
+  <!-- DevCraft DleApi: end -->
 
   <div class="accordion-group">
     <div class="accordion-heading">

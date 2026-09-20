@@ -57,4 +57,11 @@ $cmd = [
 
 $line = implode(' ', array_map('escapeshellarg', $cmd));
 passthru($line, $code);
-exit($code);
+if($code !== 0) {
+	exit($code);
+}
+if(!is_file($outFile) || filesize($outFile) < 32) {
+	fwrite(STDERR, "OpenAPI: файл не записан: {$outFile}\n");
+	exit(1);
+}
+echo "OpenAPI: записан {$outFile} (" . filesize($outFile) . " байт)\n";

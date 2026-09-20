@@ -42,7 +42,11 @@ jobs:
       env:
         DLE_ADMIN_SDK: ${{ runner.temp }}/dle-admin-sdk
         ADMIN_DOWNLOAD_URL: https://devcraft.club/downloads/devcraft-admin-panel.4/download
-      run: composer openapi
+        ADMIN_ARCHIVE_URL: https://github.com/DevCraftClub/mhadmin/archive/refs/heads/rel/200.4.1.zip
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        composer openapi
+        test -s ../../apidata/openapi.yaml
 
     - name: Open PR if spec changed
       uses: peter-evans/create-pull-request@v8

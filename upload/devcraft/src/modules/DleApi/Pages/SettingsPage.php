@@ -7,8 +7,6 @@ namespace DevCraft\Modules\DleApi\Pages;
 use DevCraft\Modules\DleApi\DleApiIdentity;
 
 use DLEPlugins;
-use DevCraft\Core\Application;
-use DevCraft\Core\Config\Paths;
 use DevCraft\Core\Support\DataManager;
 use DevCraft\Core\Abstracts\AbstractPage;
 use DevCraft\Core\Interfaces\SettingsPageInterface;
@@ -24,18 +22,6 @@ final class SettingsPage extends AbstractPage implements SettingsPageInterface {
 		global $config, $dle_login_hash, $lang;
 
 		$this->addBreadcrumb(__('Настройки'));
-
-		$configFile = Paths::config() . '/dleapi.json';
-
-		if(!is_file($configFile)) {
-			DataManager::saveConfig(DleApiIdentity::code(), [
-				'algo'      => 'sha256',
-				'secret'    => '',
-				'length'    => 32,
-				'secure'    => true,
-				'token_ttl' => 3600,
-			]);
-		}
 
 		$current = DataManager::getConfig(DleApiIdentity::code());
 		$merged  = KeyNotifyDelivery::loadEditorConfig(is_array($current) ? $current : []);
