@@ -1117,29 +1117,6 @@ paths:
       security: []
 components:
   schemas:
-    ApiError:
-      description: 'Единый JSON-формат ошибки API v2: error, message, details?'
-      required:
-        - error
-        - message
-      properties:
-        error:
-          description: 'Код ошибки'
-          type: string
-          example: unauthorized
-        message:
-          description: 'Человекочитаемое сообщение'
-          type: string
-          example: 'Требуется Authorization: Bearer <AuthToken>'
-        details:
-          description: 'Доп. детали (validation и т.п.)'
-          type: object
-          nullable: true
-          additionalProperties: true
-      type: object
-      example:
-        error: unauthorized
-        message: 'Требуется Authorization: Bearer <AuthToken>'
     AdminLogs:
       description: 'Схема таблицы `admin_logs`.'
       properties:
@@ -3625,6 +3602,29 @@ components:
           additionalProperties:
             $ref: '#/components/schemas/UserXfieldField'
       type: object
+    ApiError:
+      description: 'Единый JSON-формат ошибки API v2: error, message, details?'
+      required:
+        - error
+        - message
+      properties:
+        error:
+          description: 'Код ошибки'
+          type: string
+          example: unauthorized
+        message:
+          description: 'Человекочитаемое сообщение'
+          type: string
+          example: 'Требуется Authorization: Bearer <AuthToken>'
+        details:
+          description: 'Доп. детали (validation и т.п.)'
+          type: object
+          nullable: true
+          additionalProperties: true
+      type: object
+      example:
+        error: unauthorized
+        message: 'Требуется Authorization: Bearer <AuthToken>'
   responses:
     Unauthorized:
       description: 'Нет Authorization: Bearer или AuthToken недействителен/просрочен'
