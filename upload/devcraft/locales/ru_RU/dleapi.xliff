@@ -1384,6 +1384,50 @@
 				<target>Ваш API-ключ одобрен.
 Ключ: {%api_key%}</target>
 			</trans-unit>
+			<trans-unit id="f9db69bb037d664657209cb63440a872">
+				<source>Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2</source>
+				<target>Неофициальное REST API для DLE: ключи, OAuth2 Bearer, /api/v2</target>
+			</trans-unit>
+			<trans-unit id="fd22bd25df4188dfda20562cffd09bb0">
+				<source>Зависимость: DevCraft Admin ≥ 200.4.1 для авто-создания таблиц api_* после установки ядра.</source>
+				<target>Зависимость: DevCraft Admin ≥ 200.4.1 для авто-создания таблиц api_* после установки ядра.</target>
+			</trans-unit>
+			<trans-unit id="10470cc89eb56d8f252871be8acc8222">
+				<source>In-process SDK (Schema / Fluent / Xfield / DcApi) переехал в DevCraft Admin (devcraft/src/sdk/dle/); пакет API стал его потребителем. Фасад DcApi и контракт /api/v2 не изменились.</source>
+				<target>In-process SDK (Schema / Fluent / Xfield / DcApi) переехал в DevCraft Admin (devcraft/src/sdk/dle/); пакет API стал его потребителем. Фасад DcApi и контракт /api/v2 не изменились.</target>
+			</trans-unit>
+			<trans-unit id="af1768ee285c77cce3b376363e1b8d52">
+				<source>Namespace SDK: DleApi\{Schema,Fluent,Xfield,Sdk} → DevCraft\Dle\... Старые имена работают через алиасы классов (уйдут в следующем мажоре). Namespace DleApi\Http и DleApi\OpenApi остались в пакете API.</source>
+				<target>Namespace SDK: DleApi\{Schema,Fluent,Xfield,Sdk} → DevCraft\Dle\... Старые имена работают через алиасы классов (уйдут в следующем мажоре). Namespace DleApi\Http и DleApi\OpenApi остались в пакете API.</target>
+			</trans-unit>
+			<trans-unit id="1248c93d510ab162e9b5c8f62ecc0244">
+				<source>install.xml: иконка — путь к Public/icon.png, allow_groups 1,2, notice — страница плагина и документация.</source>
+				<target>install.xml: иконка — путь к Public/icon.png, allow_groups 1,2, notice — страница плагина и документация.</target>
+			</trans-unit>
+			<trans-unit id="3fab699e891a05290e43cfecf7f4f544">
+				<source>Блок профиля: Controller/show_dleapi_profile.php; CSS/JS — Public/ + siteAssets на userinfo.</source>
+				<target>Блок профиля: Controller/show_dleapi_profile.php; CSS/JS — Public/ + siteAssets на userinfo.</target>
+			</trans-unit>
+			<trans-unit id="b243944237351ba8892fd4a623f6a5c1">
+				<source>api/sdk/bootstrap.php и вставки в engine/init.php: SDK поднимается через devcraft/init.php.</source>
+				<target>api/sdk/bootstrap.php и вставки в engine/init.php: SDK поднимается через devcraft/init.php.</target>
+			</trans-unit>
+			<trans-unit id="cb561ae6a88fed78ae13a16b73a4323c">
+				<source>Файл engine/modules/devcraft/dleapi_profile.php и CSS/JS профиля в теме.</source>
+				<target>Файл engine/modules/devcraft/dleapi_profile.php и CSS/JS профиля в теме.</target>
+			</trans-unit>
+			<trans-unit id="740f29c74a09ebdebac37ea07c052fdf">
+				<source>Автопосев dleapi.json при открытии настроек, если файла нет.</source>
+				<target>Автопосев dleapi.json при открытии настроек, если файла нет.</target>
+			</trans-unit>
+			<trans-unit id="65d5bd7f1c3fa4054a8fab901d23445e">
+				<source>При SQLSTATE[42S02] на api_*: нужен DevCraft Admin ≥ 200.4.1 (GenerateMigrations при пересборке схемы); сброс cycle_orm_schema.ser и повторный заход в модуль.</source>
+				<target>При SQLSTATE[42S02] на api_*: нужен DevCraft Admin ≥ 200.4.1 (GenerateMigrations при пересборке схемы); сброс cycle_orm_schema.ser и повторный заход в модуль.</target>
+			</trans-unit>
+			<trans-unit id="0c061668a320d6bb381994aadd2dcf8d">
+				<source>Таблицы api_keys / api_scope / api_access_levels / OAuth создаются Cycle-миграциями DevCraft (Models + AbstractEntity), а не DDL в install.xml.</source>
+				<target>Таблицы api_keys / api_scope / api_access_levels / OAuth создаются Cycle-миграциями DevCraft (Models + AbstractEntity), а не DDL в install.xml.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
