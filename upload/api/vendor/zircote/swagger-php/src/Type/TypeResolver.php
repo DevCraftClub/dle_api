@@ -15,9 +15,12 @@ use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Radebatz\TypeInfoExtras\Type\ExplicitType;
 use Radebatz\TypeInfoExtras\Type\IntRangeType;
 use Radebatz\TypeInfoExtras\TypeResolver\StringTypeResolver;
+use Symfony\Component\TypeInfo\Exception\InvalidArgumentException;
 use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\ArrayShapeType;
@@ -32,6 +35,7 @@ use Symfony\Component\TypeInfo\Type\UnionType;
 use Symfony\Component\TypeInfo\TypeContext\TypeContextFactory;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 use Symfony\Component\TypeInfo\TypeResolver\ReflectionTypeResolver;
+use Symfony\Component\TypeInfo\TypeResolver\StringTypeResolver as SymfonyStringTypeResolver;
 
 /**
  * Resolves a PHP reflector to a SchemaType value object.
@@ -39,55 +43,50 @@ use Symfony\Component\TypeInfo\TypeResolver\ReflectionTypeResolver;
  * Shared core between the spec-attributes augmenter and the classic annotation resolver.
  * Uses Symfony TypeInfo + phpstan/phpdoc-parser for reflective type resolution.
  */
-class TypeResolver
+class TypeResolver implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected TypeMapper $typeMapper;
+
+    /** @var \WeakMap<\Reflector, array{?SchemaType}> what each reflector resolved to, so a docblock is read and reported once */
+    protected \WeakMap $resolved;
+
+    /** Reuses parsed use statements when supported by symfony/type-info. */
+    protected TypeContextFactory $docblockContexts;
+
+    protected TypeContextFactory $reflectionContexts;
 
     public function __construct()
     {
         $this->typeMapper = new TypeMapper();
+        $this->resolved = new \WeakMap();
+        $this->docblockContexts = new TypeContextFactory(new SymfonyStringTypeResolver());
+        $this->reflectionContexts = new TypeContextFactory();
     }
 
     /**
      * Resolve the PHP type of a reflector into a SchemaType.
      *
+     * A reflector is resolved once. Asking again gives a copy of the first answer, which the
+     * caller can change freely.
+     *
      * @param \ReflectionProperty|\ReflectionParameter|\ReflectionMethod|\ReflectionClassConstant $reflector
      */
     public function resolve(\Reflector $reflector): ?SchemaType
     {
-        $docblockType = $this->getDocblockType($reflector);
-        $reflectionType = $this->getReflectionType($reflector);
+        // wrapped, as the map reads a null value as missing
+        $this->resolved[$reflector] ??= [$this->doResolve($reflector)];
+        [$resolved] = $this->resolved[$reflector];
 
-        if (!$docblockType && !$reflectionType) {
-            return null;
-        }
-
-        $nullable = null;
-        if (($docblockType instanceof Type && $docblockType->isNullable()) || ($reflectionType instanceof Type && $reflectionType->isNullable())) {
-            $nullable = true;
-        }
-
-        $docblockType = $docblockType instanceof NullableType ? $docblockType->getWrappedType() : $docblockType;
-        $reflectionType = $reflectionType instanceof NullableType ? $reflectionType->getWrappedType() : $reflectionType;
-
-        $effectiveType = $docblockType ?? $reflectionType;
-        if (!$effectiveType instanceof Type) {
-            return $nullable !== null ? new SchemaType(nullable: $nullable) : null;
-        }
-
-        $result = $this->mapType($effectiveType);
-        $result->nullable = $nullable;
-
-        $this->applyNativeTypeMapping($result);
-
-        return $result;
+        return $resolved instanceof SchemaType ? clone $resolved : null;
     }
 
     public function getDocblockType(\Reflector $reflector): ?Type
     {
         $docComment = match (true) {
             $reflector instanceof \ReflectionProperty => $reflector->isPromoted()
-                && $reflector->getDeclaringClass() instanceof \ReflectionClass && $reflector->getDeclaringClass()->getConstructor() instanceof \ReflectionMethod
+                && $reflector->getDeclaringClass()->getConstructor() instanceof \ReflectionMethod
                     ? $reflector->getDeclaringClass()->getConstructor()->getDocComment()
                     : $reflector->getDocComment(),
             $reflector instanceof \ReflectionParameter => $reflector->getDeclaringFunction()->getDocComment(),
@@ -99,7 +98,7 @@ class TypeResolver
             return null;
         }
 
-        $typeContext = (new TypeContextFactory())->createFromReflection($reflector);
+        $typeContext = $this->docblockContexts->createFromReflection($reflector);
 
         $tagName = match (true) {
             $reflector instanceof \ReflectionProperty => $reflector->isPromoted()
@@ -136,13 +135,60 @@ class TypeResolver
             ) {
                 try {
                     return (new StringTypeResolver())->resolve((string) $tagValue, $typeContext);
-                } catch (UnsupportedException) {
-                    // ignore
+                } catch (UnsupportedException|InvalidArgumentException) {
+                    $this->logger?->warning(sprintf('Unsupported docblock type "%s" on %s', $tagValue->type, $this->describe($reflector)));
                 }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Name a member for a log message: `Pet::$name`, `Pet::name()`, `$id of Pet::get()`.
+     */
+    public function describe(\Reflector $reflector): string
+    {
+        return match (true) {
+            $reflector instanceof \ReflectionProperty => $reflector->class . '::$' . $reflector->name,
+            $reflector instanceof \ReflectionParameter => '$' . $reflector->name . ' of ' . $this->describe($reflector->getDeclaringFunction()),
+            $reflector instanceof \ReflectionMethod => $reflector->class . '::' . $reflector->name . '()',
+            $reflector instanceof \ReflectionFunctionAbstract => $reflector->name . '()',
+            default => $reflector::class,
+        };
+    }
+
+    /**
+     * @param \ReflectionProperty|\ReflectionParameter|\ReflectionMethod|\ReflectionClassConstant $reflector
+     */
+    protected function doResolve(\Reflector $reflector): ?SchemaType
+    {
+        $docblockType = $this->getDocblockType($reflector);
+        $reflectionType = $this->getReflectionType($reflector);
+
+        if (!$docblockType && !$reflectionType) {
+            return null;
+        }
+
+        $nullable = null;
+        if (($docblockType instanceof Type && $docblockType->isNullable()) || ($reflectionType instanceof Type && $reflectionType->isNullable())) {
+            $nullable = true;
+        }
+
+        $docblockType = $docblockType instanceof NullableType ? $docblockType->getWrappedType() : $docblockType;
+        $reflectionType = $reflectionType instanceof NullableType ? $reflectionType->getWrappedType() : $reflectionType;
+
+        $effectiveType = $docblockType ?? $reflectionType;
+        if (!$effectiveType instanceof Type) {
+            return $nullable !== null ? new SchemaType(nullable: $nullable) : null;
+        }
+
+        $result = $this->mapType($effectiveType);
+        $result->nullable = $nullable;
+
+        $this->applyNativeTypeMapping($result);
+
+        return $result;
     }
 
     protected function mapType(Type $type): SchemaType
@@ -165,14 +211,20 @@ class TypeResolver
                 return new SchemaType(type: 'object');
             }
 
+            // the date classes themselves are mapped by name, a subclass of them by what it is
+            if (is_a($className, \DateTimeInterface::class, true)) {
+                return new SchemaType(type: 'string', format: 'date-time');
+            }
+
             return new SchemaType(type: $className);
         }
 
         if ($type instanceof IntRangeType) {
+            // an open end comes as `PHP_INT_MIN`/`PHP_INT_MAX`, which is no bound of the API
             return new SchemaType(
                 type: $type->getTypeIdentifier()->value,
-                minimum: $type->getFrom(),
-                maximum: $type->getTo(),
+                minimum: \PHP_INT_MIN === $type->getFrom() ? null : $type->getFrom(),
+                maximum: \PHP_INT_MAX === $type->getTo() ? null : $type->getTo(),
             );
         }
 
@@ -360,7 +412,7 @@ class TypeResolver
             );
 
         try {
-            $typeContext = (new TypeContextFactory())->createFromReflection($reflector);
+            $typeContext = $this->reflectionContexts->createFromReflection($reflector);
 
             return (new ReflectionTypeResolver())->resolve($subject, $typeContext);
         } catch (UnsupportedException) {

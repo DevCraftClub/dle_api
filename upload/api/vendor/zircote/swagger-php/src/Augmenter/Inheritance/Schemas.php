@@ -6,6 +6,8 @@
 
 namespace OpenApi\Augmenter\Inheritance;
 
+use OpenApi\ComponentNamer;
+use OpenApi\Contracts\ComponentNamerInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Specification\ComponentIndex;
@@ -18,11 +20,15 @@ use OpenApi\Utils\JsonPointer;
  * For each schema backed by a class reflector, walks parents, traits, and interfaces:
  * - Ancestor with #[Schema] → adds $ref to allOf, stops walking up (parents only)
  * - Ancestor without #[Schema] → merges its own members into the current schema
+ *
+ * A schema whose meta value under this class is `false` is left as it is: one a resolver built
+ * from another description of the class, which already holds what the class inherits.
  */
 class Schemas
 {
     public function __construct(
         protected AttributeFactory $attributeFactory = new AttributeFactory(),
+        protected ComponentNamerInterface $namer = new ComponentNamer\ShortName(),
     ) {
     }
 
@@ -32,7 +38,7 @@ class Schemas
 
         foreach ($payload->schemas as $schema) {
             $reflector = $schema->getClassReflector();
-            if ($reflector === null) {
+            if ($reflector === null || $schema->getMeta(self::class) === false) {
                 continue;
             }
 
@@ -131,7 +137,9 @@ class Schemas
     protected function addAllOfRef(OA\Schema $schema, OA\Schema $referenced): void
     {
         $schema->allOf ??= [];
-        $name = $referenced->schema ?? $referenced->getShortClassName();
+        // the explicit name or the namer's, as `Names` will name it — not `of()`, whose
+        // title fallback would name a class schema after its title before `Names` has run
+        $name = $referenced->component ?? $this->namer->name($referenced);
         if ($name !== null) {
             $schema->allOf[] = new OA\Schema(ref: JsonPointer::ref('components', 'schemas', $name));
         }

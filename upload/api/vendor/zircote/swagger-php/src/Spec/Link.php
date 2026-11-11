@@ -6,6 +6,8 @@
 
 namespace OpenApi\Spec;
 
+use OpenApi\Contracts\RefInterface;
+use OpenApi\Spec\Concerns\RefTrait;
 use OpenApi\Undefined;
 
 /**
@@ -14,10 +16,15 @@ use OpenApi\Undefined;
  * @see [Link Object](https://spec.openapis.org/oas/v3.1.1.html#link-object)
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
-class Link extends AbstractAttribute
+class Link extends AbstractAttribute implements RefInterface
 {
+    use RefTrait;
+
+    /** The name this attribute is filed under in `components`; null for an inline one. */
+    public ?string $component = null;
+
     /**
-     * @param string|null              $link         Reusable link identifier (component key)
+     * @param string|null              $link         The link name — the key the link nests under in a response
      * @param string|null              $operationRef A relative or absolute URI reference to a linked operation
      * @param string|null              $operationId  The name of an existing operation (mutually exclusive with operationRef)
      * @param array<string,mixed>|null $parameters   Values to pass to the linked operation's parameters
@@ -25,8 +32,10 @@ class Link extends AbstractAttribute
      * @param string|null              $description  A description of the link (CommonMark syntax)
      * @param string|null              $ref          A JSON Reference to a reusable link
      * @param Server|null              $server       A server object to be used by the target operation
+     * @param string|null              $component    The name this is filed under in `components`, which makes it a reusable component
      * @param array<string,mixed>|null $x            Vendor extensions (x-* properties)
      * @param list<Attachable>|null    $attachables  Reusable custom attachable attributes
+     * @param Fan|null                 $fan          Where this attribute goes when more than one attribute could hold it
      */
     public function __construct(
         public ?string $link = null,
@@ -37,15 +46,19 @@ class Link extends AbstractAttribute
         public ?string $description = null,
         public string|Schema\Ref|null $ref = null,
         public ?Server $server = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
+        ?Fan $fan = null,
     ) {
-        parent::__construct(x: $x, attachables: $attachables);
+        $this->component = $component;
+
+        parent::__construct(x: $x, attachables: $attachables, fan: $fan);
     }
 
     public function isRoot(): bool
     {
-        return $this->link !== null && $this->ref === null;
+        return $this->ref === null && ($this->component !== null || $this->link !== null);
     }
 
     public function merge(): array
@@ -59,6 +72,7 @@ class Link extends AbstractAttribute
     public function contained(): array
     {
         return [
+            Components::class => 'links[]',
             Response::class => 'links[]',
         ];
     }

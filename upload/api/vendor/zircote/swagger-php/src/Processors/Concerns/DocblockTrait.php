@@ -10,6 +10,9 @@ use OpenApi\Annotations as OA;
 use OpenApi\Attributes as OAT;
 use OpenApi\Utils\DocBlockParser;
 
+/**
+ * @deprecated since 7.0, removed in 8.0
+ */
 trait DocblockTrait
 {
     private ?DocBlockParser $docBlockParser = null;
@@ -82,6 +85,14 @@ trait DocblockTrait
     public function extractExampleDescription(string $docblock): ?string
     {
         return $this->docBlockParser()->extractExample($docblock);
+    }
+
+    /**
+     * @param array<string> $types
+     */
+    public function castExample(string $example, array $types, bool $nullable): mixed
+    {
+        return $this->docBlockParser()->castExample($example, $types, $nullable);
     }
 
     public function isDeprecated(?string $docblock): bool

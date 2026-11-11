@@ -6,32 +6,41 @@
 
 namespace OpenApi\Augmenter;
 
+use OpenApi\ComponentNamer;
 use OpenApi\Contracts\AttributeInterface;
+use OpenApi\Contracts\ComponentNamerAwareInterface;
+use OpenApi\Contracts\ComponentNamerInterface;
 use OpenApi\Specification;
 use OpenApi\Specification\ComponentName;
 use OpenApi\Utils\PipeInterface;
 
 /**
- * Infers component keys from PHP reflectors when not explicitly set.
+ * Infers component names from PHP reflectors when not explicitly set.
  *
- * A component declared on a class is named after that class, so it can be referenced by
- * class name. Declared anywhere else — a method, a parameter — the class reflector belongs
- * to the *declaring* class, whose name is already taken by that class's own component, so
- * nothing is inferred and the component stays inline.
+ * The name is the one the component namer gives, or none, which leaves the component inline.
+ * `ComponentNamer\ShortName`, the default, names a component declared on a class after the class,
+ * and a member of an `#[OA\Components]` holder after the member.
  *
- * A parameter is the one exception: its `name` is its identity in OpenAPI, so a parameter
- * component is keyed by it wherever it was declared, and falls back to the class name only
+ * A parameter is named differently: its `name` is its identity in OpenAPI, so a parameter
+ * component is named after it wherever it was declared, holder or not, and falls back to the class name only
  * when it has no name either.
  *
  * @implements PipeInterface<Specification>
  */
-class Names implements PipeInterface
+class Names implements PipeInterface, ComponentNamerAwareInterface
 {
     /**
-     * A security scheme is only ever declared inside `Components`, where the key is the whole
-     * point, so nothing is inferred for it.
+     * A security scheme is only ever declared inside `Components`, where the name is the whole
+     * point, so nothing is inferred for it. A path item on a class is path-bound unless named
+     * by hand, and a media type is only ever a component by hand, so neither is named after
+     * the class either.
      */
-    protected const SKIP_BUCKETS = ['securitySchemes'];
+    protected const SKIP_BUCKETS = ['securitySchemes', 'pathItems', 'mediaTypes'];
+
+    public function __construct(
+        protected ComponentNamerInterface $namer = new ComponentNamer\ShortName(),
+    ) {
+    }
 
     public function __invoke(mixed $payload): mixed
     {
@@ -49,10 +58,17 @@ class Names implements PipeInterface
         return Group::Resolve;
     }
 
+    public function setNamer(ComponentNamerInterface $namer): static
+    {
+        $this->namer = $namer;
+
+        return $this;
+    }
+
     protected function inferParameterNames(Specification $specification): void
     {
         foreach ($specification->parameters as $parameter) {
-            $parameter->parameter ??= $parameter->name;
+            $parameter->component ??= $parameter->name;
         }
     }
 
@@ -62,13 +78,14 @@ class Names implements PipeInterface
     protected function inferClassNames(array $components): void
     {
         foreach ($components as $component) {
-            if (!$component->getReflector() instanceof \ReflectionClass) {
+            $name = $this->namer->name($component);
+            if ($name === null) {
                 continue;
             }
 
             $field = ComponentName::keyField($component);
             if ($field !== null && $component->{$field} === null) {
-                $component->{$field} = $component->getShortClassName();
+                $component->{$field} = $name;
             }
         }
     }

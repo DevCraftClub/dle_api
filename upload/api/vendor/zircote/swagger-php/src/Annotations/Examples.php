@@ -11,6 +11,8 @@ use OpenApi\Undefined;
 
 /**
  * @Annotation
+ *
+ * @deprecated since 7.0, removed in 8.0 - use `OpenApi\Spec\Example` instead
  */
 class Examples extends AbstractAnnotation
 {
@@ -57,7 +59,7 @@ class Examples extends AbstractAnnotation
      * To represent examples of media types that cannot naturally be represented
      * in JSON or YAML, use a string value to contain the example, escaping where necessary.
      *
-     * @var int|string|array
+     * @var mixed
      */
     public $value = Undefined::UNDEFINED;
 

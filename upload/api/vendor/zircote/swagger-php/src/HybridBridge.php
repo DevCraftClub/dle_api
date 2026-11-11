@@ -12,6 +12,8 @@ use OpenApi\Annotations as OA;
  * Converts classic annotations into a Specification by iterating the Analysis directly.
  *
  * All enrichment (types, refs, descriptions, hierarchy) is left to the spec augmenter chain.
+ *
+ * @deprecated since 7.0, removed in 8.0
  */
 class HybridBridge
 {
@@ -19,11 +21,14 @@ class HybridBridge
     {
         $classSchemas = [];
         $memberProperties = [];
+        $held = $this->heldAnnotations($analysis);
 
         foreach ($analysis->annotations as $annotation) {
             if (!$annotation->_context->reflector instanceof \Reflector) {
                 continue;
             }
+
+            $this->reportUnmerged($annotation);
 
             match (true) {
                 $annotation instanceof OA\OpenApi => $this->convertOpenApiMeta($annotation, $specification),
@@ -32,17 +37,21 @@ class HybridBridge
                 $annotation instanceof OA\Tag => $specification->tags[] = $this->convertTag($annotation),
                 $annotation instanceof OA\SecurityScheme && !$annotation->_context->is('nested') => $specification->securitySchemes[] = $this->convertSecurityScheme($annotation),
                 $annotation instanceof OA\PathItem && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->path) && !($annotation instanceof OA\Webhook) => $this->collectPathItem($annotation, $specification),
+                $annotation instanceof OA\Webhook && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->webhook) => $this->convertWebhook($annotation, $specification),
                 $annotation instanceof OA\Components => $this->convertComponents($annotation, $specification),
                 $annotation instanceof OA\Operation && !$annotation->_context->is('nested') => $specification->operations[] = $this->convertOperation($annotation, $this->val($annotation->path), $this->methodFromAnnotation($annotation)),
                 $annotation instanceof OA\Schema && !$this->isNestedSchemaType($annotation) && $annotation->_context->reflector instanceof \ReflectionClass && !$annotation->_context->is('nested') => $classSchemas[$annotation->_context->reflector->getName()][] = $annotation,
+                // on a method or property, a schema is a component only where it names itself, as in classic
+                $annotation instanceof OA\Schema && !$this->isNestedSchemaType($annotation) && ($annotation->_context->reflector instanceof \ReflectionMethod || $annotation->_context->reflector instanceof \ReflectionProperty) && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->schema) => $specification->schemas[] = $this->convertSchema($annotation),
                 $annotation instanceof OA\Property && $this->isClassMember($annotation) => $memberProperties[] = $annotation,
                 $annotation instanceof OA\Response && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->response) => $specification->responses[] = $this->convertResponse($annotation),
                 $annotation instanceof OA\RequestBody && !$annotation->_context->is('nested') && ($annotation->_context->reflector instanceof \ReflectionClass || !Undefined::isDefault($annotation->request)) => $specification->requestBodies[] = $this->convertRequestBody($annotation),
                 $annotation instanceof OA\Parameter && !$annotation->_context->is('nested') && ($annotation->_context->reflector instanceof \ReflectionClass || !Undefined::isDefault($annotation->parameter)) => $specification->parameters[] = $this->convertParameter($annotation),
                 $annotation instanceof OA\Header && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->header) => $specification->headers[] = $this->convertHeader($annotation),
                 $annotation instanceof OA\Link && !$annotation->_context->is('nested') => $specification->links[] = $this->convertLink($annotation),
+                $annotation instanceof OA\Examples && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->example) => $specification->examples[] = $this->convertExample($annotation),
                 $annotation instanceof OA\ExternalDocumentation && !$annotation->_context->is('nested') => $specification->externalDocs[] = $this->convertExternalDocs($annotation),
-                default => null,
+                default => isset($held[spl_object_id($annotation)]) ? null : $this->reportStray($annotation),
             };
         }
 
@@ -52,6 +61,8 @@ class HybridBridge
                 $specification->schemas[] = $converted;
             }
         }
+
+        $this->reportUnadopted($memberProperties, $classSchemas);
 
         $specification->openapi ??= new Spec\OpenApi();
 
@@ -107,6 +118,30 @@ class HybridBridge
         }
 
         return $converted;
+    }
+
+    /**
+     * A member property is converted only as part of a class schema that takes it in, so one that
+     * none takes in is dropped. Say so, in classic's words.
+     *
+     * @param list<OA\Property>              $memberProperties
+     * @param array<string, list<OA\Schema>> $classSchemas
+     */
+    protected function reportUnadopted(array $memberProperties, array $classSchemas): void
+    {
+        $adopting = [];
+        foreach (array_keys($classSchemas) as $className) {
+            foreach ($this->getOwnClasses($className, $classSchemas) as $ownClass) {
+                $adopting[$ownClass] = true;
+            }
+        }
+
+        foreach ($memberProperties as $property) {
+            $declarer = $this->getDeclaringClass($property);
+            if ($declarer === null || !isset($adopting[$declarer])) {
+                $this->reportUnexpected($property, $property);
+            }
+        }
     }
 
     /**
@@ -182,7 +217,7 @@ class HybridBridge
         );
 
         if (!Undefined::isDefault($openApi->security)) {
-            $spec->openapi->security = $this->convertSecurityRequirements($openApi->security);
+            $spec->openapi->security = $this->convertSecurityRequirements($openApi->security, $openApi);
         }
 
         if (!Undefined::isDefault($openApi->externalDocs)) {
@@ -389,7 +424,7 @@ class HybridBridge
 
         $security = null;
         if (!Undefined::isDefault($op->security)) {
-            $security = $this->convertSecurityRequirements($op->security);
+            $security = $this->convertSecurityRequirements($op->security, $op);
         }
 
         $result = new Spec\Operation(
@@ -421,7 +456,6 @@ class HybridBridge
     protected function convertParameter(OA\Parameter $param): Spec\Parameter
     {
         $result = new Spec\Parameter(
-            parameter: $this->val($param->parameter),
             name: $this->val($param->name),
             in: $this->val($param->in),
             description: Undefined::isDefault($param->description) ? Undefined::UNDEFINED : $param->description,
@@ -438,9 +472,12 @@ class HybridBridge
                 ? null
                 : array_values(array_map($this->convertExample(...), $param->examples)),
             content: $this->resolveContent($param),
+            component: $this->val($param->parameter),
             x: $this->extensions($param),
         );
         $this->copyReflector($param, $result);
+        // classic requires a parameter by its type alone, so spec's default rule leaves this one alone
+        $result->setMeta(self::class, true);
 
         return $result;
     }
@@ -480,11 +517,11 @@ class HybridBridge
     protected function convertRequestBody(OA\RequestBody $body): Spec\RequestBody
     {
         $result = new Spec\RequestBody(
-            request: $this->val($body->request),
             description: $this->val($body->description),
             required: $this->val($body->required),
             ref: $this->val($body->ref),
             content: $this->resolveContent($body),
+            component: $this->val($body->request),
             x: $this->extensions($body),
         );
         $this->copyReflector($body, $result);
@@ -512,6 +549,83 @@ class HybridBridge
             encoding: $encoding,
             x: $this->extensions($mediaType),
         );
+    }
+
+    /**
+     * The annotations another one holds in a property, which convert with their holder. A stacked
+     * attribute merged into its sibling is held without being marked nested.
+     *
+     * @return array<int, true> keyed by `spl_object_id()`
+     */
+    protected function heldAnnotations(Analysis $analysis): array
+    {
+        $held = [];
+        foreach ($analysis->annotations as $annotation) {
+            foreach (get_object_vars($annotation) as $property => $value) {
+                if ($property === '_unmerged') {
+                    continue;
+                }
+                foreach (is_array($value) ? $value : [$value] as $item) {
+                    if ($item instanceof OA\AbstractAnnotation) {
+                        $held[spl_object_id($item)] = true;
+                    }
+                }
+            }
+        }
+
+        return $held;
+    }
+
+    /**
+     * A top-level annotation none of the arms converts and nothing holds is dropped, so say so, in classic's words.
+     */
+    protected function reportStray(OA\AbstractAnnotation $annotation): void
+    {
+        if ($annotation->_context->is('nested') || !$annotation::$_parents) {
+            return;
+        }
+
+        $this->reportUnexpected($annotation, $annotation);
+    }
+
+    protected function reportUnexpected(OA\AbstractAnnotation $reporter, OA\AbstractAnnotation $annotation): void
+    {
+        $message = 'Unexpected ' . $annotation->identity();
+        if ($annotation::$_parents) {
+            $message .= ', expected to be inside ' . implode(', ', array_map(
+                static fn (string $class): string => '@' . str_replace(['OpenApi\\Annotations\\', 'OpenApi\\Attributes\\'], 'OA\\', $class),
+                $annotation::$_parents,
+            ));
+        }
+        $reporter->_context->logger?->warning($message . ' in ' . $annotation->_context);
+    }
+
+    /**
+     * An annotation left unmerged where it was declared is not converted, so say so, in classic's words.
+     *
+     * Classic reports these from `validate()`, which hybrid does not run. JSON and XML content on a
+     * parent that takes content is the exception: {@see self::resolveContent()} converts it.
+     */
+    protected function reportUnmerged(OA\AbstractAnnotation $parent): void
+    {
+        foreach ($parent->_unmerged as $annotation) {
+            if (!$annotation instanceof OA\AbstractAnnotation) {
+                continue;
+            }
+
+            if (($annotation instanceof OA\JsonContent || $annotation instanceof OA\XmlContent)
+                && ($parent instanceof OA\Response || $parent instanceof OA\RequestBody || $parent instanceof OA\Parameter || $parent instanceof OA\Header)) {
+                continue;
+            }
+
+            if ($parent->matchNested($annotation) !== null) {
+                $parent->_context->logger?->warning('Only one ' . $annotation->identity([]) . ' allowed for ' . $parent->identity() . ' multiple found, skipped: ' . $annotation->_context);
+
+                continue;
+            }
+
+            $this->reportUnexpected($parent, $annotation);
+        }
     }
 
     /**
@@ -568,7 +682,7 @@ class HybridBridge
     {
         $result = new Spec\Header(
             header: $this->val($header->header),
-            description: $this->val($header->description),
+            description: Undefined::isDefault($header->description) ? Undefined::UNDEFINED : $header->description,
             required: $this->val($header->required),
             deprecated: $this->val($header->deprecated),
             ref: $this->val($header->ref),
@@ -655,7 +769,6 @@ class HybridBridge
         }
 
         $result = new Spec\Schema(
-            schema: $this->val($schema->schema),
             title: $this->val($schema->title),
             description: Undefined::isDefault($schema->description) ? Undefined::UNDEFINED : $schema->description,
             ref: $this->val($schema->ref) ?? $this->typeAsRef($schema->type),
@@ -720,9 +833,12 @@ class HybridBridge
                 ? null
                 : $this->convertExternalDocs($schema->externalDocs),
             xml: Undefined::isDefault($schema->xml) ? null : $this->convertXml($schema->xml),
+            component: $this->val($schema->schema),
             x: $this->extensions($schema),
         );
         $this->copyReflector($schema, $result);
+        // classic infers nothing from the declarations, so spec's inference leaves this schema alone
+        $result->setMeta(self::class, true);
 
         return $result;
     }
@@ -818,7 +934,6 @@ class HybridBridge
         }
 
         $result = new Spec\Security\Scheme(
-            securityScheme: $this->val($scheme->securityScheme),
             type: $this->val($scheme->type),
             description: $this->val($scheme->description),
             name: $this->val($scheme->name),
@@ -828,6 +943,7 @@ class HybridBridge
             openIdConnectUrl: $this->val($scheme->openIdConnectUrl),
             flows: $flows,
             ref: $this->val($scheme->ref),
+            component: $this->val($scheme->securityScheme),
             x: $this->extensions($scheme),
         );
         $this->copyReflector($scheme, $result);
@@ -866,16 +982,21 @@ class HybridBridge
     }
 
     /**
-     * @param array<mixed> $security classic security blocks: each entry is a scheme => scopes map
+     * @param array<mixed> $security classic security blocks: each entry is a scheme => scopes map,
+     *                               or a bare scheme name, which classic reads as that scheme with no scopes
      *
      * @return list<Spec\Security\Requirement>
      */
-    protected function convertSecurityRequirements(array $security): array
+    protected function convertSecurityRequirements(array $security, OA\AbstractAnnotation $owner): array
     {
         $requirements = [];
         foreach ($security as $item) {
             if (is_array($item)) {
                 $requirements[] = new Spec\Security\Requirement(schemes: $item);
+            } elseif (is_string($item)) {
+                // kept, as in classic, and reported, since spec drops it
+                $owner->_context->logger?->warning(sprintf('Security requirement "%s" is a bare scheme name, use [\'%s\' => []] in %s', $item, $item, $owner->_context));
+                $requirements[] = new Spec\Security\Requirement(scheme: $item);
             }
         }
 
@@ -1029,8 +1150,18 @@ class HybridBridge
         return is_array($annotation->x) ? $annotation->x : null;
     }
 
+    /**
+     * A property or schema takes the reflector only when its own context holds it.
+     *
+     * A nested context inherits the reflector of the member that declares its parent,
+     * and that member's docblock describes the member, not the nested property or schema.
+     */
     protected function copyReflector(OA\AbstractAnnotation $from, Spec\AbstractAttribute $to): void
     {
+        if ($from instanceof OA\Schema && !$from->_context->is('reflector')) {
+            return;
+        }
+
         if ($from->_context->reflector !== null && $from->_context->reflector instanceof \Reflector) {
             $to->setReflector($from->_context->reflector);
         }

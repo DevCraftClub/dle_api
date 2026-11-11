@@ -6,23 +6,41 @@
 
 namespace OpenApi\Augmenter;
 
+use OpenApi\Contracts\TypeResolverAwareInterface;
+use OpenApi\HybridBridge;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
+use OpenApi\Specification\ComponentIndex;
+use OpenApi\Specification\ComponentKey;
 use OpenApi\Type\SchemaType;
+use OpenApi\Type\TypeMapper;
 use OpenApi\Type\TypeResolver;
 use OpenApi\Undefined;
 use OpenApi\Utils\PipeInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Infers schema type, format, nullable, items, etc. from PHP type declarations and docblocks.
  *
- * Walks all properties and parameters in the specification and fills their schema
- * fields from the attached reflector's type information.
+ * Fills the schema of each property, parameter and request body that
+ * `Specification\Walker::eachTypedAttribute()` lists, from its reflector's type information.
  *
  * @implements PipeInterface<Specification>
  */
-class Types implements PipeInterface
+class Types implements PipeInterface, LoggerAwareInterface, TypeResolverAwareInterface
 {
+    protected ?LoggerInterface $logger = null;
+
+    /** the components a class type is looked up in, by its plain key, in the bucket its use means */
+    protected ?ComponentIndex $index = null;
+
+    /** the member whose type is being applied, for the warning when a class in it has no schema */
+    protected ?\Reflector $subject = null;
+
+    /** @var \SplObjectStorage<OA\Schema, null> schemas whose `type` this augmenter inferred, not the author */
+    protected \SplObjectStorage $inferredTypes;
+
     public function __construct(
         protected TypeResolver $typeResolver = new TypeResolver(),
     ) {
@@ -30,43 +48,44 @@ class Types implements PipeInterface
 
     public function __invoke(mixed $payload): mixed
     {
-        $payload->getWalker()->eachSchema(function (OA\Schema $schema): void {
-            $this->inferSchemaType($schema);
-            $this->walkSchema($schema);
+        $this->index = $payload->buildComponentIndex();
+        $this->inferredTypes = new \SplObjectStorage();
+
+        $walker = $payload->getWalker();
+        $walker->eachSchema($this->inferSchemaType(...));
+        $walker->eachTypedAttribute(function (OA\Property|OA\Parameter|OA\RequestBody $attribute): void {
+            match (true) {
+                $attribute instanceof OA\Property => $this->augmentProperty($attribute),
+                $attribute instanceof OA\Parameter => $this->augmentParameter($attribute),
+                $attribute instanceof OA\RequestBody => $this->augmentRequestBody($attribute),
+            };
         });
-
-        foreach ($payload->operations as $operation) {
-            $this->augmentOperationParameters($operation);
-            $this->walkOperationSchemas($operation);
-        }
-
-        foreach ($payload->parameters as $parameter) {
-            $this->augmentParameter($parameter);
-        }
-
-        foreach ($payload->requestBodies as $requestBody) {
-            $this->augmentRequestBody($requestBody);
-        }
-
-        foreach ($payload->responses as $response) {
-            $this->walkMediaTypes($response->content);
-        }
-
-        foreach ($payload->headers as $header) {
-            $this->walkSchema($header->schema);
-        }
 
         return null;
     }
 
     /**
      * Override the type resolver used to infer schema types from PHP type declarations.
+     *
+     * The builder hands its own when the build runs.
      */
     public function setTypeResolver(TypeResolver $typeResolver): static
     {
         $this->typeResolver = $typeResolver;
+        if ($this->logger instanceof LoggerInterface) {
+            $this->typeResolver->setLogger($this->logger);
+        }
 
         return $this;
+    }
+
+    /**
+     * Passes the logger to the type resolver, including one set later.
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+        $this->typeResolver->setLogger($logger);
     }
 
     public function group(): string|\BackedEnum
@@ -82,89 +101,28 @@ class Types implements PipeInterface
 
         if ($schema->items instanceof OA\Schema) {
             $schema->type = 'array';
-        } elseif ($schema->properties || $schema->allOf || $schema->patternProperties) {
+            $this->inferredTypes->offsetSet($schema);
+        } elseif ($schema->properties || $schema->patternProperties) {
             $schema->type = 'object';
-        }
-    }
-
-    protected function walkSchema(?OA\Schema $schema): void
-    {
-        if (!$schema instanceof OA\Schema) {
-            return;
-        }
-
-        $this->inferSchemaType($schema);
-
-        if ($schema->properties) {
-            foreach ($schema->properties as $property) {
-                if (!$property instanceof OA\Property) {
-                    continue;
-                }
-
-                $this->augmentProperty($property);
-
-                if ($property->schema instanceof OA\Schema) {
-                    $this->walkSchema($property->schema);
-                }
-            }
-        }
-
-        $this->walkSchema($schema->items instanceof OA\Schema ? $schema->items : null);
-        $this->walkSchema($schema->additionalProperties instanceof OA\Schema ? $schema->additionalProperties : null);
-
-        foreach ($schema->allOf ?? [] as $child) {
-            $this->walkSchema($child);
-        }
-        foreach ($schema->anyOf ?? [] as $child) {
-            $this->walkSchema($child);
-        }
-        foreach ($schema->oneOf ?? [] as $child) {
-            $this->walkSchema($child);
-        }
-    }
-
-    protected function walkOperationSchemas(OA\Operation $operation): void
-    {
-        foreach ($operation->responses ?? [] as $response) {
-            $this->walkMediaTypes($response->content);
-        }
-
-        if ($operation->requestBody instanceof OA\RequestBody) {
-            $this->augmentRequestBody($operation->requestBody);
+            $this->inferredTypes->offsetSet($schema);
         }
     }
 
     protected function augmentRequestBody(OA\RequestBody $requestBody): void
     {
-        $this->walkMediaTypes($requestBody->content);
-
         $reflector = $requestBody->getReflector();
         if ($reflector instanceof \ReflectionParameter) {
             $resolved = $this->typeResolver->resolve($reflector);
 
             if ($resolved instanceof SchemaType) {
                 if ($resolved->type !== null && $resolved->isRef()) {
-                    $requestBody->ref = $resolved->type;
+                    $this->refRequestBody($requestBody, $resolved->type, $reflector);
                 }
 
                 if ($resolved->nullable !== null && $requestBody->required === null) {
                     $requestBody->required = !$resolved->nullable;
                 }
             }
-        }
-    }
-
-    /**
-     * @param list<OA\MediaType>|null $mediaTypes
-     */
-    protected function walkMediaTypes(?array $mediaTypes): void
-    {
-        if (!$mediaTypes) {
-            return;
-        }
-
-        foreach ($mediaTypes as $mediaType) {
-            $this->walkSchema($mediaType->schema);
         }
     }
 
@@ -201,6 +159,8 @@ class Types implements PipeInterface
             return;
         }
 
+        $this->subject = $reflector;
+
         if (!$property->schema instanceof OA\Schema) {
             $property->schema = $this->schemaTypeToSchema($resolved);
         } else {
@@ -217,13 +177,8 @@ class Types implements PipeInterface
         if (Undefined::isDefault($schema->const)) {
             $schema->const = $value;
         }
-        $schema->type ??= match (true) {
-            is_string($value) => 'string',
-            is_int($value) => 'integer',
-            is_float($value) => 'number',
-            is_bool($value) => 'boolean',
-            default => null,
-        };
+        // an array constant stays untyped, as it always has
+        $schema->type ??= is_array($value) ? null : TypeMapper::valueType($value);
         $property->schema = $schema;
     }
 
@@ -238,22 +193,12 @@ class Types implements PipeInterface
             return;
         }
 
+        $this->subject = $method;
+
         if (!$property->schema instanceof OA\Schema) {
             $property->schema = $this->schemaTypeToSchema($resolved);
         } else {
             $this->mergeIntoSchema($property->schema, $resolved);
-        }
-    }
-
-    protected function augmentOperationParameters(OA\Operation $operation): void
-    {
-        if (!$operation->parameters) {
-            return;
-        }
-
-        foreach ($operation->parameters as $parameter) {
-            $this->augmentParameter($parameter);
-            $this->walkMediaTypes($parameter->content);
         }
     }
 
@@ -283,13 +228,54 @@ class Types implements PipeInterface
             $resolved->nullable = null;
         }
 
+        $this->subject = $reflector;
+
         if (!$parameter->schema instanceof OA\Schema) {
             $parameter->schema = $this->schemaTypeToSchema($resolved);
         } else {
             $this->mergeIntoSchema($parameter->schema, $resolved);
         }
 
-        $parameter->required ??= !$isNullable;
+        // a default means a value exists when the parameter is left out, and one converted from classic
+        // keeps classic's rule. A path parameter has `required` already, from `PathParameters`
+        $hasDefault = $reflector->isDefaultValueAvailable()
+            && $parameter->getMeta(HybridBridge::class) !== true;
+
+        $parameter->required ??= !$isNullable && !$hasDefault;
+    }
+
+    /**
+     * Points a request body at the request body component its parameter's class names. One left
+     * with neither a ref nor content is reported, since it describes nothing.
+     */
+    protected function refRequestBody(OA\RequestBody $requestBody, string $class, \ReflectionParameter $reflector): void
+    {
+        $count = $this->countComponents($class, 'requestBodies');
+        if ($count === 1) {
+            $requestBody->ref = $class;
+
+            return;
+        }
+
+        if ($requestBody->ref !== null || $requestBody->content !== null) {
+            return;
+        }
+
+        $subject = $this->typeResolver->describe($reflector);
+        $this->logger?->warning(match (true) {
+            $count > 1 => "{$class} in {$subject} has several request bodies, so the request body is left empty; reference one by name",
+            $this->countComponents($class) === 1 => "No request body for {$class} in {$subject}, so the request body is left empty; its schema belongs in the request body's content",
+            default => "No request body for {$class} in {$subject}, so the request body is left empty",
+        });
+    }
+
+    /**
+     * How many components a class names by its plain key in a bucket. The class references one only
+     * when it is the only one.
+     */
+    protected function countComponents(string $class, string $bucket = 'schemas'): int
+    {
+        return count($this->index?->findAllByKey(new ComponentKey(ltrim($class, '\\')), $bucket) ?? []);
     }
 
     protected function schemaTypeToSchema(SchemaType $schemaType): OA\Schema
@@ -306,7 +292,27 @@ class Types implements PipeInterface
             $this->applySchemaType($schema, $schemaType);
         }
 
-        $schema->nullable ??= $schemaType->nullable;
+        // a type the author wrote out is the whole type, so the PHP type's `null` is not added to it
+        if (!$this->hasExplicitType($schema)) {
+            $schema->nullable ??= $schemaType->nullable;
+        }
+    }
+
+    /**
+     * Whether the author gave the schema its type, rather than a shortcut or this augmenter.
+     *
+     * `Schema\Items` is always an array, whatever its arguments say, and `inferSchemaType()` types
+     * a schema from its `items` or `properties`.
+     */
+    protected function hasExplicitType(OA\Schema $schema): bool
+    {
+        if ($schema->oneOf !== null || $schema->allOf !== null || $schema->anyOf !== null) {
+            return true;
+        }
+
+        return $schema->type !== null
+            && !$schema instanceof OA\Schema\Items
+            && !$this->inferredTypes->offsetExists($schema);
     }
 
     protected function applySchemaType(OA\Schema $schema, SchemaType $schemaType): void
@@ -317,7 +323,18 @@ class Types implements PipeInterface
 
         if ($schemaType->type !== null) {
             if ($schemaType->isRef()) {
-                $schema->ref = $schemaType->type;
+                // a class is referenced only when it is a component, and never in place of an explicit enum
+                if ($schema->enum === null) {
+                    $count = $this->countComponents($schemaType->type);
+                    if ($count === 1) {
+                        $schema->ref = $schemaType->type;
+                    } else {
+                        $subject = $this->subject instanceof \Reflector ? $this->typeResolver->describe($this->subject) : 'a schema';
+                        $this->logger?->warning($count === 0
+                            ? "No schema for {$schemaType->type} in {$subject}, so its type is left out"
+                            : "{$schemaType->type} in {$subject} has several schemas, so its type is left out; reference one by name");
+                    }
+                }
             } else {
                 $schema->type = $schemaType->type;
             }
@@ -345,7 +362,15 @@ class Types implements PipeInterface
         }
 
         if ($schemaType->oneOf !== null) {
-            $schema->oneOf = array_map($this->schemaTypeToSchema(...), $schemaType->oneOf);
+            $members = array_map($this->schemaTypeToSchema(...), $schemaType->oneOf);
+            // a member typed with a class that is no component matches anything, and so does the union
+            $unknown = array_filter(
+                $schemaType->oneOf,
+                fn (SchemaType $member): bool => $member->isRef() && is_string($member->type) && $this->countComponents($member->type) !== 1,
+            );
+            if ($unknown === []) {
+                $schema->oneOf = $members;
+            }
         }
 
         if ($schemaType->allOf !== null) {

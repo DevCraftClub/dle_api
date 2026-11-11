@@ -6,8 +6,10 @@
 
 namespace OpenApi\Spec\Security;
 
+use OpenApi\Contracts\RefInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Spec\Components;
+use OpenApi\Spec\Concerns\RefTrait;
 use OpenApi\Spec\Header;
 use OpenApi\Spec\Parameter;
 
@@ -21,17 +23,28 @@ use OpenApi\Spec\Parameter;
  * - `OA\Security\Scheme\OpenIdConnect` - OpenID Connect discovery
  * - `OA\Security\Scheme\MutualTls` - Mutual TLS authentication
  *
+ * Example:
+ *
+ * ```php
+ * #[OA\Security\Scheme(component: 'bearerAuth', type: 'http', scheme: 'bearer')]
+ * ```
+ *
  * @see [Security Scheme Object](https://spec.openapis.org/oas/v3.1.1.html#security-scheme-object)
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
-class Scheme extends OA\AbstractAttribute
+class Scheme extends OA\AbstractAttribute implements RefInterface
 {
+    use RefTrait;
+
+    /** The name this attribute is filed under in `components`; null for an inline one. */
+    public ?string $component = null;
+
     public ?string $type = null;
 
     public ?string $in = null;
 
     /**
-     * @param string|null               $securityScheme   Reusable security scheme identifier (component key)
+     * @param string|null               $securityScheme   Deprecated since 6.12, removed in 8.0 - use `component` instead
      * @param string|OA\SchemeType|null $type             The type of the security scheme (apiKey, http, mutualTLS, oauth2, openIdConnect)
      * @param string|null               $description      A description of the security scheme (CommonMark syntax)
      * @param string|null               $name             The name of the header, query, or cookie parameter (apiKey)
@@ -41,8 +54,10 @@ class Scheme extends OA\AbstractAttribute
      * @param string|null               $openIdConnectUrl The OpenID Connect URL to discover configuration (openIdConnect)
      * @param list<OA\Flow>|null        $flows            The available OAuth2 flows (oauth2)
      * @param string|null               $ref              A JSON Reference to a reusable security scheme
+     * @param string|null               $component        The name this is filed under in `components`, which makes it a reusable component
      * @param array<string,mixed>|null  $x                Vendor extensions (x-* properties)
      * @param list<OA\Attachable>|null  $attachables      Reusable custom attachable attributes
+     * @param OA\Fan|null               $fan              Where this attribute goes when more than one attribute could hold it
      */
     public function __construct(
         public ?string $securityScheme = null,
@@ -55,12 +70,20 @@ class Scheme extends OA\AbstractAttribute
         public ?string $openIdConnectUrl = null,
         public ?array $flows = null,
         public string|OA\Schema\Ref|null $ref = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
+        ?OA\Fan $fan = null,
     ) {
-        parent::__construct(x: $x, attachables: $attachables);
+        $this->component = $component;
+        if ($component === null && $this->securityScheme !== null) {
+            trigger_deprecation('zircote/swagger-php', '6.12', '`securityScheme` is deprecated as the component name of %s and will be removed in 8.0; use `component`', static::class);
+            $this->component = $this->securityScheme;
+        }
         $this->type = $type instanceof \BackedEnum ? $type->value : $type;
         $this->in = $in instanceof \BackedEnum ? $in->value : $in;
+
+        parent::__construct(x: $x, attachables: $attachables, fan: $fan);
     }
 
     public function isRoot(): bool

@@ -6,6 +6,8 @@
 
 namespace OpenApi\Contracts;
 
+use OpenApi\Spec as OA;
+use OpenApi\Specification\ComponentKey;
 use OpenApi\Utils\SourceLocation;
 
 /**
@@ -79,5 +81,40 @@ interface AttributeInterface
 
     public function getShortClassName(): ?string;
 
+    /**
+     * The key a use looks this component up by, or null when no use can name it.
+     *
+     * Without one set, a component declared on a class is keyed by the class, plainly. Any other
+     * component has no key and is reached by its name.
+     */
+    public function getComponentKey(): ?ComponentKey;
+
+    public function setComponentKey(?ComponentKey $componentKey): static;
+
+    /**
+     * Extra data for whoever needs to carry it on an attribute, keyed by whoever writes it.
+     *
+     * Nothing in swagger-php writes or reads it. A clone copies the entries; an object stored as a
+     * value is shared between the clone and the original.
+     */
+    public function getMeta(string $key, mixed $default = null): mixed;
+
+    public function setMeta(string $key, mixed $value): static;
+
     public function getSourceLocation(): SourceLocation;
+
+    /**
+     * Where this attribute goes when more than one attribute could hold it. `null` is the
+     * default and behaves as `Fan::Single`.
+     */
+    public function getFan(): ?OA\Fan;
+
+    public function setFan(?OA\Fan $fan): static;
+
+    /**
+     * A deep copy: every attribute nested in its public properties, in lists and maps too, is
+     * copied as well, so changing the copy's children leaves the original's alone. The reflector
+     * and source location are shared; `meta` is copied as `clone` copies it.
+     */
+    public function copy(): static;
 }

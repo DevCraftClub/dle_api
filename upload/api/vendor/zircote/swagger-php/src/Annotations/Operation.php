@@ -9,6 +9,7 @@ namespace OpenApi\Annotations;
 use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Undefined;
+use OpenApi\Utils\SecurityRequirement;
 
 /**
  * Base class for <code>@OA\Get</code>,  <code>@OA\Post</code>,  <code>@OA\Put</code>,  etc.
@@ -18,6 +19,8 @@ use OpenApi\Undefined;
  * @see [Operation Object](https://spec.openapis.org/oas/v3.1.1.html#operation-object)
  *
  * @Annotation
+ *
+ * @deprecated since 7.0, removed in 8.0 - use `OpenApi\Spec\Operation` instead
  */
 abstract class Operation extends AbstractAnnotation
 {
@@ -201,7 +204,7 @@ abstract class Operation extends AbstractAnnotation
         // ensure security elements are object
         if (isset($data->security) && is_array($data->security)) {
             foreach ($data->security as $key => $scheme) {
-                $data->security[$key] = (object) $scheme;
+                $data->security[$key] = (object) SecurityRequirement::normalise((array) $scheme);
             }
         }
 
