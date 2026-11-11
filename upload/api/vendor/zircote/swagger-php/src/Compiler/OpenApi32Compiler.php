@@ -12,11 +12,15 @@ use OpenApi\Specification;
 /**
  * Compiles a Specification into an OpenAPI 3.2.x document array.
  *
- * 3.2 is a superset of 3.1 — adds Tag summary/parent/kind and PathItem query.
+ * 3.2 is a superset of 3.1 — adds Tag summary/parent/kind and the QUERY operation, which takes a request body.
  */
 class OpenApi32Compiler extends OpenApi31Compiler
 {
     protected const VERSIONS = ['3.2.0'];
+
+    protected const OPERATION_METHODS = [...parent::OPERATION_METHODS, 'query'];
+
+    protected const OPERATION_REQUEST_BODY_METHODS = [...parent::OPERATION_REQUEST_BODY_METHODS, 'query'];
 
     public function getVersion(): string
     {
@@ -31,12 +35,28 @@ class OpenApi32Compiler extends OpenApi31Compiler
 
         foreach ($specification->tags as $tag) {
             if ($tag->parent !== null && !in_array($tag->parent, $tagNames, true)) {
-                $this->logger->warning('Tag "' . $tag->name . '" references non-existent parent "' . $tag->parent . '"');
+                $this->logger->error('Tag "' . $tag->name . '" names parent "' . $tag->parent . '", which does not exist in ' . $tag->getSourceLocation());
                 $tag->parent = null;
             }
         }
 
         return $this->logger->entries();
+    }
+
+    #[\Override]
+    protected function validateVersionedComponents(Specification $specification): void
+    {
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    #[\Override]
+    protected function compileVersionedComponents(Specification $specification): array
+    {
+        return [
+            'mediaTypes' => $this->compileComponentMap($specification->mediaTypes, $this->compileMediaType(...)),
+        ];
     }
 
     /**

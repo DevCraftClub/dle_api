@@ -8,6 +8,7 @@ namespace OpenApi\Utils;
 
 use OpenApi\OpenApiException;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -16,16 +17,21 @@ use Psr\Log\NullLogger;
  *
  * @extends TypedList<PipeInterface|(callable&object)>
  */
-class Pipeline extends TypedList
+class Pipeline extends TypedList implements LoggerAwareInterface
 {
+    /**
+     * The pipeline hands this to every pipe that asks for one, so setting it here reaches all
+     * of them. The builder sets it once the build's collecting logger exists, which is after
+     * the pipeline was built.
+     */
+    use LoggerAwareTrait;
+
     /**
      * @var list<string>|null ordered group keys; null means no grouping (insertion order only)
      */
     protected ?array $groups = null;
 
     protected ?string $defaultGroup = null;
-
-    protected LoggerInterface $logger;
 
     /**
      * @param list<PipeInterface|(callable&object)> $pipes
@@ -48,7 +54,7 @@ class Pipeline extends TypedList
                 : null;
 
             if ($defaultKey !== null && !in_array($defaultKey, $this->groups, true)) {
-                throw new OpenApiException("Default group '{$defaultKey}' must be listed in groups");
+                throw new OpenApiException("Default group \"{$defaultKey}\" must be listed in groups");
             }
             $this->defaultGroup = $defaultKey ?? $this->groups[array_key_last($this->groups)];
         }
@@ -71,7 +77,7 @@ class Pipeline extends TypedList
     public function process(mixed $payload)
     {
         foreach ($this->ordered() as $pipe) {
-            if ($pipe instanceof LoggerAwareInterface) {
+            if ($pipe instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
                 $pipe->setLogger($this->logger);
             }
             $payload = $pipe($payload) ?? $payload;
@@ -149,7 +155,7 @@ class Pipeline extends TypedList
                 if (method_exists($pipe, $setter)) {
                     $pipe->{$setter}($value);
                 } else {
-                    $this->logger->warning("Unknown config option '{$pipeKey}.{$name}'");
+                    $this->logger?->error("Config option \"{$pipeKey}.{$name}\" is unknown, ignored");
                 }
             }
         };
@@ -158,7 +164,7 @@ class Pipeline extends TypedList
 
         foreach (array_keys($config) as $pipeKey) {
             if (!isset($applied[$pipeKey])) {
-                $this->logger->warning("Unknown config key '{$pipeKey}'; no matching pipe in this pipeline");
+                $this->logger?->error("Config key \"{$pipeKey}\" matches no pipe in this pipeline, ignored");
             }
         }
     }
@@ -192,7 +198,7 @@ class Pipeline extends TypedList
                 : $this->defaultGroup;
 
             if (!isset($buckets[$group])) {
-                throw new OpenApiException("Pipe declares unknown group '{$group}'; valid groups: " . implode(', ', $this->groups));
+                throw new OpenApiException("Pipe declares unknown group \"{$group}\"; valid groups: " . implode(', ', $this->groups));
             }
 
             $buckets[$group][] = $pipe;

@@ -10,7 +10,11 @@ use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Context;
 use OpenApi\Undefined;
+use Psr\Log\LoggerInterface;
 
+/**
+ * @deprecated since 7.0, removed in 8.0
+ */
 class TypeInfoTypeResolver extends AbstractTypeResolver
 {
     protected TypeResolver $resolver;
@@ -28,6 +32,9 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
      */
     protected function doAugment(Analysis $analysis, OA\Schema $schema, \Reflector $reflector, string $sourceClass = OA\Schema::class): void
     {
+        if ($analysis->context?->logger instanceof LoggerInterface) {
+            $this->resolver->setLogger($analysis->context->logger);
+        }
         $schemaType = $this->resolver->resolve($reflector);
 
         if (!$schemaType instanceof SchemaType) {
@@ -71,7 +78,8 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
      */
     protected function applyToAnnotation(OA\Schema $schema, SchemaType $schemaType, Analysis $analysis, string $sourceClass = OA\Schema::class): void
     {
-        if ($schemaType->type !== null) {
+        // a class is referenced only when there is no explicit enum it would replace
+        if ($schemaType->type !== null && (!$schemaType->isRef() || Undefined::isDefault($schema->enum))) {
             /** @var non-empty-array<string>|string $type every SchemaType array type is built non-empty */
             $type = $schemaType->type;
             $schema->type = $type;
@@ -81,15 +89,15 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
             $schema->format = $schemaType->format;
         }
 
-        if ($schemaType->minimum !== null) {
+        if ($schemaType->minimum !== null && Undefined::isDefault($schema->minimum)) {
             $schema->minimum = $schemaType->minimum;
         }
 
-        if ($schemaType->maximum !== null) {
+        if ($schemaType->maximum !== null && Undefined::isDefault($schema->maximum)) {
             $schema->maximum = $schemaType->maximum;
         }
 
-        if ($schemaType->not !== null) {
+        if ($schemaType->not !== null && Undefined::isDefault($schema->not)) {
             $schema->not = $schemaType->not;
         }
 
@@ -104,7 +112,7 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                 $this->applyToAnnotation($schema->items, $schemaType->items, $analysis, $sourceClass);
                 $this->type2ref($schema->items, $analysis, $sourceClass);
             }
-            $this->mapNativeType($schema->items, $schema->items->type);
+            $this->handlePostAugment($schema->items);
         }
 
         if ($schemaType->additionalProperties instanceof SchemaType) {
@@ -123,7 +131,7 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                     $this->applyToAnnotation($schema->additionalProperties, $schemaType->additionalProperties, $analysis, $sourceClass);
                     $this->type2ref($schema->additionalProperties, $analysis, $sourceClass);
                 }
-                $this->mapNativeType($schema->additionalProperties, $schema->additionalProperties->type);
+                $this->handlePostAugment($schema->additionalProperties);
             }
         } elseif ($schemaType->additionalProperties === true) {
             if (Undefined::isDefault($schema->additionalProperties)) {
@@ -137,11 +145,18 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                 return;
             }
             $schema->type = Undefined::UNDEFINED;
+            // a member typed with a class that is no component matches anything, and so does the union
+            foreach ($schemaType->oneOf as $childType) {
+                if ($childType->isRef() && is_string($childType->type) && !$analysis->getAnnotationForSource($childType->type, $sourceClass) instanceof OA\AbstractAnnotation) {
+                    return;
+                }
+            }
             $schema->oneOf = [];
             foreach ($schemaType->oneOf as $childType) {
                 $childSchema = new OA\Schema(['_context' => new Context(['generated' => true], $schema->_context)]);
                 $this->applyToAnnotation($childSchema, $childType, $analysis, $sourceClass);
                 $this->type2ref($childSchema, $analysis, $sourceClass);
+                $this->handlePostAugment($childSchema);
                 $analysis->addAnnotation($childSchema, $childSchema->_context);
                 $schema->oneOf[] = $childSchema;
             }
@@ -154,6 +169,7 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                 $childSchema = new OA\Schema(['_context' => new Context(['generated' => true], $schema->_context)]);
                 $this->applyToAnnotation($childSchema, $childType, $analysis, $sourceClass);
                 $this->type2ref($childSchema, $analysis, $sourceClass);
+                $this->handlePostAugment($childSchema);
                 $analysis->addAnnotation($childSchema, $childSchema->_context);
                 $schema->allOf[] = $childSchema;
             }
@@ -169,7 +185,7 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
                 ]);
                 $this->applyToAnnotation($property, $propType, $analysis, $sourceClass);
                 $this->type2ref($property, $analysis, $sourceClass);
-                $this->mapNativeType($property, $property->type);
+                $this->handlePostAugment($property);
                 $analysis->addAnnotation($property, $property->_context);
                 $properties[] = $property;
             }

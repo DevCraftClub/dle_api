@@ -12,14 +12,18 @@ use OpenApi\Specification\PathItemHierarchy;
 use OpenApi\Utils\PipeInterface;
 
 /**
- * Resolves PathItem prefixes, clones metadata to operations, and sets path-level output.
+ * Resolves PathItem prefixes, copies metadata to operations, and sets path-level output.
  *
  * Composes path prefixes from the PathItems governing each operation's class, prepends them
- * to operation paths, clones tags/security/responses to operations that don't declare their
+ * to operation paths, copies tags/security/responses to operations that don't declare their
  * own, and marks PathItems that have spec-level output (parameters, summary, description,
- * servers) with their resolved path.
+ * servers) with their resolved path. A PathItem governing several paths is written once per
+ * path.
  *
- * The ancestor walk itself belongs to `Specification\PathItemHierarchy`.
+ * Security requirements, responses and the per-path PathItems are deep copies, so a change
+ * made through one operation or path stays there.
+ *
+ * The ancestor walk and the prefix composition belong to `Specification\PathItemHierarchy`.
  *
  * @implements PipeInterface<Specification>
  */
@@ -39,11 +43,7 @@ class PathItems implements PipeInterface
                 continue;
             }
 
-            $prefix = $this->resolvePrefix($chain);
-            if ($prefix !== '' && $operation->path !== null) {
-                $operationPath = ltrim($operation->path, '/');
-                $operation->path = $operationPath !== '' ? $prefix . '/' . $operationPath : $prefix;
-            }
+            $operation->path = $hierarchy->pathFor($operation);
 
             $this->cloneMetadata($chain, $operation);
         }
@@ -56,23 +56,6 @@ class PathItems implements PipeInterface
     public function group(): string|\BackedEnum
     {
         return Group::Resolve;
-    }
-
-    /**
-     * Compose the path prefix declared across a chain, outermost first.
-     *
-     * @param list<OA\PathItem> $chain
-     */
-    protected function resolvePrefix(array $chain): string
-    {
-        $parts = [];
-        foreach ($chain as $pathItem) {
-            if ($pathItem->prefix !== null && ($part = trim($pathItem->prefix, '/')) !== '') {
-                $parts[] = $part;
-            }
-        }
-
-        return $parts !== [] ? '/' . implode('/', $parts) : '';
     }
 
     /**
@@ -94,7 +77,7 @@ class PathItems implements PipeInterface
             foreach ($merged['security'] as $req) {
                 if (!isset($existingSchemes[$req->scheme])) {
                     $operation->security ??= [];
-                    $operation->security[] = $req;
+                    $operation->security[] = $req->copy();
                 }
             }
         }
@@ -110,7 +93,7 @@ class PathItems implements PipeInterface
             foreach ($merged['responses'] as $response) {
                 if ($response->response !== null && !isset($existingCodes[(string) $response->response])) {
                     $operation->responses ??= [];
-                    $operation->responses[] = $response;
+                    $operation->responses[] = $response->copy();
                 }
             }
         }
@@ -153,6 +136,10 @@ class PathItems implements PipeInterface
         $pathsByPathItem = $this->collectOperationPaths($specification, $hierarchy);
 
         foreach ($specification->pathItems as $pathItem) {
+            if ($pathItem->component !== null) {
+                continue;
+            }
+
             $this->mergeAncestorParameters($pathItem, $hierarchy);
 
             if (!$this->hasSpecProperties($pathItem)) {
@@ -169,9 +156,9 @@ class PathItems implements PipeInterface
                 if ($pathItem->path === null) {
                     $pathItem->path = $path;
                 } elseif ($pathItem->path !== $path) {
-                    $clone = clone $pathItem;
-                    $clone->path = $path;
-                    $specification->pathItems[] = $clone;
+                    $copy = $pathItem->copy();
+                    $copy->path = $path;
+                    $specification->pathItems[] = $copy;
                 }
             }
         }
