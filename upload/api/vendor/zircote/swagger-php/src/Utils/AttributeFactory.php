@@ -203,7 +203,7 @@ class AttributeFactory implements LoggerAwareInterface
                 throw $openApiException;
             }
 
-            $this->logger->warning(sprintf('Skipping %s: %s', $this->memberLabel($member), $openApiException->getMessage()));
+            $this->logger->error(sprintf('%s cannot be read, skipped: %s', $this->memberLabel($member), $openApiException->getMessage()));
 
             return [];
         }
@@ -368,9 +368,9 @@ class AttributeFactory implements LoggerAwareInterface
                 continue;
             }
 
-            $this->logger?->warning(sprintf(
-                '%s "%s" ignored, a component declared on a member needs %s on its class, in %s',
-                $component::class,
+            $this->logger?->error(sprintf(
+                '%s "%s" is declared on a member without %s on its class, ignored in %s',
+                (new \ReflectionClass($component))->getShortName(),
                 $key,
                 OA\Components::class,
                 $attribute->getSourceLocation(),
@@ -383,10 +383,10 @@ class AttributeFactory implements LoggerAwareInterface
     protected function memberLabel(\ReflectionMethod|\ReflectionProperty|\ReflectionParameter|\ReflectionClassConstant $member): string
     {
         return match (true) {
-            $member instanceof \ReflectionMethod => $member->class . '::' . $member->name . '()',
-            $member instanceof \ReflectionProperty => $member->class . '::$' . $member->name,
-            $member instanceof \ReflectionClassConstant => $member->class . '::' . $member->name,
-            default => '$' . $member->name . ' of ' . $member->getDeclaringClass()?->getName() . '::' . $member->getDeclaringFunction()->name . '()',
+            $member instanceof \ReflectionMethod => 'Method ' . $member->class . '::' . $member->name . '()',
+            $member instanceof \ReflectionProperty => 'Property ' . $member->class . '::$' . $member->name,
+            $member instanceof \ReflectionClassConstant => 'Constant ' . $member->class . '::' . $member->name,
+            default => 'Parameter $' . $member->name . ' of ' . $member->getDeclaringClass()?->getName() . '::' . $member->getDeclaringFunction()->name . '()',
         };
     }
 
@@ -412,8 +412,8 @@ class AttributeFactory implements LoggerAwareInterface
             return;
         }
 
-        $this->logger?->warning(sprintf(
-            '%s ignored on a constructor, declare %s on the class in %s',
+        $this->logger?->error(sprintf(
+            '%s on a constructor, ignored; declare %s on the class in %s',
             implode(', ', array_map(static fn (\ReflectionAttribute $attribute): string => $attribute->getName(), $attributes)),
             count($attributes) === 1 ? 'it' : 'them',
             SourceLocation::fromReflector($constructor),
