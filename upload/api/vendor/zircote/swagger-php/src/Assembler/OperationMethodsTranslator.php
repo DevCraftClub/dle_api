@@ -23,7 +23,7 @@ use Psr\Log\LoggerAwareTrait;
  * fanned, and an attribute that could go into more than one of them is the usual ambiguity.
  *
  * An explicit `operationId` on several methods has to tell them apart with `{method}`, which
- * `Augmenter\OperationIdTemplates` expands. Without it, it is dropped with a warning and each
+ * `Augmenter\OperationIdTemplates` expands. Without it, it is dropped with an error and each
  * method gets a generated one.
  *
  * A translator creating `methods:` operations itself has to run before this one: `insert()` it
@@ -121,8 +121,8 @@ class OperationMethodsTranslator extends AbstractAttributeTranslator implements 
         $operation->methods = null;
 
         if (count($methods) > 1 && $operation->operationId !== null && !str_contains($operation->operationId, '{method}')) {
-            $this->logger?->warning(sprintf(
-                'operationId "%s" ignored on an operation with several methods (%s), add {method} to tell them apart in %s',
+            $this->logger?->error(sprintf(
+                'Operation "%s" has several methods (%s), operationId ignored; add {method} to tell them apart in %s',
                 $operation->operationId,
                 implode(', ', $methods),
                 $operation->getSourceLocation(),

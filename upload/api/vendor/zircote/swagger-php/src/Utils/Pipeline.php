@@ -54,7 +54,7 @@ class Pipeline extends TypedList implements LoggerAwareInterface
                 : null;
 
             if ($defaultKey !== null && !in_array($defaultKey, $this->groups, true)) {
-                throw new OpenApiException("Default group '{$defaultKey}' must be listed in groups");
+                throw new OpenApiException("Default group \"{$defaultKey}\" must be listed in groups");
             }
             $this->defaultGroup = $defaultKey ?? $this->groups[array_key_last($this->groups)];
         }
@@ -198,7 +198,7 @@ class Pipeline extends TypedList implements LoggerAwareInterface
                 : $this->defaultGroup;
 
             if (!isset($buckets[$group])) {
-                throw new OpenApiException("Pipe declares unknown group '{$group}'; valid groups: " . implode(', ', $this->groups));
+                throw new OpenApiException("Pipe declares unknown group \"{$group}\"; valid groups: " . implode(', ', $this->groups));
             }
 
             $buckets[$group][] = $pipe;

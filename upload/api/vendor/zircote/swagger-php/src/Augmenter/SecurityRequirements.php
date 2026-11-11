@@ -59,8 +59,8 @@ class SecurityRequirements implements PipeInterface, LoggerAwareInterface
         $security = [];
         foreach ($holder->security as $item) {
             if (is_string($item)) {
-                $this->logger?->warning(sprintf(
-                    'Security requirement "%s" is a bare scheme name and was dropped, use new Security\Requirement(scheme: \'%s\') in %s',
+                $this->logger?->error(sprintf(
+                    'Security requirement "%s" is a bare scheme name, omitted; use new Security\Requirement(scheme: \'%s\') in %s',
                     $item,
                     $item,
                     $holder->getSourceLocation(),
@@ -69,7 +69,7 @@ class SecurityRequirements implements PipeInterface, LoggerAwareInterface
             }
 
             if (is_array($item)) {
-                $this->logger?->warning(sprintf(
+                $this->logger?->notice(sprintf(
                     'Security requirement %s is a raw array, use Security\Requirement (array form removed in 8.0; rector rule %s rewrites it) in %s',
                     json_encode($item, JSON_UNESCAPED_SLASHES),
                     SecurityToRequirementRector::class,
