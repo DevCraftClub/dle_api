@@ -6,6 +6,9 @@
 
 namespace OpenApi\Spec;
 
+use OpenApi\Contracts\RefInterface;
+use OpenApi\Spec\Concerns\RefTrait;
+use OpenApi\Spec\Concerns\SchemaInputTrait;
 use OpenApi\Undefined;
 
 /**
@@ -35,16 +38,21 @@ use OpenApi\Undefined;
  *   new OA\Schema(type: 'array', items: new OA\Schema(ref: Pet::class))
  *
  * Only a class supplies a name. On a method or a parameter, pass `schema:` explicitly;
- * without it the schema has no component key and is reported as missing one.
+ * without it the schema has no component name and is reported as missing one.
  *
  * @phpstan-type EnumValue string|int|float|bool|\UnitEnum
+ * @phpstan-type TypeInput string|Type|list<string|Type>
+ * @phpstan-type PropertiesInput array<array-key,Property|Schema|Type|Format>
  *
  * @see [Schema Object](https://spec.openapis.org/oas/v3.1.1.html#schema-object)
  * @see [JSON Schema](https://json-schema.org/draft/2020-12/json-schema-validation)
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER | \Attribute::IS_REPEATABLE)]
-class Schema extends AbstractAttribute
+class Schema extends AbstractAttribute implements RefInterface
 {
+    use RefTrait;
+    use SchemaInputTrait;
+
     public const ARRAY_PROPERTIES = [
         'items',
         'minItems',
@@ -57,13 +65,24 @@ class Schema extends AbstractAttribute
         'unevaluatedItems',
     ];
 
+    /** The name this attribute is filed under in `components`; null for an inline one. */
+    public ?string $component = null;
+
+    /** @var string|list<string>|null */
+    public string|array|null $type = null;
+
+    public ?string $format = null;
+
+    /** @var list<Property>|null */
+    public ?array $properties = null;
+
     /**
-     * @param string|null                                       $schema                Reusable schema identifier (component key)
+     * @param string|null                                       $schema                Deprecated since 6.12, removed in 8.0 - use `component` instead
      * @param string|null                                       $title                 A title for the schema
      * @param string|null                                       $description           A description of the schema (CommonMark syntax)
      * @param string|null                                       $ref                   A JSON Reference to a reusable schema
-     * @param string|list<string>|null                          $type                  The value type(s) (string, number, integer, boolean, array, object, null)
-     * @param string|null                                       $format                Further refines the type (e.g. int32, int64, float, double, date-time, email)
+     * @param TypeInput|null                                    $type                  The value type(s) (string, number, integer, boolean, array, object, null)
+     * @param string|Format|null                                $format                Further refines the type (e.g. int32, int64, float, double, date-time, email)
      * @param bool|null                                         $nullable              Whether the value can be null (OAS 3.0 only; use type array in 3.1+)
      * @param int|null                                          $minLength             Minimum string length
      * @param int|null                                          $maxLength             Maximum string length
@@ -85,7 +104,7 @@ class Schema extends AbstractAttribute
      * @param int|null                                          $minContains           Minimum number of items matching contains
      * @param int|null                                          $maxContains           Maximum number of items matching contains
      * @param Schema|bool|null                                  $unevaluatedItems      Schema for items not covered by other keywords
-     * @param list<Property>|null                               $properties            Object property definitions
+     * @param PropertiesInput|null                              $properties            Object property definitions, as a list of `Property` or keyed by property name
      * @param list<string>|null                                 $required              List of required property names
      * @param Schema|Schema\AdditionalProperties|bool|null      $additionalProperties  Schema or boolean for additional properties
      * @param array<string,Schema>|null                         $patternProperties     Schemas for properties matching regex patterns
@@ -113,8 +132,10 @@ class Schema extends AbstractAttribute
      * @param Discriminator|null                                $discriminator         Discriminator for polymorphism
      * @param ExternalDocumentation|null                        $externalDocs          Additional external documentation
      * @param Xml|null                                          $xml                   XML representation metadata
+     * @param string|null                                       $component             The name this is filed under in `components`, which makes it a reusable component
      * @param array<string,mixed>|null                          $x                     Vendor extensions (x-* properties)
      * @param list<Attachable>|null                             $attachables           Reusable custom attachable attributes
+     * @param Fan|null                                          $fan                   Where this attribute goes when more than one attribute could hold it
      */
     public function __construct(
         // Identity
@@ -126,8 +147,8 @@ class Schema extends AbstractAttribute
         public string|Schema\Ref|null $ref = null,
 
         // Core type
-        public string|array|null $type = null,
-        public ?string $format = null,
+        string|Type|array|null $type = null,
+        string|Format|null $format = null,
         public ?bool $nullable = null,
 
         // String constraints
@@ -157,7 +178,7 @@ class Schema extends AbstractAttribute
         public Schema|bool|null $unevaluatedItems = null,
 
         // Object constraints
-        public ?array $properties = null,
+        ?array $properties = null,
         public ?array $required = null,
         public Schema|Schema\AdditionalProperties|bool|null $additionalProperties = null,
         public ?array $patternProperties = null,
@@ -197,10 +218,21 @@ class Schema extends AbstractAttribute
         public ?Discriminator $discriminator = null,
         public ?ExternalDocumentation $externalDocs = null,
         public ?Xml $xml = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
+        ?Fan $fan = null,
     ) {
-        parent::__construct(x: $x, attachables: $attachables);
+        $this->type = self::typeValue($type);
+        $this->format = $format instanceof Format ? $format->value : $format;
+        $this->properties = self::propertyList($properties);
+        $this->component = $component;
+        if ($component === null && $this->schema !== null) {
+            trigger_deprecation('zircote/swagger-php', '6.12', '`schema` is deprecated as the component name of %s and will be removed in 8.0; use `component`', static::class);
+            $this->component = $this->schema;
+        }
+
+        parent::__construct(x: $x, attachables: $attachables, fan: $fan);
     }
 
     public function isRoot(): bool
@@ -216,6 +248,13 @@ class Schema extends AbstractAttribute
             Parameter::class => 'schema',
             Header::class => 'schema',
             MediaType::class => 'schema',
+        ];
+    }
+
+    public function contained(): array
+    {
+        return [
+            Components::class => 'schemas[]',
         ];
     }
 }

@@ -12,6 +12,18 @@ use OpenApi\Undefined;
 /**
  * A parameter passed via the URL query string.
  *
+ * Allows to shorten this:
+ *
+ * ```php
+ * #[OA\Parameter(name: 'limit', in: 'query', schema: new OA\Schema(type: 'integer'))]
+ * ```
+ *
+ * to this:
+ *
+ * ```php
+ * #[OA\Parameter\Query(name: 'limit', schema: new OA\Schema(type: 'integer'))]
+ * ```
+ *
  * @see [Parameter Object](https://spec.openapis.org/oas/v3.1.1.html#parameter-object)
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PARAMETER | \Attribute::IS_REPEATABLE)]
@@ -38,8 +50,10 @@ class Query extends OA\Parameter
         mixed $example = Undefined::UNDEFINED,
         ?array $examples = null,
         OA\MediaType|array|null $content = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
+        ?OA\Fan $fan = null,
     ) {
         parent::__construct(
             parameter: $parameter,
@@ -57,8 +71,10 @@ class Query extends OA\Parameter
             example: $example,
             examples: $examples,
             content: $content,
+            component: $component,
             x: $x,
             attachables: $attachables,
+            fan: $fan,
         );
     }
 }

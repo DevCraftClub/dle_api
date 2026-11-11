@@ -6,6 +6,8 @@
 
 namespace OpenApi\Spec;
 
+use OpenApi\Contracts\RefInterface;
+use OpenApi\Spec\Concerns\RefTrait;
 use OpenApi\Undefined;
 
 /**
@@ -14,15 +16,20 @@ use OpenApi\Undefined;
  * @see [Header Object](https://spec.openapis.org/oas/v3.1.1.html#header-object)
  */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
-class Header extends AbstractAttribute
+class Header extends AbstractAttribute implements RefInterface
 {
+    use RefTrait;
+
+    /** The name this attribute is filed under in `components`; null for an inline one. */
+    public ?string $component = null;
+
     public ?string $style = null;
 
     /** @var list<MediaType>|null */
     public ?array $content = null;
 
     /**
-     * @param string|null                    $header      The header name (component key)
+     * @param string|null                    $header      The header name — the key the header nests under in a response or an encoding
      * @param string|null                    $description A brief description of the header (CommonMark syntax)
      * @param bool|null                      $required    Whether the header is mandatory
      * @param bool|null                      $deprecated  Whether the header is deprecated
@@ -33,12 +40,14 @@ class Header extends AbstractAttribute
      * @param mixed                          $example     Example of the header's value
      * @param list<Example>|null             $examples    Examples of the header's value
      * @param MediaType|list<MediaType>|null $content     Content-type based header serialization
+     * @param string|null                    $component   The name this is filed under in `components`, which makes it a reusable component
      * @param array<string,mixed>|null       $x           Vendor extensions (x-* properties)
      * @param list<Attachable>|null          $attachables Reusable custom attachable attributes
+     * @param Fan|null                       $fan         Where this attribute goes when more than one attribute could hold it
      */
     public function __construct(
         public ?string $header = null,
-        public ?string $description = null,
+        public ?string $description = Undefined::UNDEFINED,
         public ?bool $required = null,
         public ?bool $deprecated = null,
         public string|Schema\Ref|null $ref = null,
@@ -48,12 +57,21 @@ class Header extends AbstractAttribute
         public mixed $example = Undefined::UNDEFINED,
         public ?array $examples = null,
         MediaType|array|null $content = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
+        ?Fan $fan = null,
     ) {
-        parent::__construct(x: $x, attachables: $attachables);
+        $this->component = $component;
         $this->style = $style instanceof \BackedEnum ? $style->value : $style;
         $this->content = self::wrapList($content);
+
+        parent::__construct(x: $x, attachables: $attachables, fan: $fan);
+    }
+
+    public function isRoot(): bool
+    {
+        return $this->component !== null;
     }
 
     public function merge(): array
@@ -68,6 +86,7 @@ class Header extends AbstractAttribute
     public function contained(): array
     {
         return [
+            Components::class => 'headers[]',
             Response::class => 'headers[]',
         ];
     }

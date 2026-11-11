@@ -40,23 +40,24 @@
     "minimum-stability": "stable",
     "extra": {
         "branch-alias": {
-            "dev-master": "6.x-dev"
+            "dev-master": "7.x-dev"
         }
     },
     "require": {
         "php": ">=8.2",
-        "nikic/php-parser": "^4.19 || ^5.0",
+        "nikic/php-parser": "^5.0",
         "phpstan/phpdoc-parser": "^2.0",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
-        "radebatz/type-info-extras": "^1.0.2",
-        "symfony/console": "^6.4 || ^7.0 || ^8.0",
+        "radebatz/type-info-extras": "^1.0.11",
+        "symfony/console": "^5.4 || ^6.4 || ^7.0 || ^8.0",
         "symfony/deprecation-contracts": "^2 || ^3",
-        "symfony/finder": "^5.0 || ^6.0 || ^7.0 || ^8.0",
-        "symfony/yaml": "^5.4 || ^6.0 || ^7.0 || ^8.0"
+        "symfony/finder": "^5.4 || ^6.4 || ^7.0 || ^8.0",
+        "symfony/yaml": "^5.4 || ^6.4 || ^7.0 || ^8.0"
     },
     "autoload": {
         "psr-4": {
-            "OpenApi\\": "src"
+            "OpenApi\\": "src",
+            "OpenApi\\Rector\\": "rector/src"
         }
     },
     "autoload-dev": {
@@ -64,6 +65,7 @@
             "/tests/Fixtures"
         ],
         "psr-4": {
+            "OpenApi\\Rector\\Tests\\": "rector/tests/",
             "OpenApi\\Tools\\": "tools/src/",
             "OpenApi\\Tools\\Tests\\": "tools/tests/",
             "OpenApi\\Tests\\": "tests/",
@@ -72,20 +74,24 @@
     },
     "require-dev": {
         "doctrine/annotations": "^2.0",
-        "friendsofphp/php-cs-fixer": "3.95.23",
-        "phpstan/phpstan": "2.2.12",
+        "friendsofphp/php-cs-fixer": "3.95.27",
+        "phpbench/phpbench": "^1.7",
+        "phpstan/phpstan": "2.3.4",
         "phpunit/phpunit": "^11.5 || >=12.5.22",
-        "rector/rector": "2.6.5"
+        "rector/rector": "2.8.3"
     },
     "conflict": {
-        "symfony/process": ">=6, <6.4.14"
+        "symfony/console": "<5.4.35",
+        "symfony/process": ">=6, <6.4.14",
+        "symfony/string": "<5.4.41"
     },
     "scripts-descriptions": {
         "cs": "Fix all codestyle issues",
         "rector": "Automatic refactoring",
         "lint": "Test codestyle",
         "test": "Run the unit tests",
-        "performance": "Run performance regression tests",
+        "bench": "Run the benchmarks (phpbench)",
+        "bench:phases": "Show where a build spends its time, by phase",
         "analyse": "Run static analysis (phpstan)",
         "redocly": "Validate generated specs with Redocly",
         "docs:check": "Verify documentation accuracy against the codebase",
@@ -100,12 +106,17 @@
             "@cs --dry-run",
             "@rector --dry-run"
         ],
-        "test": "export XDEBUG_MODE=off && phpunit --display-all-issues @additional_args",
-        "performance": "export XDEBUG_MODE=off && phpunit --group performance",
-        "analyse": [
-            "export XDEBUG_MODE=off && phpstan clear-result-cache -q && phpstan analyse --memory-limit=3G"
+        "test": [
+            "export XDEBUG_MODE=off && phpunit --display-all-issues --exclude-testsuite 'Rector Test Suite' @additional_args",
+            "export XDEBUG_MODE=off && phpunit --display-all-issues --testsuite 'Rector Test Suite' @additional_args"
         ],
-        "redocly": "npm run redocly -- lint 'docs/examples/specs/**/*.yaml' 'docs/snippets/guide/extension-points/*.yaml' 'tests/Fixtures/Scratch/*.yaml'",
+        "bench": "export XDEBUG_MODE=off && phpbench run --report=aggregate",
+        "bench:phases": "export XDEBUG_MODE=off && php tests/Benchmarks/phases.php",
+        "analyse": [
+            "export XDEBUG_MODE=off && phpstan clear-result-cache -q && phpstan analyse --memory-limit=3G",
+            "export XDEBUG_MODE=off && phpstan analyse -c phpstan-level5.neon.dist --memory-limit=3G"
+        ],
+        "redocly": "npm run redocly -- lint 'docs/examples/specs/**/*.yaml' 'docs/examples/augmenters/**/*.yaml' 'docs/snippets/guide/extension-points/*.yaml' 'tests/Fixtures/Scratch/*.yaml'",
         "docs:check": "export XDEBUG_MODE=off && phpunit --filter DocsAccuracyTest",
         "docs:gen": "@php tools/docgen.php",
         "docs:dev": "cd docs && npm run dev",

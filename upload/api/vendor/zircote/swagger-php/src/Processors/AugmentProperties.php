@@ -15,6 +15,8 @@ use OpenApi\Undefined;
 
 /**
  * Use the property context to extract useful information and inject that into the annotation.
+ *
+ * @deprecated since 7.0, removed in 8.0 - write an augmenter instead, see `OpenApi\Builder::withAugmenters()`
  */
 class AugmentProperties implements GeneratorAwareInterface
 {
@@ -67,7 +69,8 @@ class AugmentProperties implements GeneratorAwareInterface
             $this->generator->getTypeResolver()->mapNativeType($property, $property->type);
 
             if (Undefined::isDefault($property->example) && ($example = $this->extractExampleDescription((string) $context->comment))) {
-                $property->example = $example;
+                $types = Undefined::isDefault($property->type) ? [] : (array) $property->type;
+                $property->example = $this->castExample($example, $types, $property->nullable === true);
             }
 
             if (Undefined::isDefault($property->deprecated) && ($deprecated = $this->isDeprecated($context->comment))) {
