@@ -75,6 +75,11 @@ class OpenApi30Compiler extends OpenApi31Compiler
             $this->logger->warning('Path item components are not supported in OpenAPI 3.0, omitted');
         }
 
+        $hasPathItemComponents = (bool) array_filter($specification->pathItems, fn (OA\PathItem $pathItem): bool => $pathItem->component !== null);
+        if ($hasPathItemComponents) {
+            $this->logger->warning('pathItems components are not supported in OpenAPI 3.0 and will be omitted');
+        }
+
         if ($specification->info?->license instanceof OA\License) {
             $license = $specification->info->license;
             if ($license->identifier !== null) {
